@@ -1,0 +1,27 @@
+{
+  "name": "the-blood-link",
+  "version": "1.0.0",
+  "description": "A web application that connects blood donors with those in need",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install",
+    "build": "cd client && npm run build"
+  },
+  "keywords": [
+    "blood",
+    "donation",
+    "mongodb",
+    "express",
+    "react",
+    "node"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 
