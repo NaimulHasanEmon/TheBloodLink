@@ -100,7 +100,7 @@ body {
 
 /* Hero Section */
 .hero-section {
-  @apply relative overflow-hidden bg-accent py-20 md:py-32;
+  @apply relative overflow-hidden bg-accent py-6 md:py-12;
 }
 
 .hero-content {
