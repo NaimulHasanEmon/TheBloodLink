@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import toast from "react-hot-toast";
-import { FaEnvelope, FaLock, FaSignInAlt, FaUserPlus, FaArrowLeft } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaSignInAlt, FaUserPlus, FaArrowLeft, FaGoogle, FaFacebookF, FaTwitter } from "react-icons/fa";
 
 const Login = () => {
   const { logIn } = useContext(AuthContext);
@@ -83,9 +83,9 @@ const Login = () => {
                   <label className="form-label" htmlFor="email">
                     Email Address
                   </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FaEnvelope className="text-gray-400" />
+                  <div className="flex">
+                    <div className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-l-md border border-gray-300">
+                      <FaEnvelope className="text-gray-500 text-xl" />
                     </div>
                     <input
                       type="email"
@@ -93,7 +93,7 @@ const Login = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="your.email@example.com"
-                      className="form-input pl-10"
+                      className="w-full px-4 py-3 rounded-r-md border border-l-0 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       required
                     />
                   </div>
@@ -108,9 +108,9 @@ const Login = () => {
                       Forgot password?
                     </a>
                   </div>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FaLock className="text-gray-400" />
+                  <div className="flex">
+                    <div className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-l-md border border-gray-300">
+                      <FaLock className="text-gray-500 text-xl" />
                     </div>
                     <input
                       type="password"
@@ -118,7 +118,7 @@ const Login = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="form-input pl-10"
+                      className="w-full px-4 py-3 rounded-r-md border border-l-0 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       required
                     />
                   </div>
@@ -152,6 +152,40 @@ const Login = () => {
                     Sign Up <FaUserPlus className="ml-1" />
                   </Link>
                 </p>
+              </div>
+              
+              {/* Social Login Options */}
+              <div className="mt-10 pb-4">
+                <div className="relative flex items-center justify-center mb-6">
+                  <hr className="w-full border-gray-300" />
+                  <span className="absolute bg-white px-4 text-sm font-medium text-gray-500">Or continue with</span>
+                </div>
+                
+                <div className="flex justify-center gap-6 mt-6">
+                  <button 
+                    type="button" 
+                    className="w-14 h-14 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition-all duration-300 bg-white border border-gray-200 hover:-translate-y-1"
+                    onClick={() => toast.success("Google login feature coming soon!")}
+                  >
+                    <FaGoogle className="text-[#4285F4] text-2xl" />
+                  </button>
+                  
+                  <button 
+                    type="button" 
+                    className="w-14 h-14 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition-all duration-300 bg-white border border-gray-200 hover:-translate-y-1"
+                    onClick={() => toast.success("Facebook login feature coming soon!")}
+                  >
+                    <FaFacebookF className="text-[#1877F2] text-2xl" />
+                  </button>
+                  
+                  <button 
+                    type="button" 
+                    className="w-14 h-14 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition-all duration-300 bg-white border border-gray-200 hover:-translate-y-1"
+                    onClick={() => toast.success("X (Twitter) login feature coming soon!")}
+                  >
+                    <FaTwitter className="text-[#1DA1F2] text-2xl" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
