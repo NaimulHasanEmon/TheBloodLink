@@ -129,7 +129,7 @@ const FindBlood = () => {
   };
   
   return (
-    <div className="min-h-screen blood-page-bg py-20">
+    <div className="min-h-screen blood-page-bg">
       {/* Loading Overlay */}
       <div className={`loading-overlay ${loading ? 'active' : ''}`}>
         <div className="loading-spinner-container">

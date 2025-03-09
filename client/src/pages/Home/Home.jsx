@@ -149,7 +149,7 @@ const Home = () => {
   ];
 
   return (
-    <div className='pt-[70px]'>
+    <div>
       {/* Hero Section */}
       <section className='hero-section'>
         <div className='hero-pattern'></div>

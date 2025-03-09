@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import axios from "axios";
 import { 
@@ -18,7 +18,12 @@ import {
   FaHistory,
   FaTimes,
   FaChevronLeft,
-  FaChevronRight
+  FaChevronRight,
+  FaIdCard,
+  FaGlobe,
+  FaCity,
+  FaMapPin,
+  FaHome
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import './calendar.css'; // We'll create this file next
@@ -49,11 +54,14 @@ const Dashboard = () => {
 
   // Custom date picker state
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
+  const [currentYear, setCurrentYear] = useState(currentDate.getFullYear());
   const [showYearSelector, setShowYearSelector] = useState(false);
   const [showMonthSelector, setShowMonthSelector] = useState(false);
-  const calendarRef = React.useRef(null);
+  
+  const calendarRef = useRef(null);
+  const dateInputRef = useRef(null);
   
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -61,45 +69,74 @@ const Dashboard = () => {
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   
-  // Update districts when division changes
+  // Fetch donor data
+  const fetchDonorData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/donors/profile`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      
+      if (response.data.success) {
+        const donorData = response.data.data;
+        
+        // Format the date for display
+        let formattedDate = null;
+        if (donorData.lastDonationDate) {
+          const date = new Date(donorData.lastDonationDate);
+          date.setHours(12, 0, 0, 0); // Set to noon to avoid timezone issues
+          formattedDate = date.toISOString().split('T')[0];
+          
+          // Set the current date for the calendar
+          setCurrentDate(date);
+        }
+        
+        setFormData({
+          name: donorData.name || "",
+          email: donorData.email || "",
+          phone: donorData.phone || "",
+          bloodGroup: donorData.bloodGroup || "",
+          division: donorData.division || "",
+          district: donorData.district || "",
+          upazila: donorData.upazila || "",
+          address: donorData.address || "",
+          lastDonationDate: formattedDate || "",
+          profileImage: donorData.profileImage || "",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching donor data:", error);
+      toast.error("Failed to load your profile data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch donor data on component mount
+  useEffect(() => {
+    if (user) {
+      fetchDonorData();
+    }
+  }, [user]);
+
+  // Set districts and upazilas based on initial form data
   useEffect(() => {
     if (formData.division) {
       const selectedDivision = bangladeshData.divisions.find(div => div.name === formData.division);
       if (selectedDivision) {
         setDistricts(selectedDivision.districts);
+        
         if (formData.district) {
-          const districtExists = selectedDivision.districts.some(dist => dist.name === formData.district);
-          if (!districtExists) {
-            setFormData(prev => ({ ...prev, district: "", upazila: "" }));
-            setUpazilas([]);
+          const selectedDistrict = selectedDivision.districts.find(dist => dist.name === formData.district);
+          if (selectedDistrict) {
+            setUpazilas(selectedDistrict.upazilas);
           }
         }
       }
-    } else {
-      setDistricts([]);
-      setFormData(prev => ({ ...prev, district: "", upazila: "" }));
-      setUpazilas([]);
     }
-  }, [formData.division]);
-  
-  // Update upazilas when district changes
-  useEffect(() => {
-    if (formData.district && districts.length > 0) {
-      const selectedDistrict = districts.find(dist => dist.name === formData.district);
-      if (selectedDistrict) {
-        setUpazilas(selectedDistrict.upazilas);
-        if (formData.upazila) {
-          const upazilaExists = selectedDistrict.upazilas.includes(formData.upazila);
-          if (!upazilaExists) {
-            setFormData(prev => ({ ...prev, upazila: "" }));
-          }
-        }
-      }
-    } else {
-      setUpazilas([]);
-      setFormData(prev => ({ ...prev, upazila: "" }));
-    }
-  }, [formData.district, districts]);
+  }, [formData.division, formData.district]);
 
   useEffect(() => {
     const fetchDonorData = async () => {
@@ -186,12 +223,23 @@ const Dashboard = () => {
     fetchDonorData();
   }, [user]);
 
+  // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData({ ...formData, [name]: value });
+
+    // Update districts and upazilas based on division and district selection
+    if (name === "division") {
+      const selectedDivision = bangladeshData.divisions.find(div => div.name === value);
+      setDistricts(selectedDivision ? selectedDivision.districts : []);
+      setUpazilas([]);
+      setFormData(prev => ({ ...prev, district: "", upazila: "" }));
+    } else if (name === "district") {
+      const selectedDivision = bangladeshData.divisions.find(div => div.name === formData.division);
+      const selectedDistrict = selectedDivision?.districts.find(dist => dist.name === value);
+      setUpazilas(selectedDistrict ? selectedDistrict.upazilas : []);
+      setFormData(prev => ({ ...prev, upazila: "" }));
+    }
   };
 
   const handleImageChange = (e) => {
@@ -341,7 +389,7 @@ const Dashboard = () => {
       ...prev,
       lastDonationDate: formattedDate
     }));
-    setSelectedDate(selectedDate);
+    setCurrentDate(selectedDate);
     setShowDatePicker(false);
   };
   
@@ -357,19 +405,19 @@ const Dashboard = () => {
   
   // Function to navigate to previous month
   const prevMonth = () => {
-    setCurrentMonth(prev => {
-      const newMonth = new Date(prev);
-      newMonth.setMonth(newMonth.getMonth() - 1);
-      return newMonth;
+    setCurrentDate(prev => {
+      const newDate = new Date(prev);
+      newDate.setMonth(newDate.getMonth() - 1);
+      return newDate;
     });
   };
   
   // Function to navigate to next month
   const nextMonth = () => {
-    setCurrentMonth(prev => {
-      const newMonth = new Date(prev);
-      newMonth.setMonth(newMonth.getMonth() + 1);
-      return newMonth;
+    setCurrentDate(prev => {
+      const newDate = new Date(prev);
+      newDate.setMonth(newDate.getMonth() + 1);
+      return newDate;
     });
   };
   
@@ -390,25 +438,25 @@ const Dashboard = () => {
   
   // Function to check if a date is the selected date
   const isSelectedDate = (date) => {
-    if (!selectedDate) return false;
-    return date.getDate() === selectedDate.getDate() &&
-           date.getMonth() === selectedDate.getMonth() &&
-           date.getFullYear() === selectedDate.getFullYear();
+    if (!currentDate) return false;
+    return date.getDate() === currentDate.getDate() &&
+           date.getMonth() === currentDate.getMonth() &&
+           date.getFullYear() === currentDate.getFullYear();
   };
   
   // Function to handle year selection
   const handleYearSelect = (year) => {
-    const newDate = new Date(currentMonth);
+    const newDate = new Date(currentDate);
     newDate.setFullYear(year);
-    setCurrentMonth(newDate);
+    setCurrentDate(newDate);
     setShowYearSelector(false);
   };
   
   // Function to handle month selection
   const handleMonthSelect = (month) => {
-    const newDate = new Date(currentMonth);
+    const newDate = new Date(currentDate);
     newDate.setMonth(month);
-    setCurrentMonth(newDate);
+    setCurrentDate(newDate);
     setShowMonthSelector(false);
   };
   
@@ -432,12 +480,12 @@ const Dashboard = () => {
   
   // Function to render the calendar
   const renderCalendar = () => {
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
     const daysInMonth = getDaysInMonth(year, month);
     const firstDayOfMonth = getFirstDayOfMonth(year, month);
     
-    const monthName = currentMonth.toLocaleString('default', { month: 'long' });
+    const monthName = currentDate.toLocaleString('default', { month: 'long' });
     
     // Create calendar days
     const days = [];
@@ -450,125 +498,111 @@ const Dashboard = () => {
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
-      const isFuture = isFutureDate(date);
-      const isCurrentDay = isToday(date);
-      const isSelected = isSelectedDate(date);
+      const isDisabled = isFutureDate(date);
       
       days.push(
-        <div 
-          key={`day-${day}`} 
-          className={`calendar-day ${isFuture ? 'future' : ''} ${isCurrentDay ? 'today' : ''} ${isSelected ? 'selected' : ''}`}
-          onClick={() => !isFuture && handleDateSelect(date)}
+        <div
+          key={day}
+          className={`calendar-day ${isDisabled ? 'future' : ''} ${isToday(date) ? 'today' : ''} ${isSelectedDate(date) ? 'selected' : ''}`}
+          onClick={() => !isDisabled && handleDateSelect(date)}
         >
           <span className="day-number">{day}</span>
-          {isCurrentDay && <div className="today-marker"></div>}
-          {isSelected && (
-            <div className="selected-marker">
-              <FaTint className="blood-drop-icon" />
-            </div>
-          )}
+          {isToday(date) && <div className="today-marker"></div>}
         </div>
       );
     }
     
-    // Render year selector if active
-    if (showYearSelector) {
-      return (
-        <div className="custom-calendar">
-          <div className="calendar-header">
-            <button onClick={() => setShowYearSelector(false)} className="month-nav">
-              <FaChevronLeft />
-            </button>
-            <div className="current-month">
-              <span>Select Year</span>
-            </div>
-            <div className="month-nav invisible">
-              <FaChevronRight />
-            </div>
-          </div>
+    return (
+      <div className="custom-calendar">
+        {showYearSelector ? (
           <div className="year-selector">
             {getYearRange().map(year => (
               <div 
                 key={year} 
-                className={`year-item ${currentMonth.getFullYear() === year ? 'active' : ''}`}
+                className={`year-item ${currentDate.getFullYear() === year ? 'active' : ''}`}
                 onClick={() => handleYearSelect(year)}
               >
                 {year}
               </div>
             ))}
           </div>
-        </div>
-      );
-    }
-    
-    // Render month selector if active
-    if (showMonthSelector) {
-      return (
-        <div className="custom-calendar">
-          <div className="calendar-header">
-            <button onClick={() => setShowMonthSelector(false)} className="month-nav">
-              <FaChevronLeft />
-            </button>
-            <div className="current-month">
-              <span>Select Month</span>
-            </div>
-            <div className="month-nav invisible">
-              <FaChevronRight />
-            </div>
-          </div>
+        ) : showMonthSelector ? (
           <div className="month-selector">
             {getMonthNames().map((monthName, index) => (
               <div 
                 key={monthName} 
-                className={`month-item ${currentMonth.getMonth() === index ? 'active' : ''}`}
+                className={`month-item ${currentDate.getMonth() === index ? 'active' : ''}`}
                 onClick={() => handleMonthSelect(index)}
               >
                 {monthName}
               </div>
             ))}
           </div>
-        </div>
-      );
-    }
-    
-    // Render regular calendar
-    return (
-      <div className="custom-calendar">
-        <div className="calendar-header">
-          <button onClick={prevMonth} className="month-nav">
-            <FaChevronLeft />
-          </button>
-          <div className="current-month">
-            <button 
-              className="month-selector-btn"
-              onClick={() => setShowMonthSelector(true)}
-            >
-              {monthName}
-            </button>
-            <span className="year-divider">/</span>
-            <button 
-              className="year-selector-btn"
-              onClick={() => setShowYearSelector(true)}
-            >
-              {year}
-            </button>
-          </div>
-          <button onClick={nextMonth} className="month-nav">
-            <FaChevronRight />
-          </button>
-        </div>
-        <div className="calendar-weekdays">
-          <div>Su</div>
-          <div>Mo</div>
-          <div>Tu</div>
-          <div>We</div>
-          <div>Th</div>
-          <div>Fr</div>
-          <div>Sa</div>
-        </div>
-        <div className="calendar-days">
-          {days}
-        </div>
+        ) : (
+          <>
+            <div className="calendar-header">
+              <button 
+                type="button"
+                className="month-nav" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  prevMonth();
+                }}
+              >
+                <FaChevronLeft />
+              </button>
+              <div className="current-month">
+                <button 
+                  type="button"
+                  className="month-selector-btn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowMonthSelector(true);
+                  }}
+                >
+                  {monthName}
+                </button>
+                <span className="year-divider">/</span>
+                <button 
+                  type="button"
+                  className="year-selector-btn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowYearSelector(true);
+                  }}
+                >
+                  {year}
+                </button>
+              </div>
+              <button 
+                type="button"
+                className="month-nav" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  nextMonth();
+                }}
+              >
+                <FaChevronRight />
+              </button>
+            </div>
+            <div className="calendar-weekdays">
+              <div>Su</div>
+              <div>Mo</div>
+              <div>Tu</div>
+              <div>We</div>
+              <div>Th</div>
+              <div>Fr</div>
+              <div>Sa</div>
+            </div>
+            <div className="calendar-days">
+              {days}
+            </div>
+          </>
+        )}
       </div>
     );
   };
@@ -579,8 +613,7 @@ const Dashboard = () => {
       // Create a new date object and set it to noon to avoid timezone issues
       const date = new Date(formData.lastDonationDate);
       date.setHours(12, 0, 0, 0);
-      setSelectedDate(date);
-      setCurrentMonth(date);
+      setCurrentDate(date);
     }
   }, [formData.lastDonationDate]);
 
@@ -610,7 +643,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen pt-20 pb-12 bg-gray-50">
+    <div className="min-h-screen pb-12 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* Dashboard Header */}
@@ -718,124 +751,163 @@ const Dashboard = () => {
               <div className="p-6">
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Name */}
-                    <div className="form-group">
-                      <label className="form-label flex items-center gap-2" htmlFor="name">
-                        <FaUser className="text-primary" /> Full Name
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 rounded-md border ${
-                          editMode ? "bg-white" : "bg-gray-50"
-                        } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                        disabled={!editMode}
-                      />
-                    </div>
-
-                    {/* Email */}
-                    <div className="form-group">
-                      <label className="form-label flex items-center gap-2" htmlFor="email">
-                        <FaEnvelope className="text-primary" /> Email Address
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        className="w-full px-4 py-3 rounded-md border bg-gray-50 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                        disabled
-                      />
-                      <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
-                    </div>
-
-                    {/* Blood Group */}
-                    <div className="form-group">
-                      <label className="form-label flex items-center gap-2" htmlFor="bloodGroup">
-                        <FaTint className="text-primary" /> Blood Group
-                      </label>
-                      <select
-                        id="bloodGroup"
-                        name="bloodGroup"
-                        value={formData.bloodGroup}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 rounded-md border ${
-                          editMode ? "bg-white" : "bg-gray-50"
-                        } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none`}
-                        disabled={!editMode}
-                      >
-                        <option value="">Select Blood Group</option>
-                        {bloodGroups.map((group) => (
-                          <option key={group} value={group}>
-                            {group}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Phone */}
-                    <div className="form-group">
-                      <label className="form-label flex items-center gap-2" htmlFor="phone">
-                        <FaPhone className="text-primary" /> Phone Number
-                      </label>
-                      <div className="flex">
-                        <div className="flex-shrink-0 flex items-center justify-center bg-gray-200 px-3 border border-r-0 border-gray-300 rounded-l-md font-medium text-gray-600">
-                          +880
-                        </div>
+                    {/* Profile Information */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center gap-2">
+                        <FaUser className="text-primary" /> Profile Information
+                      </h3>
+                      
+                      {/* Name */}
+                      <div className="form-group mb-4">
+                        <label className="form-label flex items-center gap-2" htmlFor="name">
+                          <FaIdCard className="text-primary" /> Full Name
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          className={`w-full px-4 py-3 rounded-md border ${
+                            editMode ? "bg-white" : "bg-gray-50"
+                          } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                          disabled={!editMode}
+                        />
+                      </div>
+                      
+                      {/* Email */}
+                      <div className="form-group mb-4">
+                        <label className="form-label flex items-center gap-2" htmlFor="email">
+                          <FaEnvelope className="text-primary" /> Email
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          value={formData.email}
+                          className="w-full px-4 py-3 rounded-md border bg-gray-50 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          disabled
+                        />
+                        <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+                      </div>
+                      
+                      {/* Phone */}
+                      <div className="form-group mb-4">
+                        <label className="form-label flex items-center gap-2" htmlFor="phone">
+                          <FaPhone className="text-primary" /> Phone
+                        </label>
                         <input
                           type="tel"
                           id="phone"
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
-                          placeholder="1XXXXXXXXX"
-                          className={`w-full px-4 py-3 rounded-r-md border ${
+                          className={`w-full px-4 py-3 rounded-md border ${
                             editMode ? "bg-white" : "bg-gray-50"
                           } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
                           disabled={!editMode}
                         />
                       </div>
-                    </div>
-
-                    {/* Address */}
-                    <div className="mb-4">
-                      <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                        <FaMapMarkerAlt className="inline-block mr-2 text-primary" />
-                        Address
-                      </label>
-                      <input
-                        type="text"
-                        id="address"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleChange}
-                        disabled={!editMode}
-                        className={`w-full p-2 border rounded-md ${
-                          editMode ? "bg-white" : "bg-gray-100"
-                        }`}
-                      />
+                      
+                      {/* Blood Group */}
+                      <div className="form-group mb-4">
+                        <label className="form-label flex items-center gap-2" htmlFor="bloodGroup">
+                          <FaTint className="text-primary" /> Blood Group
+                        </label>
+                        <select
+                          id="bloodGroup"
+                          name="bloodGroup"
+                          value={formData.bloodGroup}
+                          onChange={handleChange}
+                          className={`w-full px-4 py-3 rounded-md border ${
+                            editMode ? "bg-white" : "bg-gray-50"
+                          } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                          disabled={!editMode}
+                        >
+                          <option value="">Select Blood Group</option>
+                          {bloodGroups.map((group) => (
+                            <option key={group} value={group}>
+                              {group}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      
+                      {/* Last Donation Date */}
+                      <div className="form-group relative z-50 mb-4">
+                        <label className="form-label flex items-center gap-2" htmlFor="lastDonationDate">
+                          <FaCalendarAlt className="text-primary" /> Last Donation Date
+                        </label>
+                        <div className="relative" ref={calendarRef}>
+                          <div 
+                            className={`date-input-container flex items-center w-full px-4 py-3 rounded-md border ${
+                              editMode ? "bg-white cursor-pointer" : "bg-gray-50"
+                            } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                            onClick={() => editMode && setShowDatePicker(!showDatePicker)}
+                          >
+                            <div className="flex-1">
+                              {formData.lastDonationDate ? (
+                                <span className="text-gray-700">
+                                  {(() => {
+                                    const date = new Date(formData.lastDonationDate);
+                                    date.setHours(12, 0, 0, 0);
+                                    return date.toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric'
+                                    });
+                                  })()}
+                                </span>
+                              ) : (
+                                <span className="text-gray-400">Select donation date</span>
+                              )}
+                            </div>
+                            <FaCalendarAlt className={`${editMode ? "text-primary" : "text-gray-400"}`} />
+                            
+                            {/* Hidden input for form submission */}
+                            <input
+                              type="hidden"
+                              id="lastDonationDate"
+                              name="lastDonationDate"
+                              value={formData.lastDonationDate}
+                            />
+                          </div>
+                          
+                          {/* Custom Calendar Dropdown */}
+                          {showDatePicker && editMode && (
+                            <div className="calendar-dropdown">
+                              {renderCalendar()}
+                            </div>
+                          )}
+                        </div>
+                        {editMode && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            Click to select your last blood donation date
+                          </p>
+                        )}
+                      </div>
                     </div>
                     
-                    {/* Location Fields */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    {/* Address Information */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center gap-2">
+                        <FaMapMarkerAlt className="text-primary" /> Address Information
+                      </h3>
+                      
                       {/* Division */}
-                      <div>
-                        <label htmlFor="division" className="block text-sm font-medium text-gray-700 mb-1">
-                          <FaMapMarkerAlt className="inline-block mr-2 text-primary" />
-                          Division
+                      <div className="form-group mb-4">
+                        <label className="form-label flex items-center gap-2" htmlFor="division">
+                          <FaGlobe className="text-primary" /> Division
                         </label>
                         <select
                           id="division"
                           name="division"
                           value={formData.division}
                           onChange={handleChange}
+                          className={`w-full px-4 py-3 rounded-md border ${
+                            editMode ? "bg-white" : "bg-gray-50"
+                          } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
                           disabled={!editMode}
-                          className={`w-full p-2 border rounded-md ${
-                            editMode ? "bg-white" : "bg-gray-100"
-                          }`}
                         >
                           <option value="">Select Division</option>
                           {bangladeshData.divisions.map((div) => (
@@ -847,109 +919,70 @@ const Dashboard = () => {
                       </div>
                       
                       {/* District */}
-                      <div>
-                        <label htmlFor="district" className="block text-sm font-medium text-gray-700 mb-1">
-                          <FaMapMarkerAlt className="inline-block mr-2 text-primary" />
-                          District
+                      <div className="form-group mb-4">
+                        <label className="form-label flex items-center gap-2" htmlFor="district">
+                          <FaCity className="text-primary" /> District
                         </label>
                         <select
                           id="district"
                           name="district"
                           value={formData.district}
                           onChange={handleChange}
+                          className={`w-full px-4 py-3 rounded-md border ${
+                            editMode ? "bg-white" : "bg-gray-50"
+                          } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
                           disabled={!editMode || !formData.division}
-                          className={`w-full p-2 border rounded-md ${
-                            editMode && formData.division ? "bg-white" : "bg-gray-100"
-                          }`}
                         >
                           <option value="">Select District</option>
-                          {districts.map((dist) => (
-                            <option key={dist.name} value={dist.name}>
-                              {dist.name}
+                          {districts.map((district) => (
+                            <option key={district.name} value={district.name}>
+                              {district.name}
                             </option>
                           ))}
                         </select>
                       </div>
                       
                       {/* Upazila */}
-                      <div>
-                        <label htmlFor="upazila" className="block text-sm font-medium text-gray-700 mb-1">
-                          <FaMapMarkerAlt className="inline-block mr-2 text-primary" />
-                          Upazila
+                      <div className="form-group mb-4">
+                        <label className="form-label flex items-center gap-2" htmlFor="upazila">
+                          <FaMapPin className="text-primary" /> Upazila
                         </label>
                         <select
                           id="upazila"
                           name="upazila"
                           value={formData.upazila}
                           onChange={handleChange}
+                          className={`w-full px-4 py-3 rounded-md border ${
+                            editMode ? "bg-white" : "bg-gray-50"
+                          } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
                           disabled={!editMode || !formData.district}
-                          className={`w-full p-2 border rounded-md ${
-                            editMode && formData.district ? "bg-white" : "bg-gray-100"
-                          }`}
                         >
                           <option value="">Select Upazila</option>
-                          {upazilas.map((upz) => (
-                            <option key={upz} value={upz}>
-                              {upz}
+                          {upazilas.map((upazila) => (
+                            <option key={upazila} value={upazila}>
+                              {upazila}
                             </option>
                           ))}
                         </select>
                       </div>
-                    </div>
-                    
-                    {/* Last Donation Date */}
-                    <div className="form-group">
-                      <label className="form-label flex items-center gap-2" htmlFor="lastDonationDate">
-                        <FaCalendarAlt className="text-primary" /> Last Donation Date
-                      </label>
-                      <div className="relative" ref={calendarRef}>
-                        <div 
-                          className={`date-input-container flex items-center w-full px-4 py-3 rounded-md border ${
-                            editMode ? "bg-white cursor-pointer" : "bg-gray-50"
+                      
+                      {/* Address */}
+                      <div className="form-group mb-4">
+                        <label className="form-label flex items-center gap-2" htmlFor="address">
+                          <FaHome className="text-primary" /> Address
+                        </label>
+                        <textarea
+                          id="address"
+                          name="address"
+                          value={formData.address}
+                          onChange={handleChange}
+                          className={`w-full px-4 py-3 rounded-md border ${
+                            editMode ? "bg-white" : "bg-gray-50"
                           } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                          onClick={() => editMode && setShowDatePicker(!showDatePicker)}
-                        >
-                          <div className="flex-1">
-                            {formData.lastDonationDate ? (
-                              <span className="text-gray-700">
-                                {(() => {
-                                  // Create a new date object and set it to noon to avoid timezone issues
-                                  const date = new Date(formData.lastDonationDate);
-                                  date.setHours(12, 0, 0, 0);
-                                  return date.toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                  });
-                                })()}
-                              </span>
-                            ) : (
-                              <span className="text-gray-400">Select donation date</span>
-                            )}
-                          </div>
-                          <FaCalendarAlt className={`${editMode ? "text-primary" : "text-gray-400"}`} />
-                          
-                          {/* Hidden input for form submission */}
-                          <input
-                            type="hidden"
-                            id="lastDonationDate"
-                            name="lastDonationDate"
-                            value={formData.lastDonationDate}
-                          />
-                        </div>
-                        
-                        {/* Custom Calendar Dropdown */}
-                        {showDatePicker && editMode && (
-                          <div className="calendar-dropdown">
-                            {renderCalendar()}
-                          </div>
-                        )}
+                          disabled={!editMode}
+                          rows="3"
+                        ></textarea>
                       </div>
-                      {editMode && (
-                        <p className="text-xs text-gray-500 mt-1">
-                          Click to select your last blood donation date
-                        </p>
-                      )}
                     </div>
                   </div>
 
