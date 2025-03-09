@@ -1,149 +1,155 @@
 import { Link } from "react-router-dom";
 import { FaFacebook, FaTwitter, FaInstagram, FaHeart, FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
+import BloodDropIcon from "./ui/BloodDropIcon";
+import "../styles/animations.css";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-b from-neutral to-neutral-900 text-white pt-16 pb-8">
-      <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="bg-gradient-to-b from-neutral to-neutral-900 text-white pt-12 pb-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12">
           {/* Logo and Description */}
-          <div className="space-y-4">
+          <div className="space-y-4 animate-fade-in">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 relative animate-float">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 relative animate-blood-drip">
                 <img src="/blood-drop.svg" alt="Blood Drop" className="w-full h-full" />
               </div>
-              <h2 className="text-2xl font-bold text-white">The Blood Link</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-white">The Blood Link</h2>
             </div>
-            <p className="text-gray-300 mt-4 leading-relaxed">
+            <p className="text-gray-300 mt-2 sm:mt-4 text-sm sm:text-base leading-relaxed">
               Connecting blood donors with those in need. Your donation can save
               lives. Join our community today and be a hero.
             </p>
-            <div className="flex space-x-4 mt-6">
+            <div className="flex space-x-3 sm:space-x-4 mt-4 sm:mt-6">
               <a 
                 href="#" 
-                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-white transition-all duration-300 transform hover:-translate-y-1"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-white transition-all duration-300 transform hover-lift"
                 aria-label="Facebook"
               >
-                <FaFacebook />
+                <FaFacebook className="hover-pulse" />
               </a>
               <a 
                 href="#" 
-                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-white transition-all duration-300 transform hover:-translate-y-1"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-white transition-all duration-300 transform hover-lift"
                 aria-label="Twitter"
               >
-                <FaTwitter />
+                <FaTwitter className="hover-pulse" />
               </a>
               <a 
                 href="#" 
-                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-white transition-all duration-300 transform hover:-translate-y-1"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-white transition-all duration-300 transform hover-lift"
                 aria-label="Instagram"
               >
-                <FaInstagram />
+                <FaInstagram className="hover-pulse" />
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h3 className="text-xl font-bold mb-6 relative">
-              Quick Links
-              <span className="absolute bottom-0 left-0 w-12 h-1 bg-primary mt-2"></span>
+          <div className="animate-fade-in" style={{ animationDelay: '100ms' }}>
+            <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 relative">
+              <span className="relative z-10">Quick Links</span>
+              <span className="absolute bottom-0 left-0 w-12 h-1 bg-primary"></span>
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3 stagger-fade-in">
               <li>
-                <Link 
-                  to="/" 
-                  className="footer-link flex items-center gap-2 text-gray-300 hover:text-primary"
-                >
-                  <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
-                  Home
+                <Link to="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center gap-1 text-sm sm:text-base hover-underline">
+                  <span className="text-primary">›</span> Home
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/login" 
-                  className="footer-link flex items-center gap-2 text-gray-300 hover:text-primary"
-                >
-                  <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
-                  Login
+                <Link to="/find-blood" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center gap-1 text-sm sm:text-base hover-underline">
+                  <span className="text-primary">›</span> Find Blood
+                  <BloodDropIcon size="sm" color="primary" className="ml-1" />
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/signup" 
-                  className="footer-link flex items-center gap-2 text-gray-300 hover:text-primary"
-                >
-                  <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
-                  Sign Up
+                <Link to="/dashboard" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center gap-1 text-sm sm:text-base hover-underline">
+                  <span className="text-primary">›</span> Dashboard
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/checkout/1" 
-                  className="footer-link flex items-center gap-2 text-gray-300 hover:text-primary"
-                >
-                  <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
-                  Donate Blood
+                <Link to="/login" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center gap-1 text-sm sm:text-base hover-underline">
+                  <span className="text-primary">›</span> Login
+                </Link>
+              </li>
+              <li>
+                <Link to="/signup" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center gap-1 text-sm sm:text-base hover-underline">
+                  <span className="text-primary">›</span> Become a Donor
+                  <FaHeart className="text-primary ml-1 animate-heartbeat" />
                 </Link>
               </li>
             </ul>
           </div>
 
           {/* Contact Info */}
-          <div>
-            <h3 className="text-xl font-bold mb-6 relative">
-              Contact Us
-              <span className="absolute bottom-0 left-0 w-12 h-1 bg-primary mt-2"></span>
+          <div className="animate-fade-in" style={{ animationDelay: '200ms' }}>
+            <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 relative">
+              <span className="relative z-10">Contact Us</span>
+              <span className="absolute bottom-0 left-0 w-12 h-1 bg-primary"></span>
             </h3>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3 text-gray-300">
-                <FaMapMarkerAlt className="text-primary mt-1 flex-shrink-0" />
-                <span>123 Blood Street, Medical District, City</span>
+            <ul className="space-y-3 sm:space-y-4 stagger-fade-in">
+              <li className="flex items-start gap-3 text-sm sm:text-base hover-lift">
+                <FaMapMarkerAlt className="text-primary mt-1 flex-shrink-0 animate-pulse-gentle" />
+                <span className="text-gray-300">
+                  123 Blood Donor Street, Medical District, Dhaka, Bangladesh
+                </span>
               </li>
-              <li className="flex items-center gap-3 text-gray-300">
+              <li className="flex items-center gap-3 text-sm sm:text-base hover-lift">
                 <FaPhone className="text-primary flex-shrink-0" />
-                <span>+123 456 7890</span>
+                <a href="tel:+8801712345678" className="text-gray-300 hover:text-white transition-colors duration-300 hover-underline">
+                  +880 171 234 5678
+                </a>
               </li>
-              <li className="flex items-center gap-3 text-gray-300">
+              <li className="flex items-center gap-3 text-sm sm:text-base hover-lift">
                 <FaEnvelope className="text-primary flex-shrink-0" />
-                <span>info@thebloodlink.com</span>
+                <a href="mailto:info@thebloodlink.com" className="text-gray-300 hover:text-white transition-colors duration-300 hover-underline">
+                  info@thebloodlink.com
+                </a>
               </li>
             </ul>
           </div>
 
           {/* Newsletter */}
-          <div>
-            <h3 className="text-xl font-bold mb-6 relative">
-              Newsletter
-              <span className="absolute bottom-0 left-0 w-12 h-1 bg-primary mt-2"></span>
+          <div className="animate-fade-in" style={{ animationDelay: '300ms' }}>
+            <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 relative">
+              <span className="relative z-10">Newsletter</span>
+              <span className="absolute bottom-0 left-0 w-12 h-1 bg-primary"></span>
             </h3>
-            <p className="text-gray-300 mb-4">
-              Subscribe to our newsletter for updates on blood donation camps and more.
+            <p className="text-gray-300 mb-4 text-sm sm:text-base">
+              Subscribe to our newsletter for updates on blood donation camps and urgent requirements.
             </p>
-            <form className="flex flex-col space-y-3">
-              <input
-                type="email"
-                placeholder="Your Email"
-                className="px-4 py-2 bg-white/10 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-white placeholder-gray-400"
-                required
-              />
+            <form className="space-y-3">
+              <div className="relative">
+                <input
+                  type="email"
+                  placeholder="Your Email"
+                  className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary text-sm sm:text-base transition-all duration-300 focus:bg-white/15"
+                  required
+                />
+              </div>
               <button
                 type="submit"
-                className="btn-primary py-2 px-4 rounded-md flex items-center justify-center gap-2"
+                className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-blood-dark transition-colors duration-300 flex items-center justify-center gap-2 text-sm sm:text-base hover-pulse donate-button-pulse"
               >
-                Subscribe <FaEnvelope />
+                Subscribe <FaHeart className="animate-heartbeat" />
               </button>
             </form>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/10 mt-12 pt-6 text-center text-gray-400">
-          <p className="flex items-center justify-center gap-1">
-            &copy; {currentYear} The Blood Link. Made with <FaHeart className="text-primary animate-beat" /> All rights reserved.
+        <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center text-center sm:text-left">
+          <p className="text-gray-400 text-xs sm:text-sm animate-fade-in">
+            &copy; {currentYear} The Blood Link. All rights reserved.
           </p>
+          <div className="mt-3 sm:mt-0 flex flex-wrap justify-center gap-4 text-xs sm:text-sm text-gray-400 animate-fade-in" style={{ animationDelay: '100ms' }}>
+            <a href="#" className="hover:text-white transition-colors duration-300 hover-underline">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors duration-300 hover-underline">Terms of Service</a>
+            <a href="#" className="hover:text-white transition-colors duration-300 hover-underline">Cookie Policy</a>
+          </div>
         </div>
       </div>
     </footer>

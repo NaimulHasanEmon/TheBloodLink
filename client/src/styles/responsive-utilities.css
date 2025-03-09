@@ -1,0 +1,457 @@
+/* Responsive Utility Classes */
+
+/* Responsive Container Classes */
+.container-fluid {
+  width: 100%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.container-sm {
+  width: 100%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 640px;
+}
+
+.container-md {
+  width: 100%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 768px;
+}
+
+.container-lg {
+  width: 100%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1024px;
+}
+
+.container-xl {
+  width: 100%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1280px;
+}
+
+/* Responsive Padding Classes */
+.p-responsive {
+  padding: 1rem;
+}
+
+.px-responsive {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-responsive {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.pt-responsive {
+  padding-top: 1rem;
+}
+
+.pb-responsive {
+  padding-bottom: 1rem;
+}
+
+.pl-responsive {
+  padding-left: 1rem;
+}
+
+.pr-responsive {
+  padding-right: 1rem;
+}
+
+/* Responsive Margin Classes */
+.m-responsive {
+  margin: 1rem;
+}
+
+.mx-responsive {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.my-responsive {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mt-responsive {
+  margin-top: 1rem;
+}
+
+.mb-responsive {
+  margin-bottom: 1rem;
+}
+
+.ml-responsive {
+  margin-left: 1rem;
+}
+
+.mr-responsive {
+  margin-right: 1rem;
+}
+
+/* Responsive Text Classes */
+.text-responsive-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.text-responsive-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-responsive-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.text-responsive-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-responsive-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.text-responsive-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-responsive-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.text-responsive-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+/* Responsive Gap Classes */
+.gap-responsive {
+  gap: 1rem;
+}
+
+.gap-responsive-sm {
+  gap: 0.5rem;
+}
+
+.gap-responsive-md {
+  gap: 1rem;
+}
+
+.gap-responsive-lg {
+  gap: 1.5rem;
+}
+
+.gap-responsive-xl {
+  gap: 2rem;
+}
+
+/* Responsive media queries */
+@media (min-width: 640px) {
+  .p-responsive {
+    padding: 1.5rem;
+  }
+  
+  .px-responsive {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .py-responsive {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  .pt-responsive {
+    padding-top: 1.5rem;
+  }
+  
+  .pb-responsive {
+    padding-bottom: 1.5rem;
+  }
+  
+  .pl-responsive {
+    padding-left: 1.5rem;
+  }
+  
+  .pr-responsive {
+    padding-right: 1.5rem;
+  }
+  
+  .m-responsive {
+    margin: 1.5rem;
+  }
+  
+  .mx-responsive {
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+  }
+  
+  .my-responsive {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .mt-responsive {
+    margin-top: 1.5rem;
+  }
+  
+  .mb-responsive {
+    margin-bottom: 1.5rem;
+  }
+  
+  .ml-responsive {
+    margin-left: 1.5rem;
+  }
+  
+  .mr-responsive {
+    margin-right: 1.5rem;
+  }
+  
+  .gap-responsive {
+    gap: 1.5rem;
+  }
+  
+  .gap-responsive-sm {
+    gap: 0.75rem;
+  }
+  
+  .gap-responsive-md {
+    gap: 1.5rem;
+  }
+  
+  .gap-responsive-lg {
+    gap: 2rem;
+  }
+  
+  .gap-responsive-xl {
+    gap: 2.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .p-responsive {
+    padding: 2rem;
+  }
+  
+  .px-responsive {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  
+  .py-responsive {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  .pt-responsive {
+    padding-top: 2rem;
+  }
+  
+  .pb-responsive {
+    padding-bottom: 2rem;
+  }
+  
+  .pl-responsive {
+    padding-left: 2rem;
+  }
+  
+  .pr-responsive {
+    padding-right: 2rem;
+  }
+  
+  .m-responsive {
+    margin: 2rem;
+  }
+  
+  .mx-responsive {
+    margin-left: 2rem;
+    margin-right: 2rem;
+  }
+  
+  .my-responsive {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .mt-responsive {
+    margin-top: 2rem;
+  }
+  
+  .mb-responsive {
+    margin-bottom: 2rem;
+  }
+  
+  .ml-responsive {
+    margin-left: 2rem;
+  }
+  
+  .mr-responsive {
+    margin-right: 2rem;
+  }
+  
+  .text-responsive-xs {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .text-responsive-sm {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+  
+  .text-responsive-base {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  
+  .text-responsive-lg {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  
+  .text-responsive-xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .text-responsive-2xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+  
+  .text-responsive-3xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+  
+  .text-responsive-4xl {
+    font-size: 2.5rem;
+    line-height: 2.75rem;
+  }
+  
+  .gap-responsive {
+    gap: 2rem;
+  }
+  
+  .gap-responsive-sm {
+    gap: 1rem;
+  }
+  
+  .gap-responsive-md {
+    gap: 2rem;
+  }
+  
+  .gap-responsive-lg {
+    gap: 2.5rem;
+  }
+  
+  .gap-responsive-xl {
+    gap: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .p-responsive {
+    padding: 2.5rem;
+  }
+  
+  .px-responsive {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+  
+  .py-responsive {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+  
+  .pt-responsive {
+    padding-top: 2.5rem;
+  }
+  
+  .pb-responsive {
+    padding-bottom: 2.5rem;
+  }
+  
+  .pl-responsive {
+    padding-left: 2.5rem;
+  }
+  
+  .pr-responsive {
+    padding-right: 2.5rem;
+  }
+  
+  .m-responsive {
+    margin: 2.5rem;
+  }
+  
+  .mx-responsive {
+    margin-left: 2.5rem;
+    margin-right: 2.5rem;
+  }
+  
+  .my-responsive {
+    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+  
+  .mt-responsive {
+    margin-top: 2.5rem;
+  }
+  
+  .mb-responsive {
+    margin-bottom: 2.5rem;
+  }
+  
+  .ml-responsive {
+    margin-left: 2.5rem;
+  }
+  
+  .mr-responsive {
+    margin-right: 2.5rem;
+  }
+  
+  .gap-responsive {
+    gap: 2.5rem;
+  }
+  
+  .gap-responsive-sm {
+    gap: 1.25rem;
+  }
+  
+  .gap-responsive-md {
+    gap: 2.5rem;
+  }
+  
+  .gap-responsive-lg {
+    gap: 3rem;
+  }
+  
+  .gap-responsive-xl {
+    gap: 3.5rem;
+  }
+} 

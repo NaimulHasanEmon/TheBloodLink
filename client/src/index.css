@@ -1,3 +1,5 @@
+/* Import custom styles */
+@import './styles/animations.css';
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Merriweather:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap');
 
@@ -8,16 +10,43 @@
 @layer base {
   html {
     font-family: 'Exo 2', sans-serif;
+    scroll-behavior: smooth;
   }
   
   body {
     @apply bg-gray-50 text-gray-800;
     font-family: 'Exo 2', sans-serif;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Exo 2', sans-serif;
     @apply font-bold;
+  }
+  
+  /* Improve focus styles for accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+  }
+  
+  /* Improve scrollbar for desktop */
+  @media (min-width: 768px) {
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      @apply bg-gray-100;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      @apply bg-primary/50 rounded-full;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      @apply bg-primary;
+    }
   }
 }
 

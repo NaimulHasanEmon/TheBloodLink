@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
-import axios from "axios";
 import { 
   FaUser, 
   FaEnvelope, 
@@ -31,6 +30,10 @@ import { toast } from "react-hot-toast";
 import './calendar.css'; // We'll create this file next
 import React from "react";
 import { bangladeshData } from "../../data/bangladeshData";
+import { getDonorByUid, createDonor, updateDonor } from "../../utils/api";
+
+// Get API URL from environment variables
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const Dashboard = () => {
   const { user, updateUserProfile } = useContext(AuthContext);
@@ -53,6 +56,7 @@ const Dashboard = () => {
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [fetchError, setFetchError] = useState(false);
 
   // Custom date picker state
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -71,72 +75,37 @@ const Dashboard = () => {
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   
-  // Fetch donor data
-  const fetchDonorData = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/donors/profile`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      
-      if (response.data.success) {
-        const donorData = response.data.data;
-        
-        // Format the date for display
-        let formattedDate = null;
-        if (donorData.lastDonationDate) {
-          const date = new Date(donorData.lastDonationDate);
-          date.setHours(12, 0, 0, 0); // Set to noon to avoid timezone issues
-          formattedDate = date.toISOString().split('T')[0];
-          
-          // Set the current date for the calendar
-          setCurrentDate(date);
-        }
-        
-        setFormData({
-          name: donorData.name || "",
-          email: donorData.email || "",
-          phone: donorData.phone || "",
-          bloodGroup: donorData.bloodGroup || "",
-          division: donorData.division || "",
-          district: donorData.district || "",
-          upazila: donorData.upazila || "",
-          address: donorData.address || "",
-          lastDonationDate: formattedDate || "",
-          profileImage: donorData.profileImage || "",
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching donor data:", error);
-      toast.error("Failed to load your profile data");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch donor data on component mount
-  useEffect(() => {
-    if (user) {
-      fetchDonorData();
-    }
-  }, [user]);
-
-  // Set districts and upazilas based on initial form data
+  // Update districts when division changes
   useEffect(() => {
     if (formData.division) {
       const selectedDivision = bangladeshData.divisions.find(div => div.name === formData.division);
       if (selectedDivision) {
         setDistricts(selectedDivision.districts);
-        
-        if (formData.district) {
-          const selectedDistrict = selectedDivision.districts.find(dist => dist.name === formData.district);
-          if (selectedDistrict) {
-            setUpazilas(selectedDistrict.upazilas);
-          }
+        if (!selectedDivision.districts.find(dist => dist.name === formData.district)) {
+          setFormData(prev => ({ ...prev, district: '', upazila: '' }));
+          setUpazilas([]);
         }
       }
+    } else {
+      setDistricts([]);
+      setFormData(prev => ({ ...prev, district: '', upazila: '' }));
+      setUpazilas([]);
+    }
+  }, [formData.division]);
+  
+  // Update upazilas when district changes
+  useEffect(() => {
+    if (formData.district && districts.length > 0) {
+      const selectedDistrict = districts.find(dist => dist.name === formData.district);
+      if (selectedDistrict) {
+        setUpazilas(selectedDistrict.upazilas);
+        if (!selectedDistrict.upazilas.includes(formData.upazila)) {
+          setFormData(prev => ({ ...prev, upazila: '' }));
+        }
+      }
+    } else {
+      setUpazilas([]);
+      setFormData(prev => ({ ...prev, upazila: '' }));
     }
   }, [formData.division, formData.district]);
 
@@ -145,7 +114,8 @@ const Dashboard = () => {
       if (user) {
         try {
           console.log("Fetching donor data for user:", user.uid);
-          const response = await axios.get(`http://localhost:5000/donors/user/${user.uid}`);
+          setFetchError(false);
+          const response = await getDonorByUid(user.uid);
           console.log("Donor data response:", response.data);
           
           setDonor(response.data);
@@ -171,6 +141,7 @@ const Dashboard = () => {
           });
         } catch (error) {
           console.error("Error fetching donor data:", error);
+          setFetchError(true);
           
           if (error.response && error.response.status === 404) {
             console.log("Donor not found, using user data");
@@ -192,7 +163,7 @@ const Dashboard = () => {
             if (user.providerData && user.providerData[0]?.providerId !== 'password') {
               console.log("Social login detected, creating basic donor profile");
               try {
-                const response = await axios.post("http://localhost:5000/donors", {
+                const response = await createDonor({
                   name: user.displayName || "Anonymous User",
                   email: user.email || "",
                   uid: user.uid,
@@ -204,8 +175,9 @@ const Dashboard = () => {
                 
                 if (response.data && response.data.acknowledged) {
                   // Fetch the newly created donor
-                  const newDonorResponse = await axios.get(`http://localhost:5000/donors/user/${user.uid}`);
+                  const newDonorResponse = await getDonorByUid(user.uid);
                   setDonor(newDonorResponse.data);
+                  setFetchError(false);
                 }
               } catch (createError) {
                 console.error("Error auto-creating donor profile:", createError);
@@ -213,8 +185,8 @@ const Dashboard = () => {
               }
             }
           } else {
-            // For other errors, show a toast
-            toast.error("Failed to fetch donor data. Please try again later.");
+            // For other errors, show a toast only once
+            toast.error("Failed to load your profile data. Please try again later.");
           }
         } finally {
           setLoading(false);
@@ -303,11 +275,7 @@ const Dashboard = () => {
           console.log("Updating donor with ID:", donor._id);
           console.log("Update data:", updatedData);
           
-          const response = await axios.put(`http://localhost:5000/donors/${donor._id}`, {
-            ...updatedData,
-            uid: user.uid,
-            updatedAt: new Date()
-          });
+          const response = await updateDonor(donor._id, updatedData);
           
           console.log("MongoDB update response:", response.data);
           
@@ -337,7 +305,7 @@ const Dashboard = () => {
             updatedData.email = user.email || "";
           }
           
-          const response = await axios.post("http://localhost:5000/donors", {
+          const response = await createDonor({
             ...updatedData,
             uid: user.uid,
             createdAt: new Date()
@@ -360,7 +328,7 @@ const Dashboard = () => {
       
       // Refresh donor data
       try {
-        const response = await axios.get(`http://localhost:5000/donors/user/${user.uid}`);
+        const response = await getDonorByUid(user.uid);
         setDonor(response.data);
       } catch (error) {
         console.error("Error refreshing donor data:", error);

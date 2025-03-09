@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
-import axios from "axios";
 import {
   FaHandHoldingHeart,
   FaSearch,
@@ -16,6 +15,7 @@ import {
   FaTint
 } from "react-icons/fa";
 import { GiHeartOrgan, GiHealthNormal } from "react-icons/gi";
+import { getDonors, getDonorByUid } from "../../utils/api";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -31,7 +31,7 @@ const Home = () => {
   useEffect(() => {
     const fetchDonors = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/donors");
+        const response = await getDonors();
         setDonors(response.data.slice(0, 6)); // Get first 6 donors for display
         setLoading(false);
 
@@ -46,11 +46,10 @@ const Home = () => {
         // Check if logged-in user is already a donor
         if (user) {
           try {
-            const userDonorResponse = await axios.get(`http://localhost:5000/donors/user/${user.uid}`);
+            const userDonorResponse = await getDonorByUid(user.uid);
             setUserDonor(userDonorResponse.data);
           } catch (error) {
-            // User is not a donor yet
-            setUserDonor(null);
+            console.log("User is not a donor yet");
           }
         }
       } catch (error) {
@@ -74,7 +73,7 @@ const Home = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [user]);
 
   // Blood group data for the blood type section
   const bloodGroups = [

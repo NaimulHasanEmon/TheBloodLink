@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { FaSearch, FaTint, FaMapMarkerAlt, FaPhone, FaEnvelope, FaSpinner, FaArrowRight, FaUser, FaInfoCircle, FaCalendarAlt } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { bangladeshData } from '../../data/bangladeshData';
+import { searchDonors } from '../../utils/api';
 import './findblood.css'; // Import custom CSS for animations
 
 const FindBlood = () => {
@@ -49,14 +49,13 @@ const FindBlood = () => {
   
   // Update upazilas when district changes
   useEffect(() => {
-    if (district) {
+    if (district && districts.length > 0) {
       const selectedDistrict = districts.find(dist => dist.name === district);
       if (selectedDistrict) {
         setUpazilas(selectedDistrict.upazilas);
-        setUpazila('');
+      } else {
+        setUpazilas([]);
       }
-    } else {
-      setUpazilas([]);
       setUpazila('');
     }
   }, [district, districts]);
@@ -75,7 +74,7 @@ const FindBlood = () => {
       if (district) params.district = district;
       if (upazila) params.upazila = upazila;
       
-      const response = await axios.get('http://localhost:5000/search', { params });
+      const response = await searchDonors(params);
       setDonors(response.data);
       
       if (response.data.length === 0) {
