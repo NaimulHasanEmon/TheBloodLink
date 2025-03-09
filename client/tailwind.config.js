@@ -18,8 +18,11 @@ export default {
         "donor-light": "#BEE3F8",
       },
       fontFamily: {
-        sans: ['Poppins', 'sans-serif'],
-        serif: ['Merriweather', 'serif'],
+        sans: ['Exo 2', 'sans-serif'],
+        serif: ['Exo 2', 'serif'],
+        mono: ['Exo 2', 'monospace'],
+        display: ['Exo 2', 'sans-serif'],
+        body: ['Exo 2', 'sans-serif'],
       },
       boxShadow: {
         'card': '0 4px 6px -1px rgba(229, 62, 62, 0.1), 0 2px 4px -1px rgba(229, 62, 62, 0.06)',
@@ -30,6 +33,7 @@ export default {
         'bounce-slow': 'bounce 2s infinite',
         'float': 'float 6s ease-in-out infinite',
         'beat': 'beat 1.5s ease-out infinite',
+        'spin-slow': 'spin 3s linear infinite',
       },
       keyframes: {
         float: {

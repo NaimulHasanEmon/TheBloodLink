@@ -2,10 +2,11 @@ import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import toast from "react-hot-toast";
-import { FaEnvelope, FaLock, FaSignInAlt, FaUserPlus, FaArrowLeft, FaGoogle, FaFacebookF, FaTwitter } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaSignInAlt, FaUserPlus, FaArrowLeft, FaFacebookF } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 const Login = () => {
-  const { logIn } = useContext(AuthContext);
+  const { logIn, signInWithGoogle, signInWithFacebook, signInWithTwitter } = useContext(AuthContext);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -30,6 +31,63 @@ const Login = () => {
       console.log(error);
       setError(error.message);
       toast.error("Login failed. Please check your credentials.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setError("");
+    
+    try {
+      const result = await signInWithGoogle();
+      const user = result.user;
+      console.log(user);
+      toast.success("Successfully logged in with Google!");
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
+      toast.error("Failed to login with Google.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFacebookLogin = async () => {
+    setLoading(true);
+    setError("");
+    
+    try {
+      const result = await signInWithFacebook();
+      const user = result.user;
+      console.log(user);
+      toast.success("Successfully logged in with Facebook!");
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
+      toast.error("Failed to login with Facebook.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTwitterLogin = async () => {
+    setLoading(true);
+    setError("");
+    
+    try {
+      const result = await signInWithTwitter();
+      const user = result.user;
+      console.log(user);
+      toast.success("Successfully logged in with X!");
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
+      toast.error("Failed to login with X.");
     } finally {
       setLoading(false);
     }
@@ -93,7 +151,7 @@ const Login = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="your.email@example.com"
-                      className="w-full px-4 py-3 rounded-r-md border border-l-0 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full px-4 py-3 rounded-r-md border bg-slate-200 border-l-0 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       required
                     />
                   </div>
@@ -118,7 +176,7 @@ const Login = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full px-4 py-3 rounded-r-md border border-l-0 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full px-4 py-3 rounded-r-md border border-l-0 bg-slate-200 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       required
                     />
                   </div>
@@ -162,28 +220,36 @@ const Login = () => {
                 </div>
                 
                 <div className="flex justify-center gap-6 mt-6">
+                  {/* Google Button */}
                   <button 
                     type="button" 
-                    className="w-14 h-14 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition-all duration-300 bg-white border border-gray-200 hover:-translate-y-1"
-                    onClick={() => toast.success("Google login feature coming soon!")}
+                    className="w-14 h-14 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white"
+                    onClick={handleGoogleLogin}
                   >
-                    <FaGoogle className="text-[#4285F4] text-2xl" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48">
+                      <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                      <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
+                      <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
+                      <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                    </svg>
                   </button>
                   
+                  {/* Facebook Button */}
                   <button 
                     type="button" 
-                    className="w-14 h-14 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition-all duration-300 bg-white border border-gray-200 hover:-translate-y-1"
-                    onClick={() => toast.success("Facebook login feature coming soon!")}
+                    className="w-14 h-14 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-[#1877F2]"
+                    onClick={handleFacebookLogin}
                   >
-                    <FaFacebookF className="text-[#1877F2] text-2xl" />
+                    <FaFacebookF className="text-white text-2xl" />
                   </button>
                   
+                  {/* X Button */}
                   <button 
                     type="button" 
-                    className="w-14 h-14 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition-all duration-300 bg-white border border-gray-200 hover:-translate-y-1"
-                    onClick={() => toast.success("X (Twitter) login feature coming soon!")}
+                    className="w-14 h-14 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-black"
+                    onClick={handleTwitterLogin}
                   >
-                    <FaTwitter className="text-[#1DA1F2] text-2xl" />
+                    <FaXTwitter className="text-white text-2xl" />
                   </button>
                 </div>
               </div>

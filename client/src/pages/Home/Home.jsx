@@ -155,24 +155,40 @@ const Home = () => {
           
           {/* Action Buttons - Horizontal placement above Life-Saving Impact section */}
           <div className='flex justify-center gap-5 mb-8'>
-            {/* Donor Button */}
-            <Link 
-              to='/signup' 
-              className='relative overflow-hidden btn-primary px-8 py-4 rounded-full inline-flex items-center gap-3 shadow-lg group'
-            >
-              <span className='absolute inset-0 bg-gradient-to-r from-red-600 to-primary transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500'></span>
-              <FaHandHoldingHeart size={24} className='relative z-10 group-hover:rotate-12 transition-transform duration-300' /> 
-              <span className='font-medium relative z-10'>Become a Donor</span>
-            </Link>
-            
-            {/* Find Blood Button */}
+            {/* Find Blood Button - Now with enhanced hover animation */}
             <Link 
               to='/login' 
-              className='relative overflow-hidden btn-outline px-8 py-4 rounded-full inline-flex items-center gap-3 border-2 border-primary/70 group hover:border-primary'
+              className='group relative overflow-hidden btn-primary px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:-translate-y-1 bg-gradient-to-r from-red-600 to-primary w-64'
+            >
+              {/* Pulsing background effect */}
+              <span className='absolute inset-0 bg-gradient-to-r from-red-700 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500'></span>
+              
+              {/* Animated particles */}
+              <span className='absolute inset-0 overflow-hidden rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+                <span className='absolute top-0 left-1/4 w-2 h-2 bg-white rounded-full animate-float-up'></span>
+                <span className='absolute top-0 left-1/2 w-1.5 h-1.5 bg-white rounded-full animate-float-up' style={{animationDelay: '0.3s'}}></span>
+                <span className='absolute top-0 left-3/4 w-2 h-2 bg-white rounded-full animate-float-up' style={{animationDelay: '0.5s'}}></span>
+                <span className='absolute top-0 right-1/4 w-1.5 h-1.5 bg-white rounded-full animate-float-up' style={{animationDelay: '0.7s'}}></span>
+              </span>
+              
+              {/* Icon with enhanced animation */}
+              <FaSearch size={24} className='text-white relative z-10 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500' /> 
+              
+              {/* Text with glow effect */}
+              <span className='font-medium relative z-10 text-white group-hover:text-white group-hover:font-bold transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]'>Find Blood</span>
+              
+              {/* Animated border */}
+              <span className='absolute inset-0 border-2 border-white/0 rounded-full group-hover:border-white/20 group-hover:scale-105 transition-all duration-500'></span>
+            </Link>
+            
+            {/* Donor Button - Now on the right and less prominent */}
+            <Link 
+              to='/signup' 
+              className='relative overflow-hidden btn-outline px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 border-2 border-primary/70 group hover:border-primary w-64'
             >
               <span className='absolute inset-0 bg-red-50 transform scale-x-0 origin-right group-hover:scale-x-100 transition-transform duration-500'></span>
-              <FaSearch size={24} className='text-primary relative z-10 group-hover:scale-110 group-hover:text-red-700 transition-all duration-300' /> 
-              <span className='font-medium relative z-10 group-hover:text-red-700 transition-colors duration-300'>Find Blood</span>
+              <FaHandHoldingHeart size={24} className='text-primary relative z-10 group-hover:scale-110 group-hover:text-red-700 transition-all duration-300' /> 
+              <span className='font-medium relative z-10 group-hover:text-red-700 transition-colors duration-300'>Become a Donor</span>
             </Link>
           </div>
           
@@ -529,15 +545,52 @@ const Home = () => {
             <div className='flex flex-wrap justify-center gap-4'>
               <Link
                 to='/signup'
-                className='btn bg-white text-primary hover:bg-gray-100 px-6 py-3 rounded-full inline-flex items-center gap-2'
+                className='group relative overflow-hidden btn bg-white text-primary px-6 py-3 rounded-full inline-flex items-center gap-2 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white'
               >
-                <FaHandHoldingHeart size={20} /> Register as Donor
+                {/* Animated background */}
+                <span className='absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/20 transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500'></span>
+                
+                {/* Animated icon */}
+                <span className='relative z-10 bg-primary text-white p-1.5 rounded-full transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300'>
+                  <FaHandHoldingHeart size={16} className='group-hover:animate-pulse' />
+                </span>
+                
+                {/* Text with underline animation */}
+                <span className='font-medium relative z-10'>
+                  Register as Donor
+                  <span className='absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-500'></span>
+                </span>
+                
+                {/* Animated shine effect */}
+                <span className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+                  <span className='absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000'></span>
+                </span>
               </Link>
               <Link
                 to='/login'
-                className='btn border-2 border-white text-white hover:bg-white/10 px-6 py-3 rounded-full inline-flex items-center gap-2'
+                className='group relative overflow-hidden btn border-2 border-white text-white px-6 py-3 rounded-full inline-flex items-center gap-2 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1'
               >
-                <FaSearch size={20} /> Find Blood
+                {/* Ripple effect background */}
+                <span className='absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-colors duration-300'></span>
+                
+                {/* Animated circles */}
+                <span className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 overflow-hidden'>
+                  <span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0 h-0 rounded-full border-2 border-white/30 group-hover:w-[150%] group-hover:h-[150%] transition-all duration-700'></span>
+                  <span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0 h-0 rounded-full border-2 border-white/20 group-hover:w-[200%] group-hover:h-[200%] transition-all duration-1000 delay-100'></span>
+                </span>
+                
+                {/* Animated icon */}
+                <span className='relative z-10 bg-white/20 text-white p-1.5 rounded-full backdrop-blur-sm transform group-hover:scale-110 group-hover:bg-white/30 transition-all duration-300'>
+                  <FaSearch size={16} className='group-hover:animate-spin-slow' />
+                </span>
+                
+                {/* Text with glow effect */}
+                <span className='font-medium relative z-10 group-hover:text-white group-hover:font-bold transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]'>
+                  Find Blood
+                </span>
+                
+                {/* Border flash effect */}
+                <span className='absolute inset-0 border-2 border-white/0 rounded-full group-hover:border-white/40 group-hover:scale-105 transition-all duration-500'></span>
               </Link>
             </div>
           </div>

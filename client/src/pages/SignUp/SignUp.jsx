@@ -82,16 +82,16 @@ const SignUp = () => {
                 </Link>
               </div>
 
-              <form onSubmit={handleSignUp} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Name */}
                   <div className="form-group">
                     <label className="form-label" htmlFor="name">
                       Full Name
                     </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FaUser className="text-gray-400" />
+                    <div className="flex h-[46px]">
+                      <div className="w-12 h-full flex items-center justify-center bg-gray-100 rounded-l-md border border-gray-300">
+                        <FaUser className="text-gray-500 text-xl" />
                       </div>
                       <input
                         type="text"
@@ -100,7 +100,7 @@ const SignUp = () => {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="John Doe"
-                        className="form-input pl-10"
+                        className="w-full h-full px-4 rounded-r-md border border-l-0 bg-slate-200 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                         required
                       />
                     </div>
@@ -111,9 +111,9 @@ const SignUp = () => {
                     <label className="form-label" htmlFor="email">
                       Email Address
                     </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FaEnvelope className="text-gray-400" />
+                    <div className="flex h-[46px]">
+                      <div className="w-12 h-full flex items-center justify-center bg-gray-100 rounded-l-md border border-gray-300">
+                        <FaEnvelope className="text-gray-500 text-xl" />
                       </div>
                       <input
                         type="email"
@@ -122,7 +122,7 @@ const SignUp = () => {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="john.doe@example.com"
-                        className="form-input pl-10"
+                        className="w-full h-full px-4 rounded-r-md border border-l-0 bg-slate-200 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                         required
                       />
                     </div>
@@ -133,9 +133,9 @@ const SignUp = () => {
                     <label className="form-label" htmlFor="password">
                       Password
                     </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FaLock className="text-gray-400" />
+                    <div className="flex h-[46px]">
+                      <div className="w-12 h-full flex items-center justify-center bg-gray-100 rounded-l-md border border-gray-300">
+                        <FaLock className="text-gray-500 text-xl" />
                       </div>
                       <input
                         type="password"
@@ -144,7 +144,7 @@ const SignUp = () => {
                         value={formData.password}
                         onChange={handleChange}
                         placeholder="••••••••"
-                        className="form-input pl-10"
+                        className="w-full h-full px-4 rounded-r-md border border-l-0 bg-slate-200 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                         required
                       />
                     </div>
@@ -158,16 +158,16 @@ const SignUp = () => {
                     <label className="form-label" htmlFor="bloodGroup">
                       Blood Group
                     </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FaTint className="text-gray-400" />
+                    <div className="flex h-[46px]">
+                      <div className="w-12 h-full flex items-center justify-center bg-gray-100 rounded-l-md border border-gray-300">
+                        <FaTint className="text-gray-500 text-xl" />
                       </div>
                       <select
                         id="bloodGroup"
                         name="bloodGroup"
                         value={formData.bloodGroup}
                         onChange={handleChange}
-                        className="form-input pl-10 appearance-none"
+                        className="w-full h-full px-4 rounded-r-md border border-l-0 bg-slate-200 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none"
                         required
                       >
                         <option value="">Select Blood Group</option>
@@ -185,9 +185,12 @@ const SignUp = () => {
                     <label className="form-label" htmlFor="phone">
                       Phone Number
                     </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FaPhoneAlt className="text-gray-400" />
+                    <div className="flex h-[46px]">
+                      <div className="w-12 h-full flex items-center justify-center bg-gray-100 rounded-l-md border border-gray-300">
+                        <FaPhoneAlt className="text-gray-500 text-xl" />
+                      </div>
+                      <div className="flex-shrink-0 h-full flex items-center justify-center bg-gray-200 px-3 border border-l-0 border-r-0 border-gray-300 font-medium text-gray-600">
+                        +880
                       </div>
                       <input
                         type="tel"
@@ -195,21 +198,24 @@ const SignUp = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="+1 (123) 456-7890"
-                        className="form-input pl-10"
+                        placeholder="1XXXXXXXXX"
+                        className="w-full h-full px-4 rounded-r-md border border-l-0 bg-slate-200 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                         required
                       />
                     </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Enter your 10-digit number without leading zero
+                    </p>
                   </div>
 
                   {/* Address */}
-                  <div className="form-group md:col-span-2">
+                  <div className="form-group">
                     <label className="form-label" htmlFor="address">
                       Address
                     </label>
-                    <div className="relative">
-                      <div className="absolute top-3 left-3 pointer-events-none">
-                        <FaMapMarkerAlt className="text-gray-400" />
+                    <div className="flex h-[106px]">
+                      <div className="w-12 h-full flex items-start justify-center pt-3 bg-gray-100 rounded-l-md border border-gray-300">
+                        <FaMapMarkerAlt className="text-gray-500 text-xl" />
                       </div>
                       <textarea
                         id="address"
@@ -217,7 +223,7 @@ const SignUp = () => {
                         value={formData.address}
                         onChange={handleChange}
                         placeholder="Your full address"
-                        className="form-input pl-10 h-24 resize-none"
+                        className="w-full px-4 py-3 rounded-r-md border border-l-0 bg-slate-200 border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none h-full"
                         required
                       ></textarea>
                     </div>

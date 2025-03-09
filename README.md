@@ -47,10 +47,10 @@ The project is divided into two main parts:
 ### Installation
 
 1. Clone the repository:
-```
-git clone https://github.com/yourusername/the-blood-link.git
-cd the-blood-link
-```
+   ```
+   git clone https://github.com/yourusername/the-blood-link.git
+   cd the-blood-link
+   ```
 
 2. Install dependencies for both client and server:
 ```
@@ -90,7 +90,7 @@ npm run server
 npm run client
 ```
 
-5. Open your browser and navigate to `http://localhost:3000` to see the application.
+5. Open your browser and navigate to `http://localhost:5173` to see the application.
 
 ## Environment Variables
 
