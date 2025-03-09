@@ -495,6 +495,15 @@ const Dashboard = () => {
       days.push(<div key={`empty-${i}`} className="calendar-day empty"></div>);
     }
     
+    // Add this new function to render the blood drop icon for selected date
+    const renderBloodDropIcon = () => {
+      return (
+        <div className="blood-drop-icon">
+          <FaTint className="text-white opacity-75" />
+        </div>
+      );
+    };
+    
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
@@ -508,6 +517,7 @@ const Dashboard = () => {
         >
           <span className="day-number">{day}</span>
           {isToday(date) && <div className="today-marker"></div>}
+          {isSelectedDate(date) && renderBloodDropIcon()}
         </div>
       );
     }

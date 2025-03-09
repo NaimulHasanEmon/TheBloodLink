@@ -157,9 +157,32 @@
 }
 
 .calendar-day.selected {
-  background: #FEE2E2;
-  color: #EF4444;
-  font-weight: 600;
+  position: relative;
+  background-color: var(--primary-color, #f88787);
+  color: rgb(244, 22, 22);
+  font-weight: bold;
+  z-index: 1;
+}
+
+.blood-drop-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blood-drop-icon .text-white {
+  opacity: 0.3;
+}
+
+.calendar-day.selected .day-number {
+  position: relative;
+  z-index: 2;
 }
 
 /* Day Number */
@@ -189,10 +212,6 @@
   justify-content: center;
   color: #EF4444;
   opacity: 0.2;
-}
-
-.blood-drop-icon {
-  font-size: 1.5rem;
 }
 
 /* Year and Month Selectors */
