@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
-import { FaUserCircle, FaBars, FaTimes, FaHeart, FaHandHoldingHeart, FaChevronRight } from "react-icons/fa";
+import { FaUserCircle, FaBars, FaTimes, FaHeart, FaHandHoldingHeart, FaChevronRight, FaTint } from "react-icons/fa";
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
@@ -54,6 +54,15 @@ const Navbar = () => {
           className={`navbar-link group flex items-center gap-1 ${isActive("/") ? "text-primary after:w-full" : ""}`}
         >
           <span className="group-hover:animate-beat inline-block">Home</span>
+        </Link>
+      </li>
+      <li>
+        <Link 
+          to="/find-blood" 
+          className={`navbar-link group flex items-center gap-1 ${isActive("/find-blood") ? "text-primary after:w-full" : ""}`}
+        >
+          <FaTint className="group-hover:animate-beat" />
+          <span>Find Blood</span>
         </Link>
       </li>
       {user ? (
@@ -128,12 +137,41 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:block">
-            <ul className="flex items-center space-x-6">
-              {navItems}
-            </ul>
-          </nav>
+          {/* Desktop Navigation - Always on the right */}
+          <div className="hidden md:flex items-center justify-end flex-1">
+            <nav>
+              <ul className="flex items-center space-x-6">
+                {navItems}
+              </ul>
+            </nav>
+            
+            {/* User Avatar (if logged in) - Now part of the right-side navigation */}
+            {user && (
+              <div className="flex items-center ml-4">
+                <Link to="/dashboard" className="relative group">
+                  <div className="avatar transition-all duration-300 group-hover:ring-2 group-hover:ring-primary rounded-full">
+                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
+                      {user.photoURL ? (
+                        <img 
+                          src={user.photoURL} 
+                          alt={user.displayName || "User"} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <FaUserCircle className="w-full h-full text-gray-400" />
+                      )}
+                    </div>
+                  </div>
+                  <div className="absolute -bottom-2 -right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:translate-y-0 translate-y-1 transition-all duration-300">
+                    <FaChevronRight className="text-white text-xs" />
+                  </div>
+                  <span className="absolute top-full mt-1 right-0 bg-white text-primary text-xs font-medium py-1 px-2 rounded shadow-md opacity-0 group-hover:opacity-100 whitespace-nowrap">
+                    View Dashboard
+                  </span>
+                </Link>
+              </div>
+            )}
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -142,38 +180,11 @@ const Navbar = () => {
           >
             {isMobileMenuOpen ? <FaTimes className="text-primary" /> : <FaBars />}
           </button>
-
-          {/* User Avatar (if logged in) */}
-          {user && (
-            <div className="hidden md:flex items-center ml-4">
-              <Link to="/dashboard" className="relative group">
-                <div className="avatar transition-all duration-300 group-hover:ring-2 group-hover:ring-primary rounded-full">
-                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
-                    {user.photoURL ? (
-                      <img 
-                        src={user.photoURL} 
-                        alt={user.displayName || "User"} 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <FaUserCircle className="w-full h-full text-gray-400" />
-                    )}
-                  </div>
-                </div>
-                <div className="absolute -bottom-2 -right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:translate-y-0 translate-y-1 transition-all duration-300">
-                  <FaChevronRight className="text-white text-xs" />
-                </div>
-                <span className="absolute top-full mt-1 right-0 bg-white text-primary text-xs font-medium py-1 px-2 rounded shadow-md opacity-0 group-hover:opacity-100 whitespace-nowrap">
-                  View Dashboard
-                </span>
-              </Link>
-            </div>
-          )}
         </div>
 
         {/* Mobile Navigation */}
         <div
-          className={`md:hidden absolute left-0 right-0 bg-white shadow-lg transition-all duration-300 overflow-hidden ${
+          className={`md:hidden absolute left-0 right-0 bg-white shadow-lg transition-all duration-300 overflow-hidden z-50 ${
             isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
           }`}
         >

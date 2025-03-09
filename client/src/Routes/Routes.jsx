@@ -6,6 +6,7 @@ import SignUp from "../pages/SignUp/SignUp";
 import Error from "../pages/Error/Error";
 import CheckOut from "../pages/CheckOut/CheckOut";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import FindBlood from "../pages/FindBlood/FindBlood";
 import PrivateRoute from "./PrivateRoute";
 
 const router = createBrowserRouter([
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: "signup",
         element: <SignUp />,
+      },
+      {
+        path: "find-blood",
+        element: <FindBlood />,
       },
       {
         path: "dashboard",

@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection URI from environment variables
-const uri = process.env.MONGODB_URI || `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.apvf8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = process.env.MONGODB_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -23,68 +23,148 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
+    // Connect the client to the server
     await client.connect();
 
-    const donorsCollection = client.db("bloodLink").collection("donors");
+    // Get reference to the database and collections
+    const db = client.db("bloodLink");
+    const donorsCollection = db.collection("donors");
 
     // Get all donors
     app.get("/donors", async (req, res) => {
-      const cursor = donorsCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
+      try {
+        const cursor = donorsCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+      } catch (error) {
+        console.error("Error fetching donors:", error);
+        res.status(500).send({ error: "Failed to fetch donors" });
+      }
     });
 
     // Get donor by ID
     app.get('/donors/:id', async(req, res) => {
+      try {
         const id = req.params.id;
-        const query = {_id: new ObjectId(id)}
-        const result = await donorsCollection.findOne(query)
+        const query = {_id: new ObjectId(id)};
+        const result = await donorsCollection.findOne(query);
+        
+        if (!result) {
+          return res.status(404).send({ error: "Donor not found" });
+        }
+        
         res.send(result);
+      } catch (error) {
+        console.error("Error fetching donor by ID:", error);
+        res.status(500).send({ error: "Failed to fetch donor" });
+      }
     });
 
     // Get donor by UID
     app.get('/donors/user/:uid', async(req, res) => {
+      try {
         const uid = req.params.uid;
-        const query = {uid: uid}
-        const result = await donorsCollection.findOne(query)
+        
+        if (!uid) {
+          return res.status(400).send({ error: "User ID (uid) is required" });
+        }
+        
+        console.log("Fetching donor for UID:", uid);
+        const query = {uid: uid};
+        const result = await donorsCollection.findOne(query);
+        
+        if (!result) {
+          console.log("No donor found for UID:", uid);
+          return res.status(404).send({ error: "Donor not found" });
+        }
+        
+        console.log("Donor found:", result._id);
         res.send(result);
+      } catch (error) {
+        console.error("Error fetching donor by UID:", error);
+        res.status(500).send({ error: "Failed to fetch donor", details: error.message });
+      }
     });
 
     // Create a new donor
     app.post('/donors', async(req, res) => {
+      try {
         const donor = req.body;
+        
+        // Validate required fields
+        if (!donor.uid) {
+          return res.status(400).send({ error: "User ID (uid) is required" });
+        }
+        
+        // Check if donor with this uid already exists
+        const existingDonor = await donorsCollection.findOne({ uid: donor.uid });
+        if (existingDonor) {
+          return res.status(409).send({ 
+            error: "Donor with this user ID already exists",
+            donorId: existingDonor._id 
+          });
+        }
+        
+        // Ensure minimum required fields
+        if (!donor.name) {
+          donor.name = "Anonymous User";
+        }
+        
+        // Add timestamps
+        donor.createdAt = donor.createdAt || new Date();
+        donor.updatedAt = new Date();
+        
         const result = await donorsCollection.insertOne(donor);
-        res.send(result);
+        console.log("Donor created:", result);
+        res.status(201).send(result);
+      } catch (error) {
+        console.error("Error creating donor:", error);
+        res.status(500).send({ error: "Failed to create donor", details: error.message });
+      }
     });
 
     // Update donor
     app.put('/donors/:id', async(req, res) => {
+      try {
         const id = req.params.id;
         const filter = {_id: new ObjectId(id)};
-        const options = { upsert: true };
+        const options = { upsert: false }; // Changed to false to prevent accidental creation
         const updatedDonor = req.body;
-        const donor = {
-            $set: {
-                name: updatedDonor.name,
-                email: updatedDonor.email,
-                bloodGroup: updatedDonor.bloodGroup,
-                phone: updatedDonor.phone,
-                address: updatedDonor.address,
-                division: updatedDonor.division,
-                district: updatedDonor.district,
-                upazila: updatedDonor.upazila,
-                lastDonationDate: updatedDonor.lastDonationDate,
-                photoURL: updatedDonor.photoURL,
-                updatedAt: new Date()
-            }
+        
+        // Validate donor exists
+        const existingDonor = await donorsCollection.findOne(filter);
+        if (!existingDonor) {
+          return res.status(404).send({ error: "Donor not found" });
         }
+        
+        const donor = {
+          $set: {
+            name: updatedDonor.name || existingDonor.name,
+            email: updatedDonor.email || existingDonor.email,
+            bloodGroup: updatedDonor.bloodGroup || existingDonor.bloodGroup,
+            phone: updatedDonor.phone || existingDonor.phone,
+            address: updatedDonor.address || existingDonor.address,
+            division: updatedDonor.division || existingDonor.division,
+            district: updatedDonor.district || existingDonor.district,
+            upazila: updatedDonor.upazila || existingDonor.upazila,
+            lastDonationDate: updatedDonor.lastDonationDate || existingDonor.lastDonationDate,
+            photoURL: updatedDonor.photoURL || existingDonor.photoURL,
+            updatedAt: new Date()
+          }
+        };
+        
         const result = await donorsCollection.updateOne(filter, donor, options);
+        console.log("Donor updated:", result);
         res.send(result);
+      } catch (error) {
+        console.error("Error updating donor:", error);
+        res.status(500).send({ error: "Failed to update donor", details: error.message });
+      }
     });
 
     // Search donors
     app.get('/search', async (req, res) => {
+      try {
         const { division, district, upazila, bloodGroup } = req.query;
         
         const query = {};
@@ -96,18 +176,21 @@ async function run() {
         
         const donors = await donorsCollection.find(query).toArray();
         res.send(donors);
+      } catch (error) {
+        console.error("Error searching donors:", error);
+        res.status(500).send({ error: "Failed to search donors" });
+      }
     });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
-  } finally {
-    // Ensures that the client will close when you finish/error
-    // await client.close();
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+    // Keep the server running even if MongoDB connection fails
   }
 }
+
 run().catch(console.dir);
 
 app.get("/", (req, res) => {

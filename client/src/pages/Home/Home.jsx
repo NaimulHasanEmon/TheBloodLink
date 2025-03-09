@@ -172,7 +172,7 @@ const Home = () => {
           <div className='flex justify-center gap-5 mb-8'>
             {/* Find Blood Button - Now with enhanced hover animation */}
             <Link 
-              to='/login' 
+              to='/find-blood' 
               className='group relative overflow-hidden btn-primary px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:-translate-y-1 bg-gradient-to-r from-red-600 to-primary w-64'
             >
               {/* Pulsing background effect */}
@@ -187,7 +187,7 @@ const Home = () => {
               </span>
               
               {/* Icon with enhanced animation */}
-              <FaSearch size={24} className='text-white relative z-10 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500' /> 
+              <FaSearch size={20} className='text-white relative z-10 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500' /> 
               
               {/* Text with glow effect */}
               <span className='font-medium relative z-10 text-white group-hover:text-white group-hover:font-bold transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]'>Find Blood</span>
