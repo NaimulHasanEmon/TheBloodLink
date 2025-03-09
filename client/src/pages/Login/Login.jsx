@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import toast from "react-hot-toast";
@@ -6,7 +6,7 @@ import { FaEnvelope, FaLock, FaSignInAlt, FaUserPlus, FaArrowLeft, FaFacebookF }
 import { FaXTwitter } from "react-icons/fa6";
 
 const Login = () => {
-  const { logIn, signInWithGoogle, signInWithFacebook, signInWithTwitter } = useContext(AuthContext);
+  const { logIn, signInWithGoogle, signInWithFacebook, signInWithTwitter, user } = useContext(AuthContext);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -15,6 +15,13 @@ const Login = () => {
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/";
+
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (user) {
+      navigate(from, { replace: true });
+    }
+  }, [user, navigate, from]);
 
   const handleLogin = async (event) => {
     event.preventDefault();

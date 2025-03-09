@@ -1,12 +1,13 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { FaUser, FaEnvelope, FaLock, FaPhoneAlt, FaMapMarkerAlt, FaTint, FaArrowLeft, FaUserPlus, FaSignInAlt } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaPhoneAlt, FaMapMarkerAlt, FaTint, FaArrowLeft, FaUserPlus, FaSignInAlt, FaFacebookF } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 const SignUp = () => {
-  const { createUser } = useContext(AuthContext);
+  const { createUser, signInWithGoogle, signInWithFacebook, signInWithTwitter, user } = useContext(AuthContext);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -20,6 +21,13 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,6 +71,124 @@ const SignUp = () => {
       console.log(error);
       setError(error.message);
       toast.error("Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Social login handlers
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setError("");
+    
+    try {
+      const result = await signInWithGoogle();
+      const user = result.user;
+      
+      // Check if user already exists in database
+      try {
+        await axios.get(`http://localhost:5000/donors/user/${user.uid}`);
+        // If no error, user exists
+        toast.success("Welcome back! You're now signed in.");
+      } catch (error) {
+        // User doesn't exist, create new donor
+        const donorData = {
+          name: user.displayName || "",
+          email: user.email || "",
+          bloodGroup: "",
+          phone: "",
+          address: "",
+          uid: user.uid,
+          photoURL: user.photoURL || "",
+        };
+
+        await axios.post("http://localhost:5000/donors", donorData);
+        toast.success("Account created successfully with Google!");
+      }
+      
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
+      toast.error("Failed to sign up with Google.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFacebookLogin = async () => {
+    setLoading(true);
+    setError("");
+    
+    try {
+      const result = await signInWithFacebook();
+      const user = result.user;
+      
+      // Check if user already exists in database
+      try {
+        await axios.get(`http://localhost:5000/donors/user/${user.uid}`);
+        // If no error, user exists
+        toast.success("Welcome back! You're now signed in.");
+      } catch (error) {
+        // User doesn't exist, create new donor
+        const donorData = {
+          name: user.displayName || "",
+          email: user.email || "",
+          bloodGroup: "",
+          phone: "",
+          address: "",
+          uid: user.uid,
+          photoURL: user.photoURL || "",
+        };
+
+        await axios.post("http://localhost:5000/donors", donorData);
+        toast.success("Account created successfully with Facebook!");
+      }
+      
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
+      toast.error("Failed to sign up with Facebook.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTwitterLogin = async () => {
+    setLoading(true);
+    setError("");
+    
+    try {
+      const result = await signInWithTwitter();
+      const user = result.user;
+      
+      // Check if user already exists in database
+      try {
+        await axios.get(`http://localhost:5000/donors/user/${user.uid}`);
+        // If no error, user exists
+        toast.success("Welcome back! You're now signed in.");
+      } catch (error) {
+        // User doesn't exist, create new donor
+        const donorData = {
+          name: user.displayName || "",
+          email: user.email || "",
+          bloodGroup: "",
+          phone: "",
+          address: "",
+          uid: user.uid,
+          photoURL: user.photoURL || "",
+        };
+
+        await axios.post("http://localhost:5000/donors", donorData);
+        toast.success("Account created successfully with X!");
+      }
+      
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
+      toast.error("Failed to sign up with X.");
     } finally {
       setLoading(false);
     }
@@ -278,9 +404,51 @@ const SignUp = () => {
                   </Link>
                 </p>
               </div>
+              
+              {/* Social Login Options */}
+              <div className="mt-10 pb-4">
+                <div className="relative flex items-center justify-center mb-6">
+                  <hr className="w-full border-gray-300" />
+                  <span className="absolute bg-white px-4 text-sm font-medium text-gray-500">Or sign up with</span>
+                </div>
+                
+                <div className="flex justify-center gap-6 mt-6">
+                  {/* Google Button */}
+                  <button 
+                    type="button" 
+                    className="w-14 h-14 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white"
+                    onClick={handleGoogleLogin}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48">
+                      <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                      <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
+                      <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
+                      <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                    </svg>
+                  </button>
+                  
+                  {/* Facebook Button */}
+                  <button 
+                    type="button" 
+                    className="w-14 h-14 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-[#1877F2]"
+                    onClick={handleFacebookLogin}
+                  >
+                    <FaFacebookF className="text-white text-2xl" />
+                  </button>
+                  
+                  {/* X Button */}
+                  <button 
+                    type="button" 
+                    className="w-14 h-14 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-black"
+                    onClick={handleTwitterLogin}
+                  >
+                    <FaXTwitter className="text-white text-2xl" />
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* Right Side - Image and Info */}
+            {/* Right Side - Image */}
             <div className="md:w-2/5 bg-gradient-blood p-8 text-white flex flex-col justify-center relative overflow-hidden animate-slide-down">
               <div className="absolute inset-0 opacity-10">
                 <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -296,28 +464,26 @@ const SignUp = () => {
                 <div className="w-16 h-16 relative mx-auto mb-6 animate-float">
                   <img src="/blood-drop.svg" alt="Blood Drop" className="w-full h-full" />
                 </div>
-                <h1 className="text-3xl font-bold mb-6 text-center">Become a Hero!</h1>
-                
-                <div className="space-y-6">
-                  <div className="bg-white/10 p-4 rounded-lg backdrop-blur-sm">
-                    <h3 className="font-bold text-xl mb-2">Why Donate Blood?</h3>
-                    <ul className="list-disc pl-5 space-y-2">
-                      <li>A single donation can save up to 3 lives</li>
-                      <li>Blood cannot be manufactured, only donated</li>
-                      <li>Every 2 seconds someone needs blood</li>
-                      <li>Most donated red blood cells must be used within 42 days</li>
-                    </ul>
-                  </div>
-                  
-                  <div className="bg-white/10 p-4 rounded-lg backdrop-blur-sm">
-                    <h3 className="font-bold text-xl mb-2">Who Can Donate?</h3>
-                    <ul className="list-disc pl-5 space-y-2">
-                      <li>Most people in good health</li>
-                      <li>Age 17 or older (16 with parental consent)</li>
-                      <li>Weight at least 110 pounds</li>
-                      <li>Pass the physical and health history assessments</li>
-                    </ul>
-                  </div>
+                <h1 className="text-3xl font-bold mb-4 text-center">Join Our Donors</h1>
+                <p className="text-lg mb-8 text-center">
+                  By registering as a donor, you're taking the first step towards saving lives. Your donation can make a difference.
+                </p>
+                <div className="bg-white/10 p-6 rounded-lg backdrop-blur-sm">
+                  <h3 className="font-bold text-xl mb-3">Why Donate Blood?</h3>
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <span className="mr-2">•</span>
+                      <span>A single donation can save up to 3 lives</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-2">•</span>
+                      <span>Blood cannot be manufactured – it can only come from donors</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-2">•</span>
+                      <span>Every 2 seconds someone needs blood</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>

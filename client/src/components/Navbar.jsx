@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
-import { FaUserCircle, FaBars, FaTimes, FaHeart, FaHandHoldingHeart } from "react-icons/fa";
+import { FaUserCircle, FaBars, FaTimes, FaHeart, FaHandHoldingHeart, FaChevronRight } from "react-icons/fa";
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
@@ -58,6 +58,15 @@ const Navbar = () => {
       </li>
       {user ? (
         <>
+          <li>
+            <Link 
+              to="/dashboard" 
+              className={`navbar-link group flex items-center gap-1 ${isActive("/dashboard") ? "text-primary after:w-full" : ""}`}
+            >
+              <FaUserCircle className="group-hover:animate-beat" />
+              <span>Dashboard</span>
+            </Link>
+          </li>
           <li>
             <Link 
               to="/checkout/1" 
@@ -137,19 +146,27 @@ const Navbar = () => {
           {/* User Avatar (if logged in) */}
           {user && (
             <div className="hidden md:flex items-center ml-4">
-              <div className="avatar transition-all duration-300 hover:ring-2 hover:ring-primary rounded-full">
-                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
-                  {user.photoURL ? (
-                    <img 
-                      src={user.photoURL} 
-                      alt={user.displayName || "User"} 
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <FaUserCircle className="w-full h-full text-gray-400" />
-                  )}
+              <Link to="/dashboard" className="relative group">
+                <div className="avatar transition-all duration-300 group-hover:ring-2 group-hover:ring-primary rounded-full">
+                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
+                    {user.photoURL ? (
+                      <img 
+                        src={user.photoURL} 
+                        alt={user.displayName || "User"} 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <FaUserCircle className="w-full h-full text-gray-400" />
+                    )}
+                  </div>
                 </div>
-              </div>
+                <div className="absolute -bottom-2 -right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:translate-y-0 translate-y-1 transition-all duration-300">
+                  <FaChevronRight className="text-white text-xs" />
+                </div>
+                <span className="absolute top-full mt-1 right-0 bg-white text-primary text-xs font-medium py-1 px-2 rounded shadow-md opacity-0 group-hover:opacity-100 whitespace-nowrap">
+                  View Dashboard
+                </span>
+              </Link>
             </div>
           )}
         </div>
@@ -164,22 +181,28 @@ const Navbar = () => {
             {navItems}
             {user && (
               <li className="flex items-center gap-2 pt-2 border-t border-gray-200">
-                <div className="avatar">
-                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-primary">
-                    {user.photoURL ? (
-                      <img 
-                        src={user.photoURL} 
-                        alt={user.displayName || "User"} 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <FaUserCircle className="w-full h-full text-gray-400" />
-                    )}
+                <Link to="/dashboard" className="flex items-center gap-2 w-full hover:bg-gray-50 p-2 rounded transition-colors duration-200">
+                  <div className="avatar">
+                    <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-primary">
+                      {user.photoURL ? (
+                        <img 
+                          src={user.photoURL} 
+                          alt={user.displayName || "User"} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <FaUserCircle className="w-full h-full text-gray-400" />
+                      )}
+                    </div>
                   </div>
-                </div>
-                <span className="text-sm font-medium truncate">
-                  {user.displayName || user.email}
-                </span>
+                  <div className="flex-1">
+                    <span className="text-sm font-medium truncate block">
+                      {user.displayName || user.email}
+                    </span>
+                    <span className="text-xs text-primary">View Dashboard</span>
+                  </div>
+                  <FaChevronRight className="text-primary text-xs" />
+                </Link>
               </li>
             )}
           </ul>

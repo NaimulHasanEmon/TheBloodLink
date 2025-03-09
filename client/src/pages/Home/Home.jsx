@@ -1,6 +1,6 @@
-import React from "react";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../../providers/AuthProvider";
 import axios from "axios";
 import {
   FaHandHoldingHeart,
@@ -12,10 +12,13 @@ import {
   FaQuoteRight,
   FaMapMarkerAlt,
   FaPhoneAlt,
+  FaUserCircle,
+  FaTint
 } from "react-icons/fa";
 import { GiHeartOrgan, GiHealthNormal } from "react-icons/gi";
 
 const Home = () => {
+  const { user } = useContext(AuthContext);
   const [donors, setDonors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -23,6 +26,7 @@ const Home = () => {
     donations: 0,
     lives: 0,
   });
+  const [userDonor, setUserDonor] = useState(null);
 
   useEffect(() => {
     const fetchDonors = async () => {
@@ -38,6 +42,17 @@ const Home = () => {
           donations: Math.floor(donorsCount * 1.8), // Estimate
           lives: Math.floor(donorsCount * 3), // Each donor saves ~3 lives
         });
+
+        // Check if logged-in user is already a donor
+        if (user) {
+          try {
+            const userDonorResponse = await axios.get(`http://localhost:5000/donors/user/${user.uid}`);
+            setUserDonor(userDonorResponse.data);
+          } catch (error) {
+            // User is not a donor yet
+            setUserDonor(null);
+          }
+        }
       } catch (error) {
         console.error("Error fetching donors:", error);
         setLoading(false);
@@ -182,14 +197,34 @@ const Home = () => {
             </Link>
             
             {/* Donor Button - Now on the right and less prominent */}
-            <Link 
-              to='/signup' 
-              className='relative overflow-hidden btn-outline px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 border-2 border-primary/70 group hover:border-primary w-64'
-            >
-              <span className='absolute inset-0 bg-red-50 transform scale-x-0 origin-right group-hover:scale-x-100 transition-transform duration-500'></span>
-              <FaHandHoldingHeart size={24} className='text-primary relative z-10 group-hover:scale-110 group-hover:text-red-700 transition-all duration-300' /> 
-              <span className='font-medium relative z-10 group-hover:text-red-700 transition-colors duration-300'>Become a Donor</span>
-            </Link>
+            {!user ? (
+              <Link 
+                to='/signup' 
+                className='relative overflow-hidden btn-outline px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 border-2 border-primary/70 group hover:border-primary w-64'
+              >
+                <span className='absolute inset-0 bg-red-50 transform scale-x-0 origin-right group-hover:scale-x-100 transition-transform duration-500'></span>
+                <FaHandHoldingHeart size={24} className='text-primary relative z-10 group-hover:scale-110 group-hover:text-red-700 transition-all duration-300' /> 
+                <span className='font-medium relative z-10 group-hover:text-red-700 transition-colors duration-300'>Become a Donor</span>
+              </Link>
+            ) : userDonor ? (
+              <Link 
+                to='/dashboard' 
+                className='relative overflow-hidden btn-outline px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 border-2 border-primary/70 group hover:border-primary w-64'
+              >
+                <span className='absolute inset-0 bg-red-50 transform scale-x-0 origin-right group-hover:scale-x-100 transition-transform duration-500'></span>
+                <FaUserCircle size={24} className='text-primary relative z-10 group-hover:scale-110 group-hover:text-red-700 transition-all duration-300' /> 
+                <span className='font-medium relative z-10 group-hover:text-red-700 transition-colors duration-300'>My Donor Profile</span>
+              </Link>
+            ) : (
+              <Link 
+                to='/dashboard' 
+                className='relative overflow-hidden btn-outline px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 border-2 border-primary/70 group hover:border-primary w-64'
+              >
+                <span className='absolute inset-0 bg-red-50 transform scale-x-0 origin-right group-hover:scale-x-100 transition-transform duration-500'></span>
+                <FaTint size={24} className='text-primary relative z-10 group-hover:scale-110 group-hover:text-red-700 transition-all duration-300' /> 
+                <span className='font-medium relative z-10 group-hover:text-red-700 transition-colors duration-300'>Complete Donor Profile</span>
+              </Link>
+            )}
           </div>
           
           <div className='flex flex-col md:flex-row items-center'>
