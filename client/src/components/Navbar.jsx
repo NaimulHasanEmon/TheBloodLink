@@ -78,15 +78,6 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link 
-              to="/checkout/1" 
-              className={`navbar-link group flex items-center gap-1 ${isActive("/checkout/1") ? "text-primary after:w-full" : ""}`}
-            >
-              <FaHandHoldingHeart className="group-hover:animate-beat" />
-              <span>Donate Blood</span>
-            </Link>
-          </li>
-          <li>
             <button 
               onClick={handleLogOut} 
               className="btn-outline px-4 py-2 rounded-full flex items-center gap-1 text-sm"
