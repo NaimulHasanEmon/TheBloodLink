@@ -1,0 +1,452 @@
+/* Custom animations for Find Blood page */
+
+/* Page background animation */
+.blood-page-bg {
+  background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.blood-page-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50 C 50 30, 70 20, 50 0 C 30 20, 50 30, 50 50 Z' fill='%23fee2e2' fill-opacity='0.3'/%3E%3C/svg%3E");
+  background-size: 100px 100px;
+  z-index: 0;
+  opacity: 0.5;
+  animation: floatBackground 60s linear infinite;
+}
+
+@keyframes floatBackground {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100px 100px;
+  }
+}
+
+/* Page header animations */
+.page-title {
+  position: relative;
+  display: inline-block;
+}
+
+.page-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #ef4444, transparent);
+  transform: translateX(-50%);
+  animation: expandLine 1s ease-out forwards 0.5s;
+}
+
+@keyframes expandLine {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100px;
+  }
+}
+
+/* Search form animations */
+.search-form-container {
+  width: 100%;
+  transition: all 500ms cubic-bezier(0.34, 1.25, 0.64, 1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 1024px) {
+  .search-form-container {
+    width: 48%;
+    flex: 0 0 48%;
+  }
+  
+  .search-form-searched {
+    transform: translateX(0);
+  }
+}
+
+/* Main content container */
+.content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .content-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 4%;
+  }
+  
+  .content-container > div {
+    width: 48%;
+    flex: 0 0 48%;
+  }
+}
+
+.form-container {
+  background: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.form-container:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+}
+
+/* Form field animations */
+.form-field {
+  transition: all 0.3s ease;
+  transform-origin: left;
+}
+
+.form-field:focus-within {
+  transform: scale(1.02);
+}
+
+.form-field label {
+  transition: color 0.3s ease;
+}
+
+.form-field:focus-within label {
+  color: #ef4444;
+}
+
+/* Select dropdown animation */
+.select-field {
+  position: relative;
+  overflow: hidden;
+}
+
+.select-field::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #ef4444, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.select-field:focus-within::after {
+  transform: scaleX(1);
+}
+
+/* Button animations */
+.btn-animated {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.btn-animated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s ease;
+  z-index: -1;
+}
+
+.btn-animated:hover::before {
+  left: 100%;
+}
+
+.btn-primary-animated {
+  background: linear-gradient(45deg, #ef4444, #b91c1c);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.btn-primary-animated:hover {
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-secondary-animated {
+  background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary-animated:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Results animations */
+@keyframes fadeInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(30%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Results exit animation */
+@keyframes fadeOutToRight {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(30%);
+  }
+}
+
+/* Results container */
+.results-wrapper {
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  .results-wrapper {
+    width: 100%;
+  }
+}
+
+/* Results container parent */
+.results-container-parent {
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .results-container-parent {
+    width: 48%;
+    flex: 0 0 48%;
+  }
+}
+
+.results-wrapper:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+}
+
+/* Donor card animation */
+@keyframes slideInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Base donor card styling */
+.donor-card {
+  opacity: 0;
+  transform: translateX(100px);
+  transition: all 0.3s ease;
+}
+
+.donor-card:hover {
+  transform: translateY(-5px) translateX(0);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Apply staggered animations to donor cards */
+.donor-card:nth-child(1) {
+  animation: slideInFromRight 0.6s ease-out 0.3s forwards;
+}
+.donor-card:nth-child(2) {
+  animation: slideInFromRight 0.6s ease-out 0.6s forwards;
+}
+.donor-card:nth-child(3) {
+  animation: slideInFromRight 0.6s ease-out 0.9s forwards;
+}
+.donor-card:nth-child(4) {
+  animation: slideInFromRight 0.6s ease-out 1.2s forwards;
+}
+.donor-card:nth-child(5) {
+  animation: slideInFromRight 0.6s ease-out 1.5s forwards;
+}
+.donor-card:nth-child(6) {
+  animation: slideInFromRight 0.6s ease-out 1.8s forwards;
+}
+.donor-card:nth-child(7) {
+  animation: slideInFromRight 0.6s ease-out 2.1s forwards;
+}
+.donor-card:nth-child(8) {
+  animation: slideInFromRight 0.6s ease-out 2.4s forwards;
+}
+.donor-card:nth-child(9) {
+  animation: slideInFromRight 0.6s ease-out 2.7s forwards;
+}
+.donor-card:nth-child(10) {
+  animation: slideInFromRight 0.6s ease-out 3.0s forwards;
+}
+.donor-card:nth-child(n+11) {
+  animation: slideInFromRight 0.6s ease-out 3.3s forwards;
+}
+
+/* Blood group badge animation */
+.blood-badge {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.blood-badge::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.donor-card:hover .blood-badge::after {
+  opacity: 1;
+}
+
+/* Contact links animation */
+.contact-link {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.contact-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #ef4444;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.contact-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* Loading animation */
+@keyframes pulseBlood {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}
+
+.blood-pulse {
+  animation: pulseBlood 1.5s infinite ease-in-out;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 300ms ease-in-out, visibility 300ms;
+  backdrop-filter: blur(3px);
+}
+
+.loading-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loading-spinner-container {
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  animation: pulseContainer 2s infinite ease-in-out;
+}
+
+@keyframes pulseContainer {
+  0% {
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.1);
+  }
+  50% {
+    box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+  }
+  100% {
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.1);
+  }
+}
+
+/* Empty state animation */
+.empty-state-icon {
+  animation: floatIcon 3s infinite ease-in-out;
+}
+
+@keyframes floatIcon {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Custom scrollbar for results */
+.results-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.results-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.results-container::-webkit-scrollbar-thumb {
+  background: #ef4444;
+  border-radius: 10px;
+}
+
+.results-container::-webkit-scrollbar-thumb:hover {
+  background: #dc2626;
+} 
