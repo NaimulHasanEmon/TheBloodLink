@@ -23,7 +23,9 @@ import {
   FaGlobe,
   FaCity,
   FaMapPin,
-  FaHome
+  FaHome,
+  FaInbox,
+  FaReply
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import './calendar.css'; // We'll create this file next
@@ -729,29 +731,27 @@ const Dashboard = () => {
             </div>
             
             {/* Dashboard Tabs */}
-            <div className="border-b border-gray-200">
-              <nav className="flex overflow-x-auto">
-                <button
-                  onClick={() => setActiveTab("profile")}
-                  className={`px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 ${
-                    activeTab === "profile"
-                      ? "border-primary text-primary"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } transition-colors duration-200`}
-                >
-                  <FaUser className="inline mr-2" /> Profile
-                </button>
-                <button
-                  onClick={() => setActiveTab("donations")}
-                  className={`px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 ${
-                    activeTab === "donations"
-                      ? "border-primary text-primary"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } transition-colors duration-200`}
-                >
-                  <FaHistory className="inline mr-2" /> Donation History
-                </button>
-              </nav>
+            <div className="flex border-b border-gray-200 mb-6">
+              <button
+                className={`px-4 py-2 font-medium ${
+                  activeTab === "profile"
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-gray-500 hover:text-primary"
+                }`}
+                onClick={() => setActiveTab("profile")}
+              >
+                Profile
+              </button>
+              <button
+                className={`px-4 py-2 font-medium ${
+                  activeTab === "donations"
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-gray-500 hover:text-primary"
+                }`}
+                onClick={() => setActiveTab("donations")}
+              >
+                Donations
+              </button>
             </div>
           </div>
 

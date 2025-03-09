@@ -165,8 +165,11 @@ async function run() {
     // Search donors
     app.get('/search', async (req, res) => {
       try {
-        const { division, district, upazila, bloodGroup } = req.query;
+        const { bloodGroup, division, district, upazila } = req.query;
         
+        console.log('Search query parameters:', { bloodGroup, division, district, upazila });
+        
+        // Build the query object based on provided parameters
         const query = {};
         
         if (bloodGroup) query.bloodGroup = bloodGroup;
@@ -174,11 +177,23 @@ async function run() {
         if (district) query.district = district;
         if (upazila) query.upazila = upazila;
         
-        const donors = await donorsCollection.find(query).toArray();
-        res.send(donors);
+        console.log('MongoDB query:', query);
+        
+        // Get reference to the database and collections
+        const db = client.db("bloodLink");
+        const donorsCollection = db.collection("donors");
+        
+        // Find donors matching the criteria
+        const cursor = donorsCollection.find(query);
+        const donors = await cursor.toArray();
+        
+        console.log(`Found ${donors.length} donors matching criteria`);
+        
+        // Return the donors array
+        res.json(donors);
       } catch (error) {
-        console.error("Error searching donors:", error);
-        res.status(500).send({ error: "Failed to search donors" });
+        console.error('Error searching for donors:', error);
+        res.status(500).json({ message: 'Server error' });
       }
     });
 
