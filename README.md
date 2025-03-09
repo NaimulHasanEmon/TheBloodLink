@@ -66,7 +66,7 @@ DB_USER=your_mongodb_username
 DB_PASS=your_mongodb_password
 PORT=5000
 MONGODB_URI=mongodb+srv://your_mongodb_username:your_mongodb_password@your_cluster_url
-JWT_SECRET=your_jwt_secret_key_here
+JWT_SECRET=your_jwt_secret_key
 ```
 
 For the client, create or update the `.env` file in the client directory with your Firebase project details:
@@ -118,7 +118,7 @@ DB_USER=your_mongodb_username
 DB_PASS=your_mongodb_password
 PORT=5000
 MONGODB_URI=mongodb+srv://your_mongodb_username:your_mongodb_password@your_cluster_url
-JWT_SECRET=your_jwt_secret_key_here
+JWT_SECRET=your_jwt_secret_key
 ```
 
 ## Security Best Practices
@@ -135,6 +135,57 @@ The backend can be deployed to platforms like Heroku, Render, or Vercel.
 
 ### Frontend Deployment
 The frontend can be deployed to platforms like Netlify, Vercel, or Firebase Hosting.
+
+## Deployment Instructions
+
+### Client Deployment (Netlify)
+
+1. Push your code to a GitHub repository
+2. Log in to [Netlify](https://www.netlify.com/)
+3. Click "New site from Git" and select your repository
+4. Configure the build settings:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+5. Add the following environment variables in Netlify's settings:
+   - All variables from `.env.production`
+6. Click "Deploy site"
+
+The client is configured to handle client-side routing with the `_redirects` file and `netlify.toml` configuration.
+
+### Server Deployment (Vercel)
+
+1. Push your code to a GitHub repository
+2. Log in to [Vercel](https://vercel.com/)
+3. Click "New Project" and select your repository
+4. Configure the build settings:
+   - Root Directory: `server`
+   - Framework Preset: `Other`
+5. Add the following environment variables in Vercel's settings:
+   - `DB_USER`: Your MongoDB username
+   - `DB_PASS`: Your MongoDB password
+   - `MONGODB_URI`: Your MongoDB connection string
+   - `JWT_SECRET`: Your JWT secret key
+6. Click "Deploy"
+
+The server is configured with `vercel.json` to handle API routing and CORS.
+
+## Local Development
+
+### Client
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+### Server
+
+```bash
+cd server
+npm install
+npm run dev
+```
 
 ## Contributing
 

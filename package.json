@@ -1,34 +1,30 @@
 {
   "name": "the-blood-link",
   "version": "1.0.0",
-  "description": "A web application that connects blood donors with those in need",
+  "description": "A blood donation platform connecting donors with those in need",
   "main": "index.js",
   "scripts": {
-    "start": "node server/index.js",
-    "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
+    "server": "cd server && npm run dev",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "install-all": "npm install && cd server && npm install && cd ../client && npm install",
-    "build": "cd client && npm run build"
+    "install-client": "cd client && npm install",
+    "install-server": "cd server && npm install",
+    "install-all": "npm install && npm run install-client && npm run install-server",
+    "build-client": "cd client && npm run build",
+    "start-server": "cd server && npm start",
+    "deploy-client": "cd client && npm run build",
+    "deploy-server": "cd server && npm run build"
   },
   "keywords": [
-    "blood",
-    "donation",
-    "mongodb",
-    "express",
+    "blood-donation",
     "react",
-    "node"
+    "node",
+    "express",
+    "mongodb"
   ],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "concurrently": "^8.2.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "mongoose": "^8.12.1"
-  },
   "devDependencies": {
-    "@types/node": "^22.13.10"
+    "concurrently": "^8.2.2"
   }
 }
