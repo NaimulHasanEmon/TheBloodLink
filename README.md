@@ -193,4 +193,12 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the ISC License. 
+This project is licensed under the ISC License.
+
+## Connecting Client to Server
+
+After deploying both client and server, update the client's `.env.production` file with the correct server URL:
+
+```
+VITE_API_URL=https://the-blood-link.vercel.app
+``` 

@@ -86,7 +86,7 @@ This document provides detailed instructions for deploying The Blood Link applic
 After deploying both client and server, update the client's `.env.production` file with the correct server URL:
 
 ```
-VITE_API_URL=https://your-server-domain.vercel.app
+VITE_API_URL=https://the-blood-link.vercel.app
 ```
 
 Then redeploy the client application to Netlify.

@@ -8,6 +8,7 @@ import CheckOut from "../pages/CheckOut/CheckOut";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import FindBlood from "../pages/FindBlood/FindBlood";
 import PrivateRoute from "./PrivateRoute";
+import ApiTest from "../pages/ApiTest";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
         element: <FindBlood />,
       },
       {
+        path: "api-test",
+        element: <ApiTest />,
+      },
+      {
         path: "dashboard",
         element: (
           <PrivateRoute>
@@ -42,7 +47,7 @@ const router = createBrowserRouter([
       {
         path: "checkout/:id",
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/donors/${params.id}`),
+          fetch(`${import.meta.env.VITE_API_URL}/donors/${params.id}`),
         element: (
           <PrivateRoute>
             <CheckOut />

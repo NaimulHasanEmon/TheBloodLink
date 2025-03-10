@@ -123,7 +123,7 @@ const FindBlood = () => {
         setUpazila('');
         setBloodGroup('');
         setDonors([]);
-      }, 800); // After form has moved back to center
+      }, 300); // After form has moved back to center
     }, 500); // Match with exit animation duration
   };
   
@@ -144,11 +144,11 @@ const FindBlood = () => {
       
       <div className="container mx-auto px-4">
         {/* Header section with animations */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-12 pt-8 md:pt-12">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 page-title">
             Find Blood Donors
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto mt-6">
+          <p className="text-gray-600 max-w-2xl mx-auto mt-6 px-4">
             Search for blood donors in your area by selecting your location and required blood group.
             Our database connects you with willing donors to help save lives.
           </p>
@@ -247,7 +247,7 @@ const FindBlood = () => {
                 <div className="flex justify-center">
                   <button
                     type="submit"
-                    className="btn-primary px-8 py-3 rounded-full flex items-center gap-2 transition-all duration-300 hover:shadow-lg"
+                    className="btn-primary-animated btn-animated px-8 py-3 rounded-full flex items-center gap-2 transition-all duration-300 hover:shadow-lg"
                   >
                     <FaSearch /> Search Donors
                   </button>
@@ -257,156 +257,135 @@ const FindBlood = () => {
           </div>
           
           {/* Results Container */}
-          <div 
-            className={`results-container ${showResults ? 'results-visible' : ''} ${isExiting ? 'results-exiting' : ''}`}
+          {searched && (
+  <div className="results-container-parent">
+    <div className={`results-wrapper ${showResults ? 'visible' : ''} ${isExiting ? 'exiting' : ''}`}>
+      <div className="bg-white rounded-lg shadow-lg p-4 md:p-6">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-3">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-800 flex items-center">
+            <FaTint className="text-primary mr-2" /> 
+            Search Results
+            <span className="ml-2 text-sm font-normal text-gray-500">
+              ({donors.length} donors found)
+            </span>
+          </h2>
+          <button
+            onClick={handleReset}
+            className="btn-secondary-animated btn-animated px-4 py-2 rounded-full text-sm self-start md:self-auto flex items-center gap-1"
           >
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 flex items-center">
-                  <FaTint className="text-primary mr-2" /> 
-                  Search Results
-                  <span className="ml-2 text-sm font-normal text-gray-500">
-                    ({donors.length} donors found)
-                  </span>
-                </h2>
-                <button
-                  onClick={handleReset}
-                  className="btn-outline px-4 py-2 rounded-full text-sm"
-                >
-                  New Search
-                </button>
-              </div>
-              
-              {donors.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="w-20 h-20 mx-auto mb-6 opacity-25">
-                    <img src="/blood-drop.svg" alt="Blood Drop" className="w-full h-full" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-neutral mb-2">No donors found</h3>
-                  <p className="text-gray-600 mb-6">
-                    We couldn't find any donors matching your search criteria.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {donors.map((donor) => (
-                    <div 
-                      key={donor._id} 
-                      className="border border-gray-200 rounded-lg overflow-hidden transition-all duration-300 
-                                hover:shadow-lg hover:border-primary group bg-white relative"
-                    >
-                      {/* Subtle background pattern */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-red-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                      
-                      {/* Animated highlight line */}
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top"></div>
-                      
-                      <div className="flex items-center p-4 relative z-10">
-                        {/* Donor Image and Blood Group with enhanced styling */}
-                        <div className="flex-shrink-0 mr-5">
-                          <div className="relative transform group-hover:scale-105 transition-transform duration-300">
-                            <div className="h-16 w-16 rounded-full overflow-hidden border-2 border-primary shadow-md">
-                              {donor.photoURL ? (
-                                <img src={donor.photoURL} alt={donor.name} className="h-full w-full object-cover" />
-                              ) : (
-                                <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                                  <FaUser className="text-gray-400 text-xl" />
-                                </div>
-                              )}
-                              
-                              {/* Subtle pulse animation on hover */}
-                              <div className="absolute inset-0 rounded-full border-4 border-primary opacity-0 group-hover:opacity-30 animate-ping-slow"></div>
-                            </div>
-                            
-                            {/* Enhanced blood group badge */}
-                            <div className="absolute -bottom-1 -right-1 bg-primary text-white font-bold rounded-full h-7 w-7 flex items-center justify-center border-2 border-white shadow-md transform group-hover:scale-110 transition-transform duration-300">
-                              <span className="text-xs">{donor.bloodGroup}</span>
-                            </div>
+            <FaSearch className="text-xs" /> New Search
+          </button>
+        </div>
+        
+        {donors.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="w-20 h-20 mx-auto mb-6 opacity-25">
+              <img src="/blood-drop.svg" alt="Blood Drop" className="w-full h-full empty-state-icon" />
+            </div>
+            <h3 className="text-2xl font-bold text-neutral mb-2">No donors found</h3>
+            <p className="text-gray-600 mb-6">
+              We couldn't find any donors matching your search criteria.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4 max-h-[70vh] overflow-y-auto donor-results-container">
+            {donors.map((donor) => (
+              <div 
+                key={donor._id} 
+                className="donor-card bg-white rounded-lg shadow-md overflow-hidden mb-4"
+              >
+                <div className="flex flex-col items-center p-4"> {/* Vertical stack for mobile */}
+                  {/* Left: Donor Image with Blood Group */}
+                  <div className="donor-image-container">
+                    <div className="relative">
+                      <div className="h-16 w-16 md:h-20 md:w-20 rounded-full overflow-hidden border-2 border-primary">
+                        {donor.photoURL ? (
+                          <img src={donor.photoURL} alt={donor.name} className="h-full w-full object-cover" />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                            <FaUser className="text-gray-400 text-xl" />
                           </div>
-                        </div>
-                        
-                        {/* Donor Info with improved typography */}
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-base font-semibold text-gray-900 truncate group-hover:text-primary transition-colors duration-300">
-                            {donor.name}
-                          </h3>
-                          
-                          <div className="mt-2 space-y-1.5">
-                            <div className="flex items-center">
-                              <div className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300">
-                                <FaMapMarkerAlt className="text-primary text-xs" />
-                              </div>
-                              <span className="text-sm text-gray-700 font-medium">
-                                {[donor.upazila, donor.district].filter(Boolean).join(", ")}
-                              </span>
-                            </div>
-                            
-                            <div className="flex items-center">
-                              <div className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300">
-                                <FaPhone className="text-primary text-xs" />
-                              </div>
-                              <span className="text-sm text-gray-700">
-                                {donor.phone}
-                              </span>
-                            </div>
-                            
-                            <div className="flex items-center">
-                              <div className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300">
-                                <FaCalendarAlt className="text-primary text-xs" />
-                              </div>
-                              <span className="text-sm text-gray-700">
-                                {donor.lastDonationDate 
-                                  ? new Date(donor.lastDonationDate).toLocaleDateString('en-US', {
-                                      month: 'short',
-                                      day: 'numeric',
-                                      year: 'numeric'
-                                    })
-                                  : "No donation record"}
-                              </span>
-                              
-                              {/* Eligibility indicator */}
-                              {donor.lastDonationDate && (() => {
-                                const lastDonation = new Date(donor.lastDonationDate);
-                                const nextEligible = new Date(lastDonation);
-                                nextEligible.setMonth(lastDonation.getMonth() + 3);
-                                const today = new Date();
-                                const isEligible = today >= nextEligible;
-                                
-                                return (
-                                  <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
-                                    isEligible 
-                                      ? 'bg-green-100 text-green-800 group-hover:bg-green-200' 
-                                      : 'bg-amber-100 text-amber-800 group-hover:bg-amber-200'
-                                  } transition-colors duration-300`}>
-                                    {isEligible ? 'Eligible' : 'Not Eligible'}
-                                  </span>
-                                );
-                              })()}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* Enhanced Contact Button */}
-                        <div className="ml-2">
-                          <Link 
-                            to={`/checkout/${donor._id}`}
-                            className="relative overflow-hidden btn-primary px-4 py-2 rounded-md inline-flex items-center text-sm gap-1.5 
-                                      transition-all duration-300 hover:shadow-md group-hover:shadow-lg transform group-hover:-translate-y-0.5"
-                          >
-                            {/* Button shine effect */}
-                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-white/0 via-white/30 to-white/0 
-                                            transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
-                            
-                            Contact <FaArrowRight className="text-xs transition-transform duration-300 group-hover:translate-x-1" />
-                          </Link>
-                        </div>
+                        )}
+                      </div>
+                      {/* Blood Group Badge */}
+                      <div className="absolute -bottom-1 -right-1 bg-primary text-white font-bold rounded-full h-7 w-7 flex items-center justify-center border-2 border-white">
+                        <span className="text-xs">{donor.bloodGroup}</span>
                       </div>
                     </div>
-                  ))}
+                  </div>
+                  
+                  {/* Middle: Donor Info */}
+                  <div className="donor-info mt-4 text-center w-full"> {/* Added text-center and margin */}
+                    <h3 className="donor-name text-lg md:text-xl font-bold text-gray-900 mb-1">
+                      {donor.name}
+                    </h3>
+                    
+                    <div className="donor-details">
+                      <div className="flex items-center justify-center mb-1">
+                        <FaMapMarkerAlt className="text-primary text-xs mr-2" />
+                        <span className="text-sm text-gray-700">
+                          {[donor.upazila, donor.district].filter(Boolean).join(", ")}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center justify-center mb-1">
+                        <FaPhone className="text-primary text-xs mr-2" />
+                        <span className="text-sm text-gray-700">
+                          {donor.phone}
+                        </span>
+                      </div>
+                      
+                      {donor.lastDonationDate && (
+                        <div className="flex items-center justify-center">
+                          <FaCalendarAlt className="text-primary text-xs mr-2" />
+                          <span className="text-sm text-gray-700">
+                            Last Donation: {new Date(donor.lastDonationDate).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric'
+                            })}
+                          </span>
+                          {/* Eligibility indicator */}
+                          {(() => {
+                            const lastDonation = new Date(donor.lastDonationDate);
+                            const nextEligible = new Date(lastDonation);
+                            nextEligible.setMonth(lastDonation.getMonth() + 3);
+                            const today = new Date();
+                            const isEligible = today >= nextEligible;
+                            
+                            return (
+                              <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
+                                isEligible 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : 'bg-amber-100 text-amber-800'
+                              }`}>
+                                {isEligible ? 'Eligible' : 'Not Eligible'}
+                              </span>
+                            );
+                          })()}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Right: Contact Button */}
+                  <div className="contact-button-container mt-4 w-full"> {/* Added margin and full width */}
+                    <Link 
+                      to={`/checkout/${donor._id}`}
+                      className="contact-button bg-primary text-white px-4 py-2 rounded-md inline-flex items-center text-sm gap-1.5 whitespace-nowrap w-full justify-center"
+                    >
+                      Contact <FaArrowRight className="text-xs" />
+                    </Link>
+                  </div>
                 </div>
-              )}
-            </div>
+              </div>
+            ))}
           </div>
+        )}
+      </div>
+    </div>
+  </div>
+)}
         </div>
       </div>
     </div>

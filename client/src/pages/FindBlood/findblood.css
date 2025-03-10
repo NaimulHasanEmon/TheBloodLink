@@ -5,6 +5,7 @@
   background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
   position: relative;
   overflow: hidden;
+  min-height: 100vh;
 }
 
 .blood-page-bg::before {
@@ -62,6 +63,9 @@
   width: 100%;
   transition: all 500ms cubic-bezier(0.34, 1.25, 0.64, 1);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  z-index: 10; /* Ensure form stays above results on mobile */
+  border-radius: 1rem;
+  overflow: hidden;
 }
 
 @media (min-width: 1024px) {
@@ -75,6 +79,15 @@
   }
 }
 
+/* Mobile-specific search form when results are shown */
+@media (max-width: 1023px) {
+  .search-form-searched {
+    margin-bottom: 2rem;
+    transform: scale(0.98);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  }
+}
+
 /* Main content container */
 .content-container {
   display: flex;
@@ -82,6 +95,7 @@
   gap: 2rem;
   width: 100%;
   max-width: 100%;
+  padding-bottom: 2rem;
 }
 
 @media (min-width: 1024px) {
@@ -225,6 +239,20 @@
 .results-wrapper {
   width: 100%;
   transition: all 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.results-wrapper.visible {
+  opacity: 1;
+  visibility: visible;
+  animation: fadeInFromRight 0.5s forwards;
+}
+
+.results-wrapper.exiting {
+  animation: fadeOutToRight 0.5s forwards;
 }
 
 @media (min-width: 1024px) {
@@ -236,12 +264,22 @@
 /* Results container parent */
 .results-container-parent {
   width: 100%;
+  display: block;
 }
 
 @media (min-width: 1024px) {
   .results-container-parent {
     width: 48%;
     flex: 0 0 48%;
+  }
+}
+
+/* Mobile-specific results container */
+@media (max-width: 1023px) {
+  .results-wrapper {
+    margin-top: 1rem;
+    width: 100%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   }
 }
 
@@ -262,97 +300,161 @@
   }
 }
 
-/* Base donor card styling */
+/* Donor card styling */
 .donor-card {
   opacity: 0;
   transform: translateX(100px);
   transition: all 0.3s ease;
+  animation: slideInFromRight 0.6s ease-out forwards;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .donor-card:hover {
-  transform: translateY(-5px) translateX(0);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 /* Apply staggered animations to donor cards */
-.donor-card:nth-child(1) {
-  animation: slideInFromRight 0.6s ease-out 0.3s forwards;
-}
-.donor-card:nth-child(2) {
-  animation: slideInFromRight 0.6s ease-out 0.6s forwards;
-}
-.donor-card:nth-child(3) {
-  animation: slideInFromRight 0.6s ease-out 0.9s forwards;
-}
-.donor-card:nth-child(4) {
-  animation: slideInFromRight 0.6s ease-out 1.2s forwards;
-}
-.donor-card:nth-child(5) {
-  animation: slideInFromRight 0.6s ease-out 1.5s forwards;
-}
-.donor-card:nth-child(6) {
-  animation: slideInFromRight 0.6s ease-out 1.8s forwards;
-}
-.donor-card:nth-child(7) {
-  animation: slideInFromRight 0.6s ease-out 2.1s forwards;
-}
-.donor-card:nth-child(8) {
-  animation: slideInFromRight 0.6s ease-out 2.4s forwards;
-}
-.donor-card:nth-child(9) {
-  animation: slideInFromRight 0.6s ease-out 2.7s forwards;
-}
-.donor-card:nth-child(10) {
-  animation: slideInFromRight 0.6s ease-out 3.0s forwards;
-}
-.donor-card:nth-child(n+11) {
-  animation: slideInFromRight 0.6s ease-out 3.3s forwards;
+.donor-card:nth-child(1) { animation-delay: 0.1s; }
+.donor-card:nth-child(2) { animation-delay: 0.2s; }
+.donor-card:nth-child(3) { animation-delay: 0.3s; }
+.donor-card:nth-child(4) { animation-delay: 0.4s; }
+.donor-card:nth-child(5) { animation-delay: 0.5s; }
+.donor-card:nth-child(6) { animation-delay: 0.6s; }
+.donor-card:nth-child(7) { animation-delay: 0.7s; }
+.donor-card:nth-child(8) { animation-delay: 0.8s; }
+.donor-card:nth-child(9) { animation-delay: 0.9s; }
+.donor-card:nth-child(10) { animation-delay: 1.0s; }
+
+/* Donor card components */
+.donor-image-container {
+  flex-shrink: 0;
 }
 
-/* Blood group badge animation */
-.blood-badge {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
+.donor-info {
+  flex: 1;
+  min-width: 0;
 }
 
-.blood-badge::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.5s ease;
+.donor-name {
+  color: #1f2937;
+  line-height: 1.2;
 }
 
-.donor-card:hover .blood-badge::after {
-  opacity: 1;
+.donor-details {
+  color: #4b5563;
 }
 
-/* Contact links animation */
-.contact-link {
-  position: relative;
-  transition: all 0.3s ease;
+/* Mobile-specific styling enhancements */
+@media (max-width: 767px) {
+  .donor-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 16px;
+    background: linear-gradient(to bottom, #ffffff, #fafafa);
+    padding: 12px; /* Increased padding for better spacing */
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    gap: 12px; /* Space between sections */
+  }
+  
+  .donor-card:last-child {
+    margin-bottom: 0;
+  }
+  
+  .donor-name {
+    font-size: 1.25rem !important; /* Slightly larger for readability */
+    font-weight: 700;
+    text-align: center; /* Center align for balance */
+    margin-bottom: 8px; /* Space below name */
+  }
+  
+  .donor-details {
+    margin-top: 0; /* Remove top margin to align with image */
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Consistent spacing between details */
+  }
+  
+  .donor-details > div {
+    margin-bottom: 0; /* Remove bottom margin for individual divs */
+    padding: 10px; /* Increased padding for better touch area */
+    border-radius: 8px;
+    background-color: rgba(254, 242, 242, 0.3);
+    display: flex;
+    align-items: center; /* Center align icon and text */
+    gap: 8px; /* Space between icon and text */
+  }
+  
+  .donor-details > div:last-child {
+    margin-bottom: 0;
+  }
+  
+  .contact-button {
+    padding: 12px 24px !important; /* Larger padding for better tap area */
+    font-size: 1rem !important; /* Larger text for readability */
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(239, 68, 68, 0.15);
+    letter-spacing: 0.025em;
+    width: 100%; /* Full width for easy tapping */
+    text-align: center; /* Center the button text */
+    margin-top: 8px; /* Space above button */
+  }
+
+  /* Adjust donor image container for mobile */
+  .donor-image-container {
+    margin: 0 auto; /* Center the image */
+    position: relative;
+  }
+
+  .donor-image-container .relative {
+    margin: 0 auto; /* Center the relative container */
+  }
+
+  .donor-image-container .h-16.w-16.md\:h-20.md\:w-20 {
+    height: 80px !important; /* Larger image for mobile */
+    width: 80px !important;
+    margin-bottom: 8px; /* Space below image */
+  }
+
+  /* Adjust blood group badge position */
+  .donor-image-container .bg-primary.text-white.font-bold.rounded-full.h-7.w-7 {
+    bottom: -10px;
+    right: -10px;
+    height: 24px;
+    width: 24px;
+    font-size: 0.75rem; /* Smaller text for badge */
+  }
+
+  /* Hide the circular "The Blood" text if unintentional */
+  .donor-card .blood-page-bg::before {
+    display: none; /* Remove if not intended in cards */
+  }
 }
 
-.contact-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 1px;
+.contact-button {
   background-color: #ef4444;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
-.contact-link:hover::after {
-  transform: scaleX(1);
+.contact-button:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
+}
+
+/* Tablet styling */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .donor-card {
+    border-radius: 12px;
+  }
+  
+  .donor-details > div {
+    margin-bottom: 6px;
+  }
 }
 
 /* Loading animation */
@@ -433,20 +535,20 @@
 }
 
 /* Custom scrollbar for results */
-.results-container::-webkit-scrollbar {
+.donor-results-container::-webkit-scrollbar {
   width: 6px;
 }
 
-.results-container::-webkit-scrollbar-track {
+.donor-results-container::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 10px;
 }
 
-.results-container::-webkit-scrollbar-thumb {
+.donor-results-container::-webkit-scrollbar-thumb {
   background: #ef4444;
   border-radius: 10px;
 }
 
-.results-container::-webkit-scrollbar-thumb:hover {
+.donor-results-container::-webkit-scrollbar-thumb:hover {
   background: #dc2626;
-} 
+}

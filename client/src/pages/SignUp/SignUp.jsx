@@ -6,6 +6,8 @@ import axios from "axios";
 import { FaUser, FaEnvelope, FaLock, FaPhoneAlt, FaMapMarkerAlt, FaTint, FaArrowLeft, FaUserPlus, FaSignInAlt, FaFacebookF } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const SignUp = () => {
   const { createUser, signInWithGoogle, signInWithFacebook, signInWithTwitter, user } = useContext(AuthContext);
   const [error, setError] = useState("");
@@ -59,7 +61,7 @@ const SignUp = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/donors",
+        `${API_URL}/donors`,
         donorData
       );
 
@@ -87,7 +89,7 @@ const SignUp = () => {
       
       // Check if user already exists in database
       try {
-        await axios.get(`http://localhost:5000/donors/user/${user.uid}`);
+        await axios.get(`${API_URL}/donors/user/${user.uid}`);
         // If no error, user exists
         toast.success("Welcome back! You're now signed in.");
       } catch (error) {
@@ -102,7 +104,7 @@ const SignUp = () => {
           photoURL: user.photoURL || "",
         };
 
-        await axios.post("http://localhost:5000/donors", donorData);
+        await axios.post(`${API_URL}/donors`, donorData);
         toast.success("Account created successfully with Google!");
       }
       
@@ -126,7 +128,7 @@ const SignUp = () => {
       
       // Check if user already exists in database
       try {
-        await axios.get(`http://localhost:5000/donors/user/${user.uid}`);
+        await axios.get(`${API_URL}/donors/user/${user.uid}`);
         // If no error, user exists
         toast.success("Welcome back! You're now signed in.");
       } catch (error) {
@@ -141,7 +143,7 @@ const SignUp = () => {
           photoURL: user.photoURL || "",
         };
 
-        await axios.post("http://localhost:5000/donors", donorData);
+        await axios.post(`${API_URL}/donors`, donorData);
         toast.success("Account created successfully with Facebook!");
       }
       
@@ -165,7 +167,7 @@ const SignUp = () => {
       
       // Check if user already exists in database
       try {
-        await axios.get(`http://localhost:5000/donors/user/${user.uid}`);
+        await axios.get(`${API_URL}/donors/user/${user.uid}`);
         // If no error, user exists
         toast.success("Welcome back! You're now signed in.");
       } catch (error) {
@@ -180,7 +182,7 @@ const SignUp = () => {
           photoURL: user.photoURL || "",
         };
 
-        await axios.post("http://localhost:5000/donors", donorData);
+        await axios.post(`${API_URL}/donors`, donorData);
         toast.success("Account created successfully with X!");
       }
       
