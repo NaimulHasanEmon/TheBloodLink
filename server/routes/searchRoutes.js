@@ -1,6 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
+// Blood group compatibility chart
+const bloodCompatibility = {
+  'A+': ['A+', 'A-', 'O+', 'O-'],
+  'A-': ['A-', 'O-'],
+  'B+': ['B+', 'B-', 'O+', 'O-'],
+  'B-': ['B-', 'O-'],
+  'AB+': ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+  'AB-': ['A-', 'B-', 'AB-', 'O-'],
+  'O+': ['O+', 'O-'],
+  'O-': ['O-']
+};
+
 // Search donors
 router.get('/', async (req, res) => {
   try {
@@ -11,7 +23,12 @@ router.get('/', async (req, res) => {
     // Build the query object based on provided parameters
     const query = {};
     
-    if (bloodGroup) query.bloodGroup = bloodGroup;
+    // If bloodGroup is specified, include compatible blood groups
+    if (bloodGroup) {
+      const compatibleGroups = bloodCompatibility[bloodGroup] || [bloodGroup];
+      query.bloodGroup = { $in: compatibleGroups };
+    }
+    
     if (division) query.division = division;
     if (district) query.district = district;
     if (upazila) query.upazila = upazila;
@@ -24,10 +41,16 @@ router.get('/', async (req, res) => {
     const cursor = donorsCollection.find(query);
     const donors = await cursor.toArray();
     
+    // Add a field to indicate if it's an exact match
+    const donorsWithMatchType = donors.map(donor => ({
+      ...donor,
+      isExactMatch: donor.bloodGroup === bloodGroup
+    }));
+    
     console.log(`Found ${donors.length} donors matching criteria`);
     
     // Return the donors array
-    res.json(donors);
+    res.json(donorsWithMatchType);
   } catch (error) {
     console.error('Error searching for donors:', error);
     res.status(500).json({ message: 'Server error' });

@@ -346,94 +346,6 @@
   color: #4b5563;
 }
 
-/* Mobile-specific styling enhancements */
-@media (max-width: 767px) {
-  .donor-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    margin-bottom: 16px;
-    background: linear-gradient(to bottom, #ffffff, #fafafa);
-    padding: 12px; /* Increased padding for better spacing */
-    display: flex;
-    flex-direction: column; /* Stack elements vertically */
-    gap: 12px; /* Space between sections */
-  }
-  
-  .donor-card:last-child {
-    margin-bottom: 0;
-  }
-  
-  .donor-name {
-    font-size: 1.25rem !important; /* Slightly larger for readability */
-    font-weight: 700;
-    text-align: center; /* Center align for balance */
-    margin-bottom: 8px; /* Space below name */
-  }
-  
-  .donor-details {
-    margin-top: 0; /* Remove top margin to align with image */
-    display: flex;
-    flex-direction: column;
-    gap: 8px; /* Consistent spacing between details */
-  }
-  
-  .donor-details > div {
-    margin-bottom: 0; /* Remove bottom margin for individual divs */
-    padding: 10px; /* Increased padding for better touch area */
-    border-radius: 8px;
-    background-color: rgba(254, 242, 242, 0.3);
-    display: flex;
-    align-items: center; /* Center align icon and text */
-    gap: 8px; /* Space between icon and text */
-  }
-  
-  .donor-details > div:last-child {
-    margin-bottom: 0;
-  }
-  
-  .contact-button {
-    padding: 12px 24px !important; /* Larger padding for better tap area */
-    font-size: 1rem !important; /* Larger text for readability */
-    border-radius: 8px;
-    font-weight: 600;
-    box-shadow: 0 4px 6px rgba(239, 68, 68, 0.15);
-    letter-spacing: 0.025em;
-    width: 100%; /* Full width for easy tapping */
-    text-align: center; /* Center the button text */
-    margin-top: 8px; /* Space above button */
-  }
-
-  /* Adjust donor image container for mobile */
-  .donor-image-container {
-    margin: 0 auto; /* Center the image */
-    position: relative;
-  }
-
-  .donor-image-container .relative {
-    margin: 0 auto; /* Center the relative container */
-  }
-
-  .donor-image-container .h-16.w-16.md\:h-20.md\:w-20 {
-    height: 80px !important; /* Larger image for mobile */
-    width: 80px !important;
-    margin-bottom: 8px; /* Space below image */
-  }
-
-  /* Adjust blood group badge position */
-  .donor-image-container .bg-primary.text-white.font-bold.rounded-full.h-7.w-7 {
-    bottom: -10px;
-    right: -10px;
-    height: 24px;
-    width: 24px;
-    font-size: 0.75rem; /* Smaller text for badge */
-  }
-
-  /* Hide the circular "The Blood" text if unintentional */
-  .donor-card .blood-page-bg::before {
-    display: none; /* Remove if not intended in cards */
-  }
-}
-
 .contact-button {
   background-color: #ef4444;
   transition: all 0.2s ease;
@@ -444,6 +356,91 @@
   background-color: #dc2626;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
+}
+
+/* Animation for profile picture ping effect - available on all screen sizes */
+.animate-ping-slow {
+  animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  75%, 100% {
+    transform: scale(1.5);
+    opacity: 0.3;
+  }
+}
+
+/* Mobile styling enhancements */
+@media (max-width: 767px) {
+  .donor-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 16px;
+    background: linear-gradient(to bottom, #ffffff, #fafafa);
+  }
+  
+  .donor-card:last-child {
+    margin-bottom: 0;
+  }
+  
+  .donor-name {
+    font-size: 1.125rem !important;
+    font-weight: 700;
+  }
+  
+  .donor-details {
+    margin-top: 8px;
+  }
+  
+  .donor-details > div {
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: rgba(254, 242, 242, 0.3);
+  }
+  
+  .donor-details > div:last-child {
+    margin-bottom: 0;
+  }
+  
+  .contact-button {
+    padding: 10px !important;
+    font-size: 0.875rem !important;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(239, 68, 68, 0.15);
+    letter-spacing: 0.025em;
+  }
+}
+
+/* Desktop styling enhancements */
+@media (min-width: 768px) {
+  .donor-card {
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .donor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255, 245, 245, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .donor-card:hover::before {
+    opacity: 0.8;
+  }
 }
 
 /* Tablet styling */
