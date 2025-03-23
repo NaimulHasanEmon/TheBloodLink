@@ -205,31 +205,25 @@ const Navbar = () => {
       <li>
         <Link 
           to="/" 
-          className={`flex items-center gap-3 p-4 rounded-xl ${isActive("/") ? "bg-primary/10 text-primary font-medium" : "text-gray-700"} group relative`}
+          className={`flex items-center gap-2 p-3 rounded-lg ${isActive("/") ? "bg-primary/10 text-primary font-medium" : "text-gray-700"} group relative`}
           onClick={toggleMobileMenu}
         >
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isActive("/") ? "bg-primary text-white" : "bg-gray-100"}`}>
-            <FaHome className="text-xl" />
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isActive("/") ? "bg-primary text-white" : "bg-gray-100"}`}>
+            <FaHome className="text-lg" />
           </div>
-          <span className="text-lg">Home</span>
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full bg-primary text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 mb-1 z-10">
-            Go to homepage
-          </div>
+          <span className="text-base">Home</span>
         </Link>
       </li>
       <li>
         <Link 
           to="/find-blood" 
-          className={`flex items-center gap-3 p-4 rounded-xl ${isActive("/find-blood") ? "bg-primary/10 text-primary font-medium" : "text-gray-700"} group relative`}
+          className={`flex items-center gap-2 p-3 rounded-lg ${isActive("/find-blood") ? "bg-primary/10 text-primary font-medium" : "text-gray-700"} group relative`}
           onClick={toggleMobileMenu}
         >
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isActive("/find-blood") ? "bg-primary text-white" : "bg-gray-100"}`}>
-            <FaTint className="text-xl" />
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isActive("/find-blood") ? "bg-primary text-white" : "bg-gray-100"}`}>
+            <FaTint className="text-lg" />
           </div>
-          <span className="text-lg">Find Blood</span>
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full bg-primary text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 mb-1 z-10">
-            Search for blood donors
-          </div>
+          <span className="text-base">Find Blood</span>
         </Link>
       </li>
       {user ? (
@@ -237,16 +231,13 @@ const Navbar = () => {
           <li>
             <Link 
               to="/dashboard" 
-              className={`flex items-center gap-3 p-4 rounded-xl ${isActive("/dashboard") ? "bg-primary/10 text-primary font-medium" : "text-gray-700"} group relative`}
+              className={`flex items-center gap-2 p-3 rounded-lg ${isActive("/dashboard") ? "bg-primary/10 text-primary font-medium" : "text-gray-700"} group relative`}
               onClick={toggleMobileMenu}
             >
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isActive("/dashboard") ? "bg-primary text-white" : "bg-gray-100"}`}>
-                <FaUserCircle className="text-xl" />
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isActive("/dashboard") ? "bg-primary text-white" : "bg-gray-100"}`}>
+                <FaUserCircle className="text-lg" />
               </div>
-              <span className="text-lg">Dashboard</span>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full bg-primary text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 mb-1 z-10">
-                View your dashboard
-              </div>
+              <span className="text-base">Dashboard</span>
             </Link>
           </li>
           <li>
@@ -255,15 +246,12 @@ const Navbar = () => {
                 handleLogOut();
                 toggleMobileMenu();
               }} 
-              className="flex items-center gap-3 p-4 rounded-xl w-full text-left text-gray-700 group relative"
+              className="flex items-center gap-2 p-3 rounded-lg w-full text-left text-gray-700 group relative"
             >
-              <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                <FaSignOutAlt className="text-xl" />
+              <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                <FaSignOutAlt className="text-lg" />
               </div>
-              <span className="text-lg">Log Out</span>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full bg-primary text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 mb-1 z-10">
-                Sign out of your account
-              </div>
+              <span className="text-base">Log Out</span>
             </button>
           </li>
         </>
@@ -272,31 +260,25 @@ const Navbar = () => {
           <li>
             <Link 
               to="/login" 
-              className={`flex items-center gap-3 p-4 rounded-xl ${isActive("/login") ? "bg-primary/10 text-primary font-medium" : "text-gray-700"} group relative`}
+              className={`flex items-center gap-2 p-3 rounded-lg ${isActive("/login") ? "bg-primary/10 text-primary font-medium" : "text-gray-700"} group relative`}
               onClick={toggleMobileMenu}
             >
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isActive("/login") ? "bg-primary text-white" : "bg-gray-100"}`}>
-                <FaSignInAlt className="text-xl" />
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isActive("/login") ? "bg-primary text-white" : "bg-gray-100"}`}>
+                <FaSignInAlt className="text-lg" />
               </div>
-              <span className="text-lg">Login</span>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full bg-primary text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 mb-1 z-10">
-                Sign in to your account
-              </div>
+              <span className="text-base">Login</span>
             </Link>
           </li>
           <li>
             <Link 
               to="/signup" 
-              className={`flex items-center gap-3 p-4 rounded-xl ${isActive("/signup") ? "bg-primary/10 text-primary font-medium" : "text-gray-700"} group relative`}
+              className={`flex items-center gap-2 p-3 rounded-lg ${isActive("/signup") ? "bg-primary/10 text-primary font-medium" : "text-gray-700"} group relative`}
               onClick={toggleMobileMenu}
             >
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isActive("/signup") ? "bg-primary text-white" : "bg-gray-100"}`}>
-                <FaUserPlus className="text-xl" />
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isActive("/signup") ? "bg-primary text-white" : "bg-gray-100"}`}>
+                <FaUserPlus className="text-lg" />
               </div>
-              <span className="text-lg">Become a Donor</span>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full bg-primary text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 mb-1 z-10">
-                Register as a blood donor
-              </div>
+              <span className="text-base">Become a Donor</span>
             </Link>
           </li>
         </>
@@ -363,16 +345,11 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <button
             id="mobile-menu-toggle"
-            className="md:hidden w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center focus:outline-none z-10 hover-pulse group relative"
+            className="md:hidden w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center focus:outline-none z-30 hover:bg-gray-50 active:bg-gray-100 transition-all duration-200"
             onClick={toggleMobileMenu}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            {isMobileMenuOpen ? (
-              <FaTimes className="text-primary text-xl animate-pulse-gentle" />
-            ) : (
-              <FaBars className="text-primary text-xl" />
-            )}
-            <Tooltip text={isMobileMenuOpen ? "Close menu" : "Open menu"} />
+            {!isMobileMenuOpen && <FaBars className="text-primary text-lg" />}
           </button>
         </div>
 
@@ -387,7 +364,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation - 80% width sidebar */}
         <div
-          className={`md:hidden fixed top-0 bottom-0 right-0 w-4/5 bg-white z-50 shadow-xl transition-all duration-300 ease-in-out transform ${
+          className={`md:hidden fixed top-0 bottom-0 right-0 w-4/5 bg-white z-40 shadow-xl transition-all duration-300 ease-in-out transform ${
             isMobileMenuOpen 
               ? isMenuExiting 
                 ? "translate-x-full" 
@@ -397,44 +374,41 @@ const Navbar = () => {
         >
           <div 
             ref={mobileMenuRef}
-            className="flex flex-col h-full pt-24 pb-8 px-4 overflow-y-auto"
+            className="flex flex-col h-full pt-12 pb-8 px-4 overflow-y-auto"
           >
-            {/* Close button - Visible and fixed at the top right */}
+            {/* Close button - Repositioned to avoid overlap */}
             <button
-              className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-primary group relative"
+              className="absolute top-5 right-5 w-9 h-9 rounded-full bg-primary text-white shadow-lg flex items-center justify-center z-50"
               onClick={toggleMobileMenu}
               aria-label="Close menu"
             >
-              <FaTimes className="text-2xl" />
-              <div className="absolute top-full mt-1 right-0 bg-white text-primary text-xs py-1 px-2 rounded shadow-md opacity-0 group-hover:opacity-100 whitespace-nowrap">
-                Close menu
-              </div>
+              <FaTimes className="text-lg" />
             </button>
             
-            {/* Mobile menu header */}
-            <div className="mb-8 px-4">
-              <h2 className="text-2xl font-bold text-primary flex items-center">
-                <BloodDropIcon size="lg" animate={true} className="mr-2" />
+            {/* Mobile menu header - Reduced spacing */}
+            <div className="mt-4 mb-4 px-2">
+              <h2 className="text-xl font-bold text-primary flex items-center">
+                <BloodDropIcon size="md" animate={true} className="mr-2" />
                 Menu
               </h2>
-              <p className="text-gray-500 mt-1">Find what you need</p>
+              <p className="text-gray-500 text-sm mt-0.5">Find what you need</p>
             </div>
             
             {/* Mobile navigation items */}
-            <ul className="flex flex-col space-y-2 mb-auto stagger-fade-in">
+            <ul className="flex flex-col space-y-1 mb-auto stagger-fade-in">
               {mobileNavItems}
             </ul>
             
             {/* User profile section at the bottom */}
             {user && (
-              <div className="mt-8 pt-6 border-t border-gray-200 animate-fade-in" style={{ animationDelay: '500ms' }}>
+              <div className="mt-4 pt-4 border-t border-gray-200 animate-fade-in">
                 <Link 
                   to="/dashboard" 
-                  className="flex items-center gap-4 w-full bg-primary/5 p-4 rounded-xl transition-all duration-200 hover-lift group relative"
+                  className="flex items-center gap-3 w-full bg-primary/5 p-3 rounded-lg transition-all duration-200 hover:bg-primary/10 group relative"
                   onClick={toggleMobileMenu}
                 >
                   <div className="avatar">
-                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-primary">
+                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
                       {user.photoURL ? (
                         <img 
                           src={user.photoURL} 
@@ -447,25 +421,22 @@ const Navbar = () => {
                     </div>
                   </div>
                   <div className="flex-1">
-                    <span className="text-lg font-medium truncate block">
+                    <span className="text-base font-medium truncate block">
                       {user.displayName || user.email}
                     </span>
-                    <span className="text-primary flex items-center gap-1">
+                    <span className="text-primary text-sm flex items-center gap-1">
                       View your profile
-                      <FaChevronRight className="text-xs animate-pulse-gentle" />
+                      <FaChevronRight className="text-xs" />
                     </span>
-                  </div>
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full bg-primary text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 mb-1 z-10">
-                    Go to your dashboard
                   </div>
                 </Link>
               </div>
             )}
             
             {/* App version and info */}
-            <div className="mt-8 text-center text-gray-400 text-xs">
+            <div className="mt-4 text-center text-gray-400 text-xs">
               <p>The Blood Link v1.0</p>
-              <p className="mt-1">Saving lives through donation</p>
+              <p className="mt-0.5">Saving lives through donation</p>
             </div>
           </div>
         </div>
