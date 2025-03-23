@@ -217,13 +217,13 @@ const FindBlood = () => {
         </div>
       </div>
 
-      <div className='container mx-auto px-4'>
+      <div className='container mx-auto px-2 sm:px-4'>
         {/* Header section with animations */}
-        <div className='text-center mb-8 md:mb-12 pt-8 md:pt-12'>
-          <h1 className='text-3xl md:text-4xl font-bold text-gray-800 mb-4 page-title hover:text-red-600 transition-colors duration-300 cursor-default'>
+        <div className='text-center mb-4 md:mb-12 pt-4 md:pt-12'>
+          <h1 className='text-2xl md:text-4xl font-bold text-gray-800 mb-2 md:mb-4 page-title hover:text-red-600 transition-colors duration-300 cursor-default'>
             Find Blood Donors
           </h1>
-          <p className='text-gray-600 max-w-2xl mx-auto mt-6 px-4 hover:text-gray-800 transition-colors duration-300 transform hover:scale-[1.01] cursor-default'>
+          <p className='text-gray-600 text-sm md:text-base max-w-2xl mx-auto mt-2 md:mt-6 px-2 md:px-4 hover:text-gray-800 transition-colors duration-300 transform hover:scale-[1.01] cursor-default'>
             Search for blood donors in your area by selecting your location and
             required blood group. Our database connects you with willing donors
             to help save lives.
@@ -231,7 +231,7 @@ const FindBlood = () => {
         </div>
 
         {/* Main content */}
-        <div className='content-container relative min-h-[500px] overflow-hidden px-4 lg:px-8'>
+        <div className='content-container relative min-h-[300px] md:min-h-[500px] overflow-hidden px-2 lg:px-8'>
           {/* Search Form */}
           <div
             className={`search-form-container ${
@@ -239,8 +239,8 @@ const FindBlood = () => {
             } hover:shadow-xl transition-shadow duration-300`}
           >
             <div className='bg-white rounded-lg shadow-lg h-full hover:bg-gradient-to-br hover:from-white hover:to-red-50 transition-colors duration-500'>
-              <form onSubmit={handleSubmit} className='space-y-6 p-6'>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+              <form onSubmit={handleSubmit} className='space-y-4 p-4 md:p-6'>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6'>
                   {/* Blood Group Selection */}
                   <div className='form-field select-field transform hover:scale-[1.02] transition-transform duration-300'>
                     <label
@@ -253,7 +253,7 @@ const FindBlood = () => {
                       id='bloodGroup'
                       value={bloodGroup}
                       onChange={(e) => setBloodGroup(e.target.value)}
-                      className='w-full p-3 border border-gray-300 rounded-md bg-slate-200 focus:ring-2 focus:ring-primary focus:border-primary hover:border-red-300 transition-colors duration-300'
+                      className='w-full p-2.5 md:p-3 border border-gray-300 rounded-md bg-slate-200 focus:ring-2 focus:ring-primary focus:border-primary hover:border-red-300 transition-colors duration-300'
                     >
                       <option value=''>Select Blood Group</option>
                       {bloodGroups.map((group) => (
@@ -276,7 +276,7 @@ const FindBlood = () => {
                       id='division'
                       value={division}
                       onChange={(e) => setDivision(e.target.value)}
-                      className='w-full p-3 border border-gray-300 rounded-md bg-slate-200 focus:ring-2 focus:ring-primary focus:border-primary hover:border-red-300 transition-colors duration-300'
+                      className='w-full p-2.5 md:p-3 border border-gray-300 rounded-md bg-slate-200 focus:ring-2 focus:ring-primary focus:border-primary hover:border-red-300 transition-colors duration-300'
                     >
                       <option value=''>Select Division</option>
                       {bangladeshData.divisions.map((div) => (
@@ -299,7 +299,7 @@ const FindBlood = () => {
                       id='district'
                       value={district}
                       onChange={(e) => setDistrict(e.target.value)}
-                      className='w-full p-3 border border-gray-300 rounded-md bg-slate-200 focus:ring-2 focus:ring-primary focus:border-primary hover:border-red-300 transition-colors duration-300'
+                      className='w-full p-2.5 md:p-3 border border-gray-300 rounded-md bg-slate-200 focus:ring-2 focus:ring-primary focus:border-primary hover:border-red-300 transition-colors duration-300'
                       disabled={!division}
                     >
                       <option value=''>Select District</option>
@@ -323,7 +323,7 @@ const FindBlood = () => {
                       id='upazila'
                       value={upazila}
                       onChange={(e) => setUpazila(e.target.value)}
-                      className='w-full p-3 border border-gray-300 rounded-md bg-slate-200 focus:ring-2 focus:ring-primary focus:border-primary hover:border-red-300 transition-colors duration-300'
+                      className='w-full p-2.5 md:p-3 border border-gray-300 rounded-md bg-slate-200 focus:ring-2 focus:ring-primary focus:border-primary hover:border-red-300 transition-colors duration-300'
                       disabled={!district}
                     >
                       <option value=''>Select Upazila</option>
@@ -337,10 +337,10 @@ const FindBlood = () => {
                 </div>
 
                 {/* Form Buttons */}
-                <div className='flex flex-col sm:flex-row gap-4 justify-center pt-4'>
+                <div className='flex flex-row gap-3 justify-center pt-2 md:pt-4'>
                   <button
                     type='submit'
-                    className='btn-animated btn-primary-animated px-6 py-3 rounded-md text-white font-medium flex items-center justify-center gap-2 transform hover:scale-105 hover:shadow-lg transition-all duration-300 relative overflow-hidden group'
+                    className='btn-animated btn-primary-animated flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-3 rounded-md text-white font-medium flex items-center justify-center gap-1 md:gap-2 transform hover:scale-105 hover:shadow-lg transition-all duration-300 relative overflow-hidden group'
                   >
                     <span className='absolute inset-0 w-full h-full bg-gradient-to-r from-white/0 via-white/30 to-white/0 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000'></span>
                     <FaSearch className='text-sm group-hover:rotate-12 transition-transform duration-300' />
@@ -349,7 +349,7 @@ const FindBlood = () => {
                   <button
                     type='button'
                     onClick={handleReset}
-                    className='btn-animated btn-secondary-animated px-6 py-3 rounded-md text-gray-700 font-medium flex items-center justify-center gap-2 hover:text-red-600 transform hover:scale-105 hover:shadow-md transition-all duration-300'
+                    className='btn-animated btn-secondary-animated flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-3 rounded-md text-gray-700 font-medium flex items-center justify-center gap-1 md:gap-2 hover:text-red-600 transform hover:scale-105 hover:shadow-md transition-all duration-300'
                   >
                     <FaUndo className='text-sm group-hover:rotate-180 transition-transform duration-500' />
                     <span>Reset</span>
@@ -361,24 +361,24 @@ const FindBlood = () => {
 
           {/* Results Container */}
           {searched && (
-            <div className='results-container-parent'>
+            <div className='results-container-parent mt-0 md:mt-4'>
               <div
                 className={`results-wrapper ${showResults ? "visible" : ""} ${
                   isExiting ? "exiting" : ""
                 }`}
               >
-                <div className='bg-white rounded-lg shadow-lg p-4 md:p-6'>
-                  <div className='flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-3'>
-                    <h2 className='text-xl md:text-2xl font-bold text-gray-800 flex items-center'>
-                      <FaTint className='text-primary mr-2' />
-                      Search Results
-                      <span className='ml-2 text-sm font-normal text-gray-500'>
-                        ({donors.length} donors found)
+                <div className='bg-white rounded-lg shadow-lg p-3 md:p-6'>
+                  <div className='flex flex-row justify-between items-center mb-3 md:mb-6'>
+                    <h2 className='text-lg md:text-2xl font-bold text-gray-800 flex items-center'>
+                      <FaTint className='text-primary mr-1 md:mr-2' />
+                      <span className="mr-1.5">Results</span>
+                      <span className='text-xs md:text-sm font-normal text-gray-500 p-1 px-1.5 bg-gray-100 rounded-full'>
+                        {donors.length}
                       </span>
                     </h2>
                     <button
                       onClick={handleReset}
-                      className='btn-secondary-animated btn-animated px-4 py-2 rounded-full text-sm self-start md:self-auto flex items-center gap-1'
+                      className='btn-secondary-animated btn-animated px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm flex items-center gap-1'
                     >
                       <FaSearch className='text-xs' /> New Search
                     </button>
@@ -403,215 +403,301 @@ const FindBlood = () => {
                     </div>
                   ) : (
                     <div className='space-y-4 max-h-[70vh] overflow-y-auto donor-results-container'>
-                      {donors.map((donor) => (
-                        <div
-                          key={donor._id}
-                          className='donor-card bg-white rounded-lg shadow-md overflow-hidden mb-4'
-                        >
-                          {/* Mobile Layout (hidden on desktop) */}
-                          <div className='flex flex-col p-4 md:hidden'>
-                            {/* Top section with image and name */}
-                            <div className='flex mb-3'>
-                              <div className='donor-image-container'>
-                                <div className='relative'>
-                                  <div className='h-14 w-14 rounded-full overflow-hidden border-2 border-primary'>
-                                    {donor.photoURL ? (
-                                      <img
-                                        src={donor.photoURL}
-                                        alt={donor.name}
-                                        className='h-full w-full object-cover'
-                                      />
-                                    ) : (
-                                      <div className='h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200'>
-                                        <FaUser className='text-gray-400 text-lg' />
+                      {bloodGroup && (
+                        <>
+                          {/* Exact Match Section */}
+                          <div className="bg-primary/10 rounded-lg p-2 md:p-3 mb-3 md:mb-4">
+                            <h3 className="text-base md:text-lg font-bold text-primary flex items-center mb-1 md:mb-2 flex-wrap">
+                              <FaCheckCircle className="mr-1.5 flex-shrink-0" /> 
+                              <span className="mr-1.5">Exact {bloodGroup} Matches</span>
+                              <span className="text-xs md:text-sm px-1.5 py-0.5 bg-primary/20 rounded-full flex-shrink-0">
+                                {donors.filter(donor => donor.isExactMatch).length}
+                              </span>
+                            </h3>
+                            <p className="text-xs md:text-sm text-gray-600">These donors have exactly the blood type you're looking for.</p>
+                          </div>
+                          
+                          {donors.filter(donor => donor.isExactMatch).length === 0 && (
+                            <div className="text-center py-3 bg-gray-50 rounded-lg mb-4">
+                              <p className="text-sm text-gray-500">No exact {bloodGroup} donors found in this location.</p>
+                            </div>
+                          )}
+                        </>
+                      )}
+
+                      {/* Render exact matches first */}
+                      {bloodGroup ? 
+                        // When blood group is selected, show exact matches in this section
+                        donors
+                          .filter(donor => donor.isExactMatch)
+                          .map((donor) => (
+                            <div
+                              key={donor._id}
+                              className='donor-card bg-white rounded-lg shadow-md overflow-hidden mb-4'
+                            >
+                              {/* Mobile Layout (hidden on desktop) */}
+                              <div className='flex flex-col p-3 md:hidden'>
+                                {/* Top section with image and name */}
+                                <div className='flex'>
+                                  <div className='donor-image-container'>
+                                    <div className='relative'>
+                                      <div className='h-12 w-12 rounded-full overflow-hidden border-2 border-primary'>
+                                        {donor.photoURL ? (
+                                          <img
+                                            src={donor.photoURL}
+                                            alt={donor.name}
+                                            className='h-full w-full object-cover'
+                                          />
+                                        ) : (
+                                          <div className='h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200'>
+                                            <FaUser className='text-gray-400 text-base' />
+                                          </div>
+                                        )}
+                                      </div>
+                                      
+                                      {/* Blood Group Badge */}
+                                      <div className='absolute -bottom-1 -right-1 bg-primary text-white font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white text-[9px]'>
+                                        {donor.bloodGroup}
+                                      </div>
+                                    </div>
+
+                                    {/* Eligibility indicator */}
+                                    {donor.lastDonationDate && (
+                                      <div className='mt-1 text-center'>
+                                        {(() => {
+                                          const lastDonation = new Date(
+                                            donor.lastDonationDate
+                                          );
+                                          const nextEligible = new Date(
+                                            lastDonation
+                                          );
+                                          nextEligible.setMonth(
+                                            lastDonation.getMonth() + 3
+                                          );
+                                          const today = new Date();
+                                          const isEligible = today >= nextEligible;
+
+                                          return (
+                                            <span
+                                              className={`text-[9px] px-1.5 py-0.5 rounded-full inline-block ${
+                                                isEligible
+                                                  ? "bg-green-100 text-green-800"
+                                                  : "bg-amber-100 text-amber-800"
+                                              }`}
+                                            >
+                                              {isEligible
+                                                ? "Eligible"
+                                                : "Not Eligible"}
+                                            </span>
+                                          );
+                                        })()}
                                       </div>
                                     )}
                                   </div>
-                                  
-                                  {/* Subtle pulse animation */}
-                                  <div className='absolute inset-0 rounded-full border-4 border-primary opacity-30 animate-ping-slow'></div>
 
-                                  {/* Blood Group Badge */}
-                                  <div className='absolute -bottom-1 -right-1 bg-primary text-white font-bold rounded-full h-6 w-6 flex items-center justify-center border-2 border-white'>
-                                    <span className='text-xs'>
-                                      {donor.bloodGroup}
-                                    </span>
-                                  </div>
-
-                                  {/* Add compatibility badge for non-exact matches */}
-                                  {bloodGroup && !donor.isExactMatch && (
-                                    <div className='absolute -top-1 -right-1 bg-amber-500 text-white text-[8px] font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white shadow-md'>
-                                      <span>COMP</span>
-                                    </div>
-                                  )}
-                                </div>
-
-                                {/* Eligibility indicator */}
-                                {donor.lastDonationDate && (
-                                  <div className='mt-2 text-center'>
-                                    {(() => {
-                                      const lastDonation = new Date(
-                                        donor.lastDonationDate
-                                      );
-                                      const nextEligible = new Date(
-                                        lastDonation
-                                      );
-                                      nextEligible.setMonth(
-                                        lastDonation.getMonth() + 3
-                                      );
-                                      const today = new Date();
-                                      const isEligible = today >= nextEligible;
-
-                                      return (
-                                        <span
-                                          className={`text-xs px-2 py-0.5 rounded-full inline-block ${
-                                            isEligible
-                                              ? "bg-green-100 text-green-800"
-                                              : "bg-amber-100 text-amber-800"
-                                          }`}
-                                        >
-                                          {isEligible
-                                            ? "Eligible"
-                                            : "Not Eligible"}
+                                  {/* Donor Name and Details */}
+                                  <div className='ml-2.5 flex-1 min-w-0'>
+                                    <h3 className='donor-name text-base font-bold text-gray-900 truncate'>
+                                      {donor.name}
+                                    </h3>
+                                    {donor.upazila && donor.district && (
+                                      <div className='flex items-center mt-0.5'>
+                                        <div className='w-4 h-4 text-xs rounded-full bg-red-50 flex items-center justify-center mr-1.5'>
+                                          <FaMapMarkerAlt className='text-primary text-[8px]' />
+                                        </div>
+                                        <span className='text-xs text-gray-700 truncate'>
+                                          {[donor.upazila, donor.district]
+                                            .filter(Boolean)
+                                            .join(", ")}
                                         </span>
-                                      );
-                                    })()}
+                                      </div>
+                                    )}
+                                    {donor.lastDonationDate && (
+                                      <div className='flex items-center mt-0.5'>
+                                        <div className='w-4 h-4 text-xs rounded-full bg-red-50 flex items-center justify-center mr-1.5'>
+                                          <FaCalendarAlt className='text-primary text-[8px]' />
+                                        </div>
+                                        <span className='text-xs text-gray-700'>
+                                          Last: <span className='text-xs text-red-500'>{new Date(
+                                            donor.lastDonationDate
+                                          ).toLocaleDateString("en-US", {
+                                            month: "short",
+                                            day: "numeric",
+                                            year: "numeric",
+                                          })}</span>
+                                        </span>
+                                      </div>
+                                    )}
                                   </div>
-                                )}
+                                </div>
+
+                                {/* Bottom section - Contact Button */}
+                                <div className='contact-button-container w-full mt-2'>
+                                  <Link
+                                    to={`/checkout/${donor._id}`}
+                                    className='contact-button bg-primary text-white px-3 py-1.5 rounded-md flex items-center justify-center text-xs gap-1 w-full'
+                                  >
+                                    Contact <FaArrowRight className='text-[9px]' />
+                                  </Link>
+                                </div>
                               </div>
 
-                              {/* Donor Name and Details */}
-                              <div className='ml-3'>
-                                <h3 className='donor-name text-lg font-bold text-gray-900'>
-                                  {donor.name}
-                                </h3>
-                                {donor.upazila && donor.district && (
-                                  <div className='flex items-center'>
-                                    <div className='w-5 h-5 text-xs rounded-full bg-red-50 flex items-center justify-center mr-2'>
-                                      <FaMapMarkerAlt className='text-primary' />
+                              {/* Desktop Layout (hidden on mobile) */}
+                              <div className='hidden md:flex items-center p-4 relative z-10 hover:bg-red-50 transition-colors duration-300 group'>
+                                {/* Left: Donor Image and Blood Group with enhanced styling */}
+                                <div className='flex-shrink-0 mr-4'>
+                                  <div className='relative transform group-hover:scale-105 transition-transform duration-300'>
+                                    <div className='h-16 w-16 md:h-20 md:w-20 rounded-full overflow-hidden border-2 border-primary shadow-md group-hover:shadow-lg group-hover:border-red-500 transition-all duration-300'>
+                                      {donor.photoURL ? (
+                                        <img
+                                          src={donor.photoURL}
+                                          alt={donor.name}
+                                          className='h-full w-full object-cover transform group-hover:scale-110 transition-transform duration-500'
+                                        />
+                                      ) : (
+                                        <div className='h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 group-hover:from-red-50 group-hover:to-white transition-colors duration-300'>
+                                          <FaUser className='text-gray-400 text-xl group-hover:text-red-400 transition-colors duration-300' />
+                                        </div>
+                                      )}
+
+                                      {/* Subtle pulse animation on hover */}
+                                      <div className='absolute inset-0 rounded-full border-4 border-primary opacity-0 group-hover:opacity-30 animate-ping-slow'></div>
                                     </div>
-                                    <span className='text-xs text-gray-700'>
-                                      {[donor.upazila, donor.district]
-                                        .filter(Boolean)
-                                        .join(", ")}
-                                    </span>
-                                  </div>
-                                )}
-                                {donor.lastDonationDate && (
-                                  <div className='flex mt-1'>
-                                    <div className='w-5 h-5 text-xs rounded-full bg-red-50 flex items-center justify-center mr-2'>
-                                      <FaCalendarAlt className='text-primary' />
-                                    </div>
-                                    <div className='flex flex-col'>
-                                      <span className='text-xs text-gray-700'>
-                                        Last Donation:
-                                        <br />
-                                        <span className='text-xs text-red-500'>{new Date(
-                                          donor.lastDonationDate
-                                        ).toLocaleDateString("en-US", {
-                                          month: "short",
-                                          day: "numeric",
-                                          year: "numeric",
-                                        })}</span>
+
+                                    {/* Enhanced blood group badge */}
+                                    <div className='absolute -bottom-1 -right-1 bg-primary text-white font-bold rounded-full h-7 w-7 flex items-center justify-center border-2 border-white shadow-md transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300'>
+                                      <span className='text-xs'>
+                                        {donor.bloodGroup}
                                       </span>
                                     </div>
                                   </div>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Bottom section - Contact Button */}
-                            <div className='contact-button-container w-full'>
-                              <Link
-                                to={`/checkout/${donor._id}`}
-                                className='contact-button bg-primary text-white px-4 py-2 rounded-md flex items-center justify-center text-sm gap-1.5 w-full'
-                              >
-                                Contact <FaArrowRight className='text-xs' />
-                              </Link>
-                            </div>
-                          </div>
-
-                          {/* Desktop Layout (hidden on mobile) */}
-                          <div className='hidden md:flex items-center p-4 relative z-10 hover:bg-red-50 transition-colors duration-300 group'>
-                            {/* Left: Donor Image and Blood Group with enhanced styling */}
-                            <div className='flex-shrink-0 mr-4'>
-                              <div className='relative transform group-hover:scale-105 transition-transform duration-300'>
-                                <div className='h-16 w-16 md:h-20 md:w-20 rounded-full overflow-hidden border-2 border-primary shadow-md group-hover:shadow-lg group-hover:border-red-500 transition-all duration-300'>
-                                  {donor.photoURL ? (
-                                    <img
-                                      src={donor.photoURL}
-                                      alt={donor.name}
-                                      className='h-full w-full object-cover transform group-hover:scale-110 transition-transform duration-500'
-                                    />
-                                  ) : (
-                                    <div className='h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 group-hover:from-red-50 group-hover:to-white transition-colors duration-300'>
-                                      <FaUser className='text-gray-400 text-xl group-hover:text-red-400 transition-colors duration-300' />
-                                    </div>
-                                  )}
-
-                                  {/* Subtle pulse animation on hover */}
-                                  <div className='absolute inset-0 rounded-full border-4 border-primary opacity-0 group-hover:opacity-30 animate-ping-slow'></div>
                                 </div>
 
-                                {/* Enhanced blood group badge */}
-                                <div className='absolute -bottom-1 -right-1 bg-primary text-white font-bold rounded-full h-7 w-7 flex items-center justify-center border-2 border-white shadow-md transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300'>
-                                  <span className='text-xs'>
-                                    {donor.bloodGroup}
-                                  </span>
+                                {/* Middle: Donor Information with enhanced styling */}
+                                <div className='donor-info flex-grow mr-4'>
+                                  <h3 className='donor-name text-lg font-semibold mb-1 group-hover:text-red-600 transition-colors duration-300'>
+                                    {donor.name}
+                                  </h3>
+                                  <div className='donor-details text-sm space-y-1'>
+                                    {donor.upazila && donor.district && (
+                                      <div className='flex items-center'>
+                                        <div className='w-5 h-5 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300'>
+                                          <FaMapMarkerAlt className='text-primary text-xs' />
+                                        </div>
+                                        <span className='text-gray-600 group-hover:text-gray-800 transition-colors duration-300'>
+                                          {[donor.upazila, donor.district]
+                                            .filter(Boolean)
+                                            .join(", ")}
+                                        </span>
+                                      </div>
+                                    )}
+                                    {donor.lastDonationDate && (
+                                      <div className='flex items-center'>
+                                        <div className='w-5 h-5 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300'>
+                                          <FaCalendarAlt className='text-primary text-xs' />
+                                        </div>
+                                        <span className='text-gray-600 group-hover:text-gray-800 transition-colors duration-300'>
+                                          Last Donation:{" "}
+                                          <span className='text-red-500 font-medium'>
+                                            {new Date(
+                                              donor.lastDonationDate
+                                            ).toLocaleDateString("en-US", {
+                                              month: "short",
+                                              day: "numeric",
+                                              year: "numeric",
+                                            })}
+                                          </span>
+                                        </span>
+                                      </div>
+                                    )}
+                                    {donor.lastDonationDate && (
+                                      <div className='flex items-center'>
+                                        <div className='w-5 h-5 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300'>
+                                          <FaCheckCircle className='text-primary text-xs' />
+                                        </div>
+                                        <span className='text-gray-600 group-hover:text-gray-800 transition-colors duration-300'>
+                                          {(() => {
+                                            const lastDonation = new Date(
+                                              donor.lastDonationDate
+                                            );
+                                            const nextEligible = new Date(
+                                              lastDonation
+                                            );
+                                            nextEligible.setMonth(
+                                              lastDonation.getMonth() + 3
+                                            );
+                                            const today = new Date();
+                                            const isEligible = today >= nextEligible;
+
+                                            return (
+                                              <span
+                                                className={`${
+                                                  isEligible
+                                                    ? "text-green-600"
+                                                    : "text-amber-600"
+                                                } font-medium`}
+                                              >
+                                                {isEligible
+                                                  ? "Eligible to donate"
+                                                  : "Not eligible yet"}
+                                              </span>
+                                            );
+                                          })()}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
 
-                                {/* Add compatibility badge for non-exact matches */}
-                                {bloodGroup && !donor.isExactMatch && (
-                                  <div className='absolute -top-1 -right-1 bg-amber-500 text-white text-[8px] font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white shadow-md'>
-                                    <span>COMP</span>
-                                  </div>
-                                )}
+                                {/* Right: Contact Button with enhanced styling */}
+                                <div className='flex-shrink-0'>
+                                  <Link
+                                    to={`/checkout/${donor._id}`}
+                                    className='contact-button bg-primary hover:bg-red-600 text-white px-4 py-2 rounded-md flex items-center gap-2 shadow-md group-hover:shadow-lg transform group-hover:translate-y-[-2px] transition-all duration-300'
+                                  >
+                                    Contact
+                                    <FaArrowRight className='text-xs transition-transform duration-300 group-hover:translate-x-1' />
+                                  </Link>
+                                </div>
                               </div>
                             </div>
+                          ))
+                        :
+                        // When no blood group is selected, show all donors
+                        donors.map((donor) => (
+                          <div
+                            key={donor._id}
+                            className='donor-card bg-white rounded-lg shadow-md overflow-hidden mb-4'
+                          >
+                            {/* Mobile Layout (hidden on desktop) */}
+                            <div className='flex flex-col p-3 md:hidden'>
+                              {/* Top section with image and name */}
+                              <div className='flex'>
+                                <div className='donor-image-container'>
+                                  <div className='relative'>
+                                    <div className='h-12 w-12 rounded-full overflow-hidden border-2 border-primary'>
+                                      {donor.photoURL ? (
+                                        <img
+                                          src={donor.photoURL}
+                                          alt={donor.name}
+                                          className='h-full w-full object-cover'
+                                        />
+                                      ) : (
+                                        <div className='h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200'>
+                                          <FaUser className='text-gray-400 text-base' />
+                                        </div>
+                                      )}
+                                    </div>
+                                    
+                                    {/* Blood Group Badge */}
+                                    <div className='absolute -bottom-1 -right-1 bg-primary text-white font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white text-[9px]'>
+                                      {donor.bloodGroup}
+                                    </div>
+                                  </div>
 
-                            {/* Middle: Donor Information with enhanced styling */}
-                            <div className='donor-info flex-grow mr-4'>
-                              <h3 className='donor-name text-lg font-semibold mb-1 group-hover:text-red-600 transition-colors duration-300'>
-                                {donor.name}
-                              </h3>
-                              <div className='donor-details text-sm space-y-1'>
-                                {donor.upazila && donor.district && (
-                                  <div className='flex items-center'>
-                                    <div className='w-5 h-5 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300'>
-                                      <FaMapMarkerAlt className='text-primary text-xs' />
-                                    </div>
-                                    <span className='text-gray-600 group-hover:text-gray-800 transition-colors duration-300'>
-                                      {[donor.upazila, donor.district]
-                                        .filter(Boolean)
-                                        .join(", ")}
-                                    </span>
-                                  </div>
-                                )}
-                                {donor.lastDonationDate && (
-                                  <div className='flex items-center'>
-                                    <div className='w-5 h-5 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300'>
-                                      <FaCalendarAlt className='text-primary text-xs' />
-                                    </div>
-                                    <span className='text-gray-600 group-hover:text-gray-800 transition-colors duration-300'>
-                                      Last Donation:{" "}
-                                      <span className='text-red-500 font-medium'>
-                                        {new Date(
-                                          donor.lastDonationDate
-                                        ).toLocaleDateString("en-US", {
-                                          month: "short",
-                                          day: "numeric",
-                                          year: "numeric",
-                                        })}
-                                      </span>
-                                    </span>
-                                  </div>
-                                )}
-                                {donor.lastDonationDate && (
-                                  <div className='flex items-center'>
-                                    <div className='w-5 h-5 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300'>
-                                      <FaCheckCircle className='text-primary text-xs' />
-                                    </div>
-                                    <span className='text-gray-600 group-hover:text-gray-800 transition-colors duration-300'>
+                                  {/* Eligibility indicator */}
+                                  {donor.lastDonationDate && (
+                                    <div className='mt-1 text-center'>
                                       {(() => {
                                         const lastDonation = new Date(
                                           donor.lastDonationDate
@@ -627,37 +713,333 @@ const FindBlood = () => {
 
                                         return (
                                           <span
-                                            className={`${
+                                            className={`text-[9px] px-1.5 py-0.5 rounded-full inline-block ${
                                               isEligible
-                                                ? "text-green-600"
-                                                : "text-amber-600"
-                                            } font-medium`}
+                                                ? "bg-green-100 text-green-800"
+                                                : "bg-amber-100 text-amber-800"
+                                            }`}
                                           >
                                             {isEligible
-                                              ? "Eligible to donate"
-                                              : "Not eligible yet"}
+                                              ? "Eligible"
+                                              : "Not Eligible"}
                                           </span>
                                         );
                                       })()}
-                                    </span>
-                                  </div>
-                                )}
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Donor Name and Details */}
+                                <div className='ml-2.5 flex-1 min-w-0'>
+                                  <h3 className='donor-name text-base font-bold text-gray-900 truncate'>
+                                    {donor.name}
+                                  </h3>
+                                  {donor.upazila && donor.district && (
+                                    <div className='flex items-center mt-0.5'>
+                                      <div className='w-4 h-4 text-xs rounded-full bg-red-50 flex items-center justify-center mr-1.5'>
+                                        <FaMapMarkerAlt className='text-primary text-[8px]' />
+                                      </div>
+                                      <span className='text-xs text-gray-700 truncate'>
+                                        {[donor.upazila, donor.district]
+                                          .filter(Boolean)
+                                          .join(", ")}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {donor.lastDonationDate && (
+                                    <div className='flex items-center mt-0.5'>
+                                      <div className='w-4 h-4 text-xs rounded-full bg-red-50 flex items-center justify-center mr-1.5'>
+                                        <FaCalendarAlt className='text-primary text-[8px]' />
+                                      </div>
+                                      <span className='text-xs text-gray-700'>
+                                        Last: <span className='text-xs text-red-500'>{new Date(
+                                          donor.lastDonationDate
+                                        ).toLocaleDateString("en-US", {
+                                          month: "short",
+                                          day: "numeric",
+                                          year: "numeric",
+                                        })}</span>
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Bottom section - Contact Button */}
+                              <div className='contact-button-container w-full mt-2'>
+                                <Link
+                                  to={`/checkout/${donor._id}`}
+                                  className='contact-button bg-primary text-white px-3 py-1.5 rounded-md flex items-center justify-center text-xs gap-1 w-full'
+                                >
+                                  Contact <FaArrowRight className='text-[9px]' />
+                                </Link>
                               </div>
                             </div>
 
-                            {/* Right: Contact Button with enhanced styling */}
-                            <div className='flex-shrink-0'>
-                              <Link
-                                to={`/checkout/${donor._id}`}
-                                className='contact-button bg-primary hover:bg-red-600 text-white px-4 py-2 rounded-md flex items-center gap-2 shadow-md group-hover:shadow-lg transform group-hover:translate-y-[-2px] transition-all duration-300'
-                              >
-                                Contact
-                                <FaArrowRight className='text-xs transition-transform duration-300 group-hover:translate-x-1' />
-                              </Link>
+                            {/* Desktop Layout (hidden on mobile) */}
+                            <div className='hidden md:flex items-center p-4 relative z-10 hover:bg-red-50 transition-colors duration-300 group'>
+                              {/* Left: Donor Image and Blood Group with enhanced styling */}
+                              <div className='flex-shrink-0 mr-4'>
+                                <div className='relative transform group-hover:scale-105 transition-transform duration-300'>
+                                  <div className='h-16 w-16 md:h-20 md:w-20 rounded-full overflow-hidden border-2 border-primary shadow-md group-hover:shadow-lg group-hover:border-red-500 transition-all duration-300'>
+                                    {donor.photoURL ? (
+                                      <img
+                                        src={donor.photoURL}
+                                        alt={donor.name}
+                                        className='h-full w-full object-cover transform group-hover:scale-110 transition-transform duration-500'
+                                      />
+                                    ) : (
+                                      <div className='h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 group-hover:from-red-50 group-hover:to-white transition-colors duration-300'>
+                                        <FaUser className='text-gray-400 text-xl group-hover:text-red-400 transition-colors duration-300' />
+                                      </div>
+                                    )}
+
+                                    {/* Subtle pulse animation on hover */}
+                                    <div className='absolute inset-0 rounded-full border-4 border-primary opacity-0 group-hover:opacity-30 animate-ping-slow'></div>
+                                  </div>
+
+                                  {/* Enhanced blood group badge */}
+                                  <div className='absolute -bottom-1 -right-1 bg-primary text-white font-bold rounded-full h-7 w-7 flex items-center justify-center border-2 border-white shadow-md transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300'>
+                                    <span className='text-xs'>
+                                      {donor.bloodGroup}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Middle: Donor Information with enhanced styling */}
+                              <div className='donor-info flex-grow mr-4'>
+                                <h3 className='donor-name text-lg font-semibold mb-1 group-hover:text-red-600 transition-colors duration-300'>
+                                  {donor.name}
+                                </h3>
+                                <div className='donor-details text-sm space-y-1'>
+                                  {donor.upazila && donor.district && (
+                                    <div className='flex items-center'>
+                                      <div className='w-5 h-5 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300'>
+                                        <FaMapMarkerAlt className='text-primary text-xs' />
+                                      </div>
+                                      <span className='text-gray-600 group-hover:text-gray-800 transition-colors duration-300'>
+                                        {[donor.upazila, donor.district]
+                                          .filter(Boolean)
+                                          .join(", ")}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {donor.lastDonationDate && (
+                                    <div className='flex items-center'>
+                                      <div className='w-5 h-5 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300'>
+                                        <FaCalendarAlt className='text-primary text-xs' />
+                                      </div>
+                                      <span className='text-gray-600 group-hover:text-gray-800 transition-colors duration-300'>
+                                        Last Donation:{" "}
+                                        <span className='text-red-500 font-medium'>
+                                          {new Date(
+                                            donor.lastDonationDate
+                                          ).toLocaleDateString("en-US", {
+                                            month: "short",
+                                            day: "numeric",
+                                            year: "numeric",
+                                          })}
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
+                                  {donor.lastDonationDate && (
+                                    <div className='flex items-center'>
+                                      <div className='w-5 h-5 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300'>
+                                        <FaCheckCircle className='text-primary text-xs' />
+                                      </div>
+                                      <span className='text-gray-600 group-hover:text-gray-800 transition-colors duration-300'>
+                                        {(() => {
+                                          const lastDonation = new Date(
+                                            donor.lastDonationDate
+                                          );
+                                          const nextEligible = new Date(
+                                            lastDonation
+                                          );
+                                          nextEligible.setMonth(
+                                            lastDonation.getMonth() + 3
+                                          );
+                                          const today = new Date();
+                                          const isEligible = today >= nextEligible;
+
+                                          return (
+                                            <span
+                                              className={`${
+                                                isEligible
+                                                  ? "text-green-600"
+                                                  : "text-amber-600"
+                                              } font-medium`}
+                                            >
+                                              {isEligible
+                                                ? "Eligible to donate"
+                                                : "Not eligible yet"}
+                                            </span>
+                                          );
+                                        })()}
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Right: Contact Button with enhanced styling */}
+                              <div className='flex-shrink-0'>
+                                <Link
+                                  to={`/checkout/${donor._id}`}
+                                  className='contact-button bg-primary hover:bg-red-600 text-white px-4 py-2 rounded-md flex items-center gap-2 shadow-md group-hover:shadow-lg transform group-hover:translate-y-[-2px] transition-all duration-300'
+                                >
+                                  Contact
+                                  <FaArrowRight className='text-xs transition-transform duration-300 group-hover:translate-x-1' />
+                                </Link>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+
+                      {/* Compatible Donors Section */}
+                      {bloodGroup && donors.filter(donor => !donor.isExactMatch).length > 0 && (
+                        <>
+                          <div className="bg-blue-50 rounded-lg p-2 md:p-3 mb-3 mt-4 md:mt-8 border-l-4 border-blue-400">
+                            <h3 className="text-base md:text-lg font-bold text-blue-700 flex items-center mb-1 md:mb-2 flex-wrap">
+                              <FaInfoCircle className="mr-1.5 flex-shrink-0" /> 
+                              <span className="mr-1.5">Compatible Types for {bloodGroup}</span>
+                              <span className="text-xs md:text-sm px-1.5 py-0.5 bg-blue-200 rounded-full flex-shrink-0">
+                                {donors.filter(donor => !donor.isExactMatch).length}
+                              </span>
+                            </h3>
+                            <p className="text-xs md:text-sm text-gray-600">
+                              These donors have blood types compatible with {bloodGroup}. While not exact matches, 
+                              they can safely donate to {bloodGroup} recipients.
+                            </p>
+                          </div>
+
+                          {/* Render compatible matches */}
+                          {donors
+                            .filter(donor => !donor.isExactMatch)
+                            .map((donor) => (
+                              <div
+                                key={donor._id}
+                                className='donor-card bg-white rounded-lg shadow-md overflow-hidden mb-4 border-l-4 border-blue-300'
+                              >
+                                {/* Mobile Layout (hidden on desktop) */}
+                                <div className='flex flex-col p-3 md:hidden'>
+                                  {/* Top section with image and name */}
+                                  <div className='flex'>
+                                    <div className='donor-image-container'>
+                                      <div className='relative'>
+                                        <div className='h-12 w-12 rounded-full overflow-hidden border-2 border-blue-400'>
+                                          {donor.photoURL ? (
+                                            <img
+                                              src={donor.photoURL}
+                                              alt={donor.name}
+                                              className='h-full w-full object-cover'
+                                            />
+                                          ) : (
+                                            <div className='h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200'>
+                                              <FaUser className='text-gray-400 text-base' />
+                                            </div>
+                                          )}
+                                        </div>
+
+                                        {/* Blood Group Badge */}
+                                        <div className='absolute -bottom-1 -right-1 bg-blue-500 text-white font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white text-[9px]'>
+                                          {donor.bloodGroup}
+                                        </div>
+
+                                        {/* Compatibility badge */}
+                                        <div className='absolute -top-1 -right-1 bg-blue-500 text-white text-[7px] font-bold rounded-full h-4 w-4 flex items-center justify-center border border-white shadow-sm'>
+                                          C
+                                        </div>
+                                      </div>
+
+                                      {/* Eligibility indicator */}
+                                      {donor.lastDonationDate && (
+                                        <div className='mt-1 text-center'>
+                                          {(() => {
+                                            const lastDonation = new Date(
+                                              donor.lastDonationDate
+                                            );
+                                            const nextEligible = new Date(
+                                              lastDonation
+                                            );
+                                            nextEligible.setMonth(
+                                              lastDonation.getMonth() + 3
+                                            );
+                                            const today = new Date();
+                                            const isEligible = today >= nextEligible;
+
+                                            return (
+                                              <span
+                                                className={`text-[9px] px-1.5 py-0.5 rounded-full inline-block ${
+                                                  isEligible
+                                                    ? "bg-green-100 text-green-800"
+                                                    : "bg-amber-100 text-amber-800"
+                                                }`}
+                                              >
+                                                {isEligible
+                                                  ? "Eligible"
+                                                  : "Not Eligible"}
+                                              </span>
+                                            );
+                                          })()}
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    {/* Donor Name and Details */}
+                                    <div className='ml-2.5 flex-1 min-w-0'>
+                                      <h3 className='donor-name text-base font-bold text-gray-900 flex items-center flex-wrap'>
+                                        <span className="truncate">{donor.name}</span>
+                                        <span className="ml-1 text-[9px] font-normal text-blue-500 bg-blue-50 px-1 py-0.5 rounded-full whitespace-nowrap">
+                                          Compatible
+                                        </span>
+                                      </h3>
+                                      {donor.upazila && donor.district && (
+                                        <div className='flex items-center mt-0.5'>
+                                          <div className='w-4 h-4 text-xs rounded-full bg-blue-50 flex items-center justify-center mr-1.5'>
+                                            <FaMapMarkerAlt className='text-blue-500 text-[8px]' />
+                                          </div>
+                                          <span className='text-xs text-gray-700 truncate'>
+                                            {[donor.upazila, donor.district]
+                                              .filter(Boolean)
+                                              .join(", ")}
+                                          </span>
+                                        </div>
+                                      )}
+                                      {donor.lastDonationDate && (
+                                        <div className='flex items-center mt-0.5'>
+                                          <div className='w-4 h-4 text-xs rounded-full bg-blue-50 flex items-center justify-center mr-1.5'>
+                                            <FaCalendarAlt className='text-blue-500 text-[8px]' />
+                                          </div>
+                                          <span className='text-xs text-gray-700'>
+                                            Last: <span className='text-xs text-blue-500'>{new Date(
+                                              donor.lastDonationDate
+                                            ).toLocaleDateString("en-US", {
+                                              month: "short",
+                                              day: "numeric",
+                                              year: "numeric",
+                                            })}</span>
+                                          </span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Bottom section - Contact Button */}
+                                  <div className='contact-button-container w-full mt-2'>
+                                    <Link
+                                      to={`/checkout/${donor._id}`}
+                                      className='contact-button bg-blue-500 text-white px-3 py-1.5 rounded-md flex items-center justify-center text-xs gap-1 w-full'
+                                    >
+                                      Contact <FaArrowRight className='text-[9px]' />
+                                    </Link>
+                                  </div>
+                                </div>
+                              </div>
+                          ))}
+                        </>
+                      )}
                     </div>
                   )}
                 </div>

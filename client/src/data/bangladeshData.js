@@ -6,7 +6,7 @@ export const bangladeshData = {
       districts: [
         {
           name: "Dhaka",
-          upazilas: ["Dhamrai", "Dohar", "Keraniganj", "Nawabganj", "Savar", "Tejgaon"]
+          upazilas: ["Dhamrai", "Dhanmondi", "Dohar", "Gulshan", "Keraniganj", "Mirpur", "Mohammadpur", "Nawabganj", "Savar", "Tejgaon", "Uttara"]
         },
         {
           name: "Gazipur",
@@ -35,6 +35,27 @@ export const bangladeshData = {
         {
           name: "Kishoreganj",
           upazilas: ["Austagram", "Bajitpur", "Bhairab", "Hossainpur", "Itna", "Karimganj", "Katiadi", "Kishoreganj Sadar", "Kuliarchar", "Mithamain", "Nikli", "Pakundia", "Tarail"]
+        },
+        // Missing Districts: Faridpur, Gopalganj, Madaripur, Rajbari, Shariatpur
+        {
+          name: "Faridpur",
+          upazilas: ["Alfadanga", "Bhanga", "Boalmari", "Charbhadrasan", "Faridpur Sadar", "Madhukhali", "Nagarkanda", "Sadarpur", "Saltha"]
+        },
+        {
+          name: "Gopalganj",
+          upazilas: ["Gopalganj Sadar", "Kashiani", "Kotalipara", "Muksudpur", "Tungipara"]
+        },
+        {
+          name: "Madaripur",
+          upazilas: ["Kalkini", "Madaripur Sadar", "Rajoir", "Shibchar"]
+        },
+        {
+          name: "Rajbari",
+          upazilas: ["Baliakandi", "Goalanda", "Kalukhali", "Pangsha", "Rajbari Sadar"]
+        },
+        {
+          name: "Shariatpur",
+          upazilas: ["Bhedarganj", "Damudya", "Goshairhat", "Janjira", "Naria", "Shariatpur Sadar"]
         }
       ]
     },
@@ -111,8 +132,8 @@ export const bangladeshData = {
           upazilas: ["Atgharia", "Bera", "Bhangura", "Chatmohar", "Faridpur", "Ishwardi", "Pabna Sadar", "Santhia", "Sujanagar"]
         },
         {
-          name: "Bogra",
-          upazilas: ["Adamdighi", "Bogra Sadar", "Dhunat", "Dhupchanchia", "Gabtali", "Kahaloo", "Nandigram", "Sariakandi", "Shajahanpur", "Sherpur", "Shibganj", "Sonatola"]
+          name: "Bogura",
+          upazilas: ["Adamdighi", "Bogura Sadar", "Dhunat", "Dhupchanchia", "Gabtali", "Kahaloo", "Nandigram", "Sariakandi", "Shahjahanpur", "Sherpur", "Shibganj", "Sonatola"]
         },
         {
           name: "Joypurhat",
@@ -278,4 +299,4 @@ export const bangladeshData = {
       ]
     }
   ]
-}; 
+};

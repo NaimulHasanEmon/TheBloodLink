@@ -549,3 +549,15 @@
 .donor-results-container::-webkit-scrollbar-thumb:hover {
   background: #dc2626;
 }
+
+/* Mobile optimizations to reduce the gap between form and results */
+@media (max-width: 768px) {
+  .search-form-searched {
+    margin-bottom: 0.5rem !important;
+    transform: translateY(-15px) !important;
+  }
+  
+  .results-wrapper.visible {
+    margin-top: -15px;
+  }
+}
