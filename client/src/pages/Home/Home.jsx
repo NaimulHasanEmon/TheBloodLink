@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
+import Marquee from "react-fast-marquee";
 import {
   FaHandHoldingHeart,
   FaSearch,
@@ -12,7 +13,11 @@ import {
   FaMapMarkerAlt,
   FaPhoneAlt,
   FaUserCircle,
-  FaTint
+  FaTint,
+  FaCode,
+  FaLinkedin,
+  FaGithub,
+  FaGlobe
 } from "react-icons/fa";
 import { GiHeartOrgan, GiHealthNormal } from "react-icons/gi";
 import { getDonors, getDonorByUid } from "../../utils/api";
@@ -425,58 +430,62 @@ const Home = () => {
               <div className='loading-blood'></div>
             </div>
           ) : (
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12'>
+            <div className='mt-12'>
               {donors.length > 0 ? (
-                donors.map((donor, index) => (
-                  <div
-                    key={donor._id}
-                    className='donor-card card-hover'
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <div className='flex items-center gap-4 mb-4'>
-                      <div className='avatar'>
-                        <div className='w-16 h-16 rounded-full overflow-hidden border-2 border-primary'>
-                          <img
-                            src={
-                              donor.photoURL ||
-                              "https://i.ibb.co/5GzXkwq/user.png"
-                            }
-                            alt={donor.name}
-                            className='w-full h-full object-cover'
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className='text-xl font-bold donor-name transition-colors duration-300'>
-                          {donor.name}
-                        </h3>
-                        <div className='blood-group text-sm mt-1'>
-                          {donor.bloodGroup}
-                        </div>
-                      </div>
-                    </div>
-                    <div className='space-y-2 text-gray-600 mb-4'>
-                      <p className='flex items-start gap-2'>
-                        <FaMapMarkerAlt className='text-primary mt-1 flex-shrink-0' />
-                        <span>{donor.address}</span>
-                      </p>
-                      <p className='flex items-center gap-2'>
-                        <FaPhoneAlt className='text-primary flex-shrink-0' />
-                        <span>{donor.phone}</span>
-                      </p>
-                    </div>
-                    <div className='card-actions justify-end mt-4'>
-                      <Link
-                        to={`/checkout/${donor._id}`}
-                        className='btn-primary px-4 py-2 rounded-full flex items-center gap-2 text-sm'
+                <Marquee speed={40} gradient={true} gradientWidth={50}>
+                  <div className='flex gap-6'>
+                    {donors.map((donor, index) => (
+                      <div
+                        key={donor._id}
+                        className='donor-card card-hover min-w-[320px]'
+                        style={{ animationDelay: `${index * 0.1}s` }}
                       >
-                        Contact Donor <FaArrowRight size={16} />
-                      </Link>
-                    </div>
+                        <div className='flex items-center gap-4 mb-4'>
+                          <div className='avatar'>
+                            <div className='w-16 h-16 rounded-full overflow-hidden border-2 border-primary'>
+                              <img
+                                src={
+                                  donor.photoURL ||
+                                  "https://i.ibb.co/5GzXkwq/user.png"
+                                }
+                                alt={donor.name}
+                                className='w-full h-full object-cover'
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <h3 className='text-xl font-bold donor-name transition-colors duration-300'>
+                              {donor.name}
+                            </h3>
+                            <div className='blood-group text-sm mt-1'>
+                              {donor.bloodGroup}
+                            </div>
+                          </div>
+                        </div>
+                        <div className='space-y-2 text-gray-600 mb-4'>
+                          <p className='flex items-start gap-2'>
+                            <FaMapMarkerAlt className='text-primary mt-1 flex-shrink-0' />
+                            <span>{donor.address}</span>
+                          </p>
+                          <p className='flex items-center gap-2'>
+                            <FaPhoneAlt className='text-primary flex-shrink-0' />
+                            <span>{donor.phone}</span>
+                          </p>
+                        </div>
+                        <div className='card-actions justify-end mt-4'>
+                          <Link
+                            to={`/checkout/${donor._id}`}
+                            className='btn-primary px-4 py-2 rounded-full flex items-center gap-2 text-sm'
+                          >
+                            Contact Donor <FaArrowRight size={16} />
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))
+                </Marquee>
               ) : (
-                <div className='col-span-3 text-center py-12'>
+                <div className='text-center py-12'>
                   <div className='max-w-md mx-auto'>
                     <img
                       src='https://img.freepik.com/free-vector/no-data-concept-illustration_114360-536.jpg'
@@ -626,6 +635,65 @@ const Home = () => {
                 {/* Border flash effect */}
                 <span className='absolute inset-0 border-2 border-white/0 rounded-full group-hover:border-white/40 group-hover:scale-105 transition-all duration-500'></span>
               </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Developer Section */}
+      <section className='py-10 bg-gradient-to-b from-slate-50 to-white border-t border-gray-100'>
+        <div className='container mx-auto px-4'>
+          <h2 className='text-2xl font-bold text-center text-neutral mb-3'>Developer</h2>
+          
+          <div className='max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1'>
+            <div className='flex flex-col md:flex-row'>
+              <div className='md:w-1/3'>
+                <div className='h-full bg-primary/5 flex items-center justify-center p-6'>
+                  <div className='w-32 h-32 rounded-full border-4 border-primary/20 overflow-hidden'>
+                    <img 
+                      src="/images/Developer.JPG" 
+                      alt="Developer" 
+                      className='w-full h-full object-cover'
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className='md:w-2/3 p-6'>
+                <div className='flex flex-col h-full justify-between'>
+                  <div>
+                    <h3 className='text-xl font-bold text-neutral mb-1'>Md. Naimul Hasan</h3>
+                    <p className='text-sm text-gray-500 mb-4 flex items-center'>
+                      <FaCode className='mr-2 text-primary' /> MERN Stack Developer
+                    </p>
+                  </div>
+                  <div className='flex gap-3'>
+                    <a 
+                      href="https://www.linkedin.com/in/md-naimul-hasan-emon/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className='w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 transition-all duration-300 hover:bg-blue-600 hover:text-white'
+                    >
+                      <FaLinkedin size={18} />
+                    </a>
+                    <a 
+                      href="https://github.com/NaimulHasanEmon" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className='w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-800 transition-all duration-300 hover:bg-gray-800 hover:text-white'
+                    >
+                      <FaGithub size={18} />
+                    </a>
+                    <a 
+                      href="https://mdnaimulhasan.netlify.app/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className='w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-all duration-300 hover:bg-primary hover:text-white'
+                    >
+                      <FaGlobe size={18} />
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

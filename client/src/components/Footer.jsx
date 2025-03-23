@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaFacebook, FaTwitter, FaInstagram, FaHeart, FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
+import { FaFacebook, FaTwitter, FaInstagram, FaHeart, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCode, FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 import BloodDropIcon from "./ui/BloodDropIcon";
 import "../styles/animations.css";
 
@@ -149,6 +149,42 @@ const Footer = () => {
             <a href="#" className="hover:text-white transition-colors duration-300 hover-underline">Privacy Policy</a>
             <a href="#" className="hover:text-white transition-colors duration-300 hover-underline">Terms of Service</a>
             <a href="#" className="hover:text-white transition-colors duration-300 hover-underline">Cookie Policy</a>
+          </div>
+        </div>
+        
+        {/* Developer Credits */}
+        <div className="mt-6 pt-4 border-t border-white/10 flex flex-col sm:flex-row justify-center items-center gap-3 text-center">
+          <p className="text-gray-400 text-xs sm:text-sm flex items-center justify-center">
+            <FaCode className="text-primary mr-2" /> Developed by <span className="text-red-500 font-medium ml-1">Md. Naimul Hasan</span>
+          </p>
+          <div className="flex items-center space-x-3 mt-2 sm:mt-0">
+            <a 
+              href="https://www.linkedin.com/in/md-naimul-hasan-emon/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all duration-300"
+              aria-label="LinkedIn"
+            >
+              <FaLinkedin size={12} />
+            </a>
+            <a 
+              href="https://github.com/NaimulHasanEmon" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:bg-gray-800 hover:text-white transition-all duration-300"
+              aria-label="GitHub"
+            >
+              <FaGithub size={12} />
+            </a>
+            <a 
+              href="https://mdnaimulhasan.netlify.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition-all duration-300"
+              aria-label="Portfolio"
+            >
+              <FaGlobe size={12} />
+            </a>
           </div>
         </div>
       </div>
