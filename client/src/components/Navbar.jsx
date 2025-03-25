@@ -364,7 +364,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation - 80% width sidebar */}
         <div
-          className={`md:hidden fixed top-0 bottom-0 right-0 w-4/5 bg-white z-40 shadow-xl transition-all duration-300 ease-in-out transform ${
+          className={`md:hidden fixed top-0 bottom-0 right-0 w-4/5 bg-white z-50 shadow-xl transition-all duration-300 ease-in-out transform ${
             isMobileMenuOpen 
               ? isMenuExiting 
                 ? "translate-x-full" 

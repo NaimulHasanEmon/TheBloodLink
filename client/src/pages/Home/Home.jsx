@@ -432,8 +432,8 @@ const Home = () => {
           ) : (
             <div className='mt-12'>
               {donors.length > 0 ? (
-                <Marquee speed={40} gradient={true} gradientWidth={50}>
-                  <div className='flex gap-6'>
+                <Marquee speed={100} gradient={true} gradientWidth={50}>
+                  <div className='flex gap-6 px-3'>
                     {donors.map((donor, index) => (
                       <div
                         key={donor._id}

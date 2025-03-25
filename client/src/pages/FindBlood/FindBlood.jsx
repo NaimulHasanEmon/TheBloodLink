@@ -140,6 +140,12 @@ const FindBlood = () => {
 
       setDonors(sortedDonors);
 
+      // Increment search counter
+      const currentCount = parseInt(localStorage.getItem("searchCount") || "0");
+      localStorage.setItem("searchCount", (currentCount + 1).toString());
+      // Dispatch event to update counter UI
+      window.dispatchEvent(new Event("searchCountUpdated"));
+
       if (sortedDonors.length === 0) {
         toast.error("No donors found matching your criteria");
       } else {
