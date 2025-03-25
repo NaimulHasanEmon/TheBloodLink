@@ -173,11 +173,11 @@ const Home = () => {
           </div>
           
           {/* Action Buttons - Horizontal placement above Life-Saving Impact section */}
-          <div className='flex justify-center gap-5 mb-8'>
-            {/* Find Blood Button - Now with enhanced hover animation */}
+          <div className='flex flex-col lg:flex-row items-center justify-center space-y-4 lg:space-y-0 lg:space-x-4 mb-8'>
+            {/* Find Blood Button */}
             <Link 
               to='/find-blood' 
-              className='group relative overflow-hidden btn-primary px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:-translate-y-1 bg-gradient-to-r from-red-600 to-primary w-64'
+              className='w-64 group relative overflow-hidden btn-primary px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:-translate-y-1 bg-gradient-to-r from-red-600 to-primary'
             >
               {/* Pulsing background effect */}
               <span className='absolute inset-0 bg-gradient-to-r from-red-700 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500'></span>
@@ -200,11 +200,11 @@ const Home = () => {
               <span className='absolute inset-0 border-2 border-white/0 rounded-full group-hover:border-white/20 group-hover:scale-105 transition-all duration-500'></span>
             </Link>
             
-            {/* Donor Button - Now on the right and less prominent */}
+            {/* Donor Button */}
             {!user ? (
               <Link 
                 to='/signup' 
-                className='relative overflow-hidden btn-outline px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 border-2 border-primary/70 group hover:border-primary w-64'
+                className='w-64 relative overflow-hidden btn-outline px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 border-2 border-primary/70 group hover:border-primary'
               >
                 <span className='absolute inset-0 bg-red-50 transform scale-x-0 origin-right group-hover:scale-x-100 transition-transform duration-500'></span>
                 <FaHandHoldingHeart size={24} className='text-primary relative z-10 group-hover:scale-110 group-hover:text-red-700 transition-all duration-300' /> 
@@ -213,7 +213,7 @@ const Home = () => {
             ) : userDonor ? (
               <Link 
                 to='/dashboard' 
-                className='relative overflow-hidden btn-outline px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 border-2 border-primary/70 group hover:border-primary w-64'
+                className='w-64 relative overflow-hidden btn-outline px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 border-2 border-primary/70 group hover:border-primary'
               >
                 <span className='absolute inset-0 bg-red-50 transform scale-x-0 origin-right group-hover:scale-x-100 transition-transform duration-500'></span>
                 <FaUserCircle size={24} className='text-primary relative z-10 group-hover:scale-110 group-hover:text-red-700 transition-all duration-300' /> 
@@ -222,7 +222,7 @@ const Home = () => {
             ) : (
               <Link 
                 to='/dashboard' 
-                className='relative overflow-hidden btn-outline px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 border-2 border-primary/70 group hover:border-primary w-64'
+                className='w-64 relative overflow-hidden btn-outline px-8 py-4 rounded-full inline-flex items-center justify-center gap-3 border-2 border-primary/70 group hover:border-primary'
               >
                 <span className='absolute inset-0 bg-red-50 transform scale-x-0 origin-right group-hover:scale-x-100 transition-transform duration-500'></span>
                 <FaTint size={24} className='text-primary relative z-10 group-hover:scale-110 group-hover:text-red-700 transition-all duration-300' /> 
