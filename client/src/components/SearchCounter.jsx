@@ -13,6 +13,11 @@ const SearchCounter = () => {
   const dragStartRef = useRef({ x: 0, y: 0 });
   const dragStartTimeRef = useRef(0);
   const hasMoved = useRef(false);
+  
+  // Define constant for navbar height (adjust as needed)
+  const NAVBAR_HEIGHT = 0; // For mobile
+  const NAVBAR_HEIGHT_SM = 0; // For small screens
+  const NAVBAR_HEIGHT_MD = 0; // For medium+ screens
 
   useEffect(() => {
     // Get initial count from localStorage
@@ -34,6 +39,43 @@ const SearchCounter = () => {
       window.removeEventListener('searchCountUpdated', handleSearchCountUpdate);
     };
   }, []);
+
+  // Helper function to constrain position within viewport
+  const constrainToViewport = (x, y) => {
+    if (!counterRef.current) return { x, y };
+    
+    const counterRect = counterRef.current.getBoundingClientRect();
+    const counterWidth = counterRect.width;
+    const counterHeight = counterRect.height;
+    
+    // Get window dimensions
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    
+    // Get navbar height based on screen size
+    let navbarHeight = NAVBAR_HEIGHT;
+    if (windowWidth >= 768) { // md breakpoint in Tailwind
+      navbarHeight = NAVBAR_HEIGHT_MD;
+    } else if (windowWidth >= 640) { // sm breakpoint in Tailwind
+      navbarHeight = NAVBAR_HEIGHT_SM;
+    }
+    
+    // Calculate minimum and maximum allowed positions
+    // Left: Don't let left edge go beyond 5px from left edge of screen
+    // Right: Don't let right edge go beyond 5px from right edge of screen
+    // Top: Don't let top edge go above navbar height + 5px buffer
+    // Bottom: Don't let bottom edge go beyond 5px from bottom of screen
+    const minX = 5;
+    const maxX = windowWidth - counterWidth - 5;
+    const minY = navbarHeight + 5;
+    const maxY = windowHeight - counterHeight - 5;
+    
+    // Constrain x and y within bounds
+    return {
+      x: Math.max(minX, Math.min(maxX, x)),
+      y: Math.max(minY, Math.min(maxY, y))
+    };
+  };
 
   // Handle click on search icon (for both dragging and expanding)
   const handleSearchIconClick = (e) => {
@@ -111,11 +153,15 @@ const SearchCounter = () => {
     if (distance > 5) {
       hasMoved.current = true;
       
-      // Direct DOM manipulation for instant updates
-      // Add the delta to the initial position
-      const newX = initialPositionRef.current.x + dx;
-      const newY = initialPositionRef.current.y + dy;
-      counterRef.current.style.transform = `translate(${newX}px, ${newY}px)`;
+      // Calculate new position by adding the delta to the initial position
+      let newX = initialPositionRef.current.x + dx;
+      let newY = initialPositionRef.current.y + dy;
+      
+      // Constrain position to viewport
+      const constrained = constrainToViewport(newX, newY);
+      
+      // Direct DOM manipulation for instant updates with constrained values
+      counterRef.current.style.transform = `translate(${constrained.x}px, ${constrained.y}px)`;
     }
   };
 
@@ -132,11 +178,15 @@ const SearchCounter = () => {
     if (distance > 5) {
       hasMoved.current = true;
       
-      // Direct DOM manipulation for instant updates
-      // Add the delta to the initial position
-      const newX = initialPositionRef.current.x + dx;
-      const newY = initialPositionRef.current.y + dy;
-      counterRef.current.style.transform = `translate(${newX}px, ${newY}px)`;
+      // Calculate new position by adding the delta to the initial position
+      let newX = initialPositionRef.current.x + dx;
+      let newY = initialPositionRef.current.y + dy;
+      
+      // Constrain position to viewport
+      const constrained = constrainToViewport(newX, newY);
+      
+      // Direct DOM manipulation for instant updates with constrained values
+      counterRef.current.style.transform = `translate(${constrained.x}px, ${constrained.y}px)`;
     }
   };
 
@@ -225,7 +275,9 @@ const SearchCounter = () => {
       className={`fixed top-16 sm:top-20 md:top-24 left-4 z-50 sm:left-8 md:left-12 transition-opacity duration-200 ${isDragging ? 'opacity-80' : 'opacity-100'}`}
       style={{ 
         transform: `translate(${positionRef.current.x}px, ${positionRef.current.y}px)`,
-        touchAction: 'none'
+        touchAction: 'none',
+        backgroundColor: 'white', // Ensure background is solid, not transparent
+        borderRadius: '9999px'
       }}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
