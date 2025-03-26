@@ -153,15 +153,11 @@ const SearchCounter = () => {
     if (distance > 5) {
       hasMoved.current = true;
       
-      // Calculate new position by adding the delta to the initial position
-      let newX = initialPositionRef.current.x + dx;
-      let newY = initialPositionRef.current.y + dy;
-      
-      // Constrain position to viewport
-      const constrained = constrainToViewport(newX, newY);
-      
-      // Direct DOM manipulation for instant updates with constrained values
-      counterRef.current.style.transform = `translate(${constrained.x}px, ${constrained.y}px)`;
+      // Direct DOM manipulation for instant updates
+      // Add the delta to the initial position
+      const newX = initialPositionRef.current.x + dx;
+      const newY = initialPositionRef.current.y + dy;
+      counterRef.current.style.transform = `translate(${newX}px, ${newY}px)`;
     }
   };
 
@@ -178,15 +174,11 @@ const SearchCounter = () => {
     if (distance > 5) {
       hasMoved.current = true;
       
-      // Calculate new position by adding the delta to the initial position
-      let newX = initialPositionRef.current.x + dx;
-      let newY = initialPositionRef.current.y + dy;
-      
-      // Constrain position to viewport
-      const constrained = constrainToViewport(newX, newY);
-      
-      // Direct DOM manipulation for instant updates with constrained values
-      counterRef.current.style.transform = `translate(${constrained.x}px, ${constrained.y}px)`;
+      // Direct DOM manipulation for instant updates
+      // Add the delta to the initial position
+      const newX = initialPositionRef.current.x + dx;
+      const newY = initialPositionRef.current.y + dy;
+      counterRef.current.style.transform = `translate(${newX}px, ${newY}px)`;
     }
   };
 
@@ -272,12 +264,10 @@ const SearchCounter = () => {
   return (
     <div 
       ref={counterRef}
-      className={`fixed top-16 sm:top-20 md:top-24 left-4 z-50 sm:left-8 md:left-12 transition-opacity duration-200 ${isDragging ? 'opacity-80' : 'opacity-100'}`}
+      className={`fixed top-20 left-4 z-50 sm:left-8 md:left-12 transition-opacity duration-200 ${isDragging ? 'opacity-80' : 'opacity-100'}`}
       style={{ 
         transform: `translate(${positionRef.current.x}px, ${positionRef.current.y}px)`,
-        touchAction: 'none',
-        backgroundColor: 'white', // Ensure background is solid, not transparent
-        borderRadius: '9999px'
+        touchAction: 'none'
       }}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}

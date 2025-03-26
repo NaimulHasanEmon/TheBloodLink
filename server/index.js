@@ -39,12 +39,49 @@ async function run() {
         
         // Store collections
         app.locals.collections = {
-            donors: db.collection("donors")
+            donors: db.collection("donors"),
+            searchStats: db.collection("searchStats")
         };
 
         // Register routes
         app.use('/donors', donorRoutes);
         app.use('/search', searchRoutes);
+        
+        // Search counter endpoints
+        app.get('/search-count', async (req, res) => {
+            try {
+                // Get the count document from database (create if it doesn't exist)
+                let countDoc = await app.locals.collections.searchStats.findOne({ type: 'searchCount' });
+                
+                if (!countDoc) {
+                    // Initialize if it doesn't exist
+                    await app.locals.collections.searchStats.insertOne({ type: 'searchCount', count: 0 });
+                    return res.json({ count: 0 });
+                }
+                
+                return res.json({ count: countDoc.count });
+            } catch (error) {
+                console.error('Error fetching search count:', error);
+                res.status(500).json({ error: 'Failed to fetch search count' });
+            }
+        });
+        
+        app.post('/increment-search-count', async (req, res) => {
+            try {
+                // Increment the count using findOneAndUpdate
+                const result = await app.locals.collections.searchStats.findOneAndUpdate(
+                    { type: 'searchCount' },
+                    { $inc: { count: 1 } },
+                    { returnDocument: 'after', upsert: true }
+                );
+                
+                // Return the updated count
+                return res.json({ count: result.value ? result.value.count : 1 });
+            } catch (error) {
+                console.error('Error incrementing search count:', error);
+                res.status(500).json({ error: 'Failed to increment search count' });
+            }
+        });
 
         await client.db("admin").command({ ping: 1 });
         console.log("Connected to MongoDB successfully!");
