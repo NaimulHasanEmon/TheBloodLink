@@ -50,36 +50,84 @@ async function run() {
         // Search counter endpoints
         app.get('/search-count', async (req, res) => {
             try {
+                console.log('Fetching search count from database...');
                 // Get the count document from database (create if it doesn't exist)
                 let countDoc = await app.locals.collections.searchStats.findOne({ type: 'searchCount' });
                 
                 if (!countDoc) {
+                    console.log('No search count found, initializing to 0');
                     // Initialize if it doesn't exist
-                    await app.locals.collections.searchStats.insertOne({ type: 'searchCount', count: 0 });
+                    const result = await app.locals.collections.searchStats.insertOne({ type: 'searchCount', count: 0 });
+                    console.log('Created search count document:', result.acknowledged);
                     return res.json({ count: 0 });
                 }
                 
+                console.log('Current search count:', countDoc.count);
                 return res.json({ count: countDoc.count });
             } catch (error) {
                 console.error('Error fetching search count:', error);
-                res.status(500).json({ error: 'Failed to fetch search count' });
+                res.status(500).json({ error: 'Failed to fetch search count', details: error.message });
             }
         });
         
         app.post('/increment-search-count', async (req, res) => {
             try {
-                // Increment the count using findOneAndUpdate
+                console.log('Incrementing search count...');
+                // Explicitly create the document if it doesn't exist
+                const existingDoc = await app.locals.collections.searchStats.findOne({ type: 'searchCount' });
+                
+                if (!existingDoc) {
+                    console.log('No search count found, creating new document with count 1');
+                    const insertResult = await app.locals.collections.searchStats.insertOne({ type: 'searchCount', count: 1 });
+                    console.log('Created search count document:', insertResult.acknowledged);
+                    return res.json({ count: 1 });
+                }
+                
+                // Increment the existing count
                 const result = await app.locals.collections.searchStats.findOneAndUpdate(
                     { type: 'searchCount' },
                     { $inc: { count: 1 } },
-                    { returnDocument: 'after', upsert: true }
+                    { returnDocument: 'after' }
                 );
                 
+                const newCount = result.value ? result.value.count : 1;
+                console.log('Search count incremented to:', newCount);
+                
                 // Return the updated count
-                return res.json({ count: result.value ? result.value.count : 1 });
+                return res.json({ count: newCount });
             } catch (error) {
                 console.error('Error incrementing search count:', error);
-                res.status(500).json({ error: 'Failed to increment search count' });
+                res.status(500).json({ error: 'Failed to increment search count', details: error.message });
+            }
+        });
+        
+        // Test endpoint to initialize search counter
+        app.get('/init-search-counter', async (req, res) => {
+            try {
+                console.log('Initializing search counter...');
+                const existingDoc = await app.locals.collections.searchStats.findOne({ type: 'searchCount' });
+                
+                if (existingDoc) {
+                    console.log('Search counter already exists with count:', existingDoc.count);
+                    return res.json({ message: 'Search counter already exists', count: existingDoc.count });
+                }
+                
+                // Create the search stats collection and document
+                const result = await app.locals.collections.searchStats.insertOne({ 
+                    type: 'searchCount', 
+                    count: 0,
+                    createdAt: new Date()
+                });
+                
+                console.log('Search counter initialized:', result.acknowledged);
+                return res.json({ 
+                    message: 'Search counter initialized successfully', 
+                    acknowledged: result.acknowledged, 
+                    count: 0
+                });
+            } catch (error) {
+                console.error('Error initializing search counter:', error);
+                res.status(500).json({ error: 'Failed to initialize search counter', details: error.message });
             }
         });
 

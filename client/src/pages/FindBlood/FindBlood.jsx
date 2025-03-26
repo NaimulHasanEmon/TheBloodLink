@@ -18,6 +18,10 @@ import { Link } from "react-router-dom";
 import { bangladeshData } from "../../data/bangladeshData";
 import { searchDonors } from "../../utils/api";
 import "./findblood.css"; // Import custom CSS for animations
+import axios from "axios";
+
+// Get the API URL from environment
+const API_URL = import.meta.env.VITE_API_URL;
 
 const FindBlood = () => {
   // State for form inputs
@@ -140,11 +144,19 @@ const FindBlood = () => {
 
       setDonors(sortedDonors);
 
-      // Increment search counter
-      const currentCount = parseInt(localStorage.getItem("searchCount") || "0");
-      localStorage.setItem("searchCount", (currentCount + 1).toString());
-      // Dispatch event to update counter UI
-      window.dispatchEvent(new Event("searchCountUpdated"));
+      // Increment search counter via API
+      try {
+        console.log('Incrementing search counter via API...');
+        await axios.post(`${API_URL}/increment-search-count`);
+        // Dispatch event to update counter UI
+        window.dispatchEvent(new Event("searchCountUpdated"));
+      } catch (counterError) {
+        console.error("Error incrementing search counter:", counterError);
+        // Fallback to localStorage if API fails
+        const currentCount = parseInt(localStorage.getItem("searchCount") || "0");
+        localStorage.setItem("searchCount", (currentCount + 1).toString());
+        window.dispatchEvent(new Event("searchCountUpdated"));
+      }
 
       if (sortedDonors.length === 0) {
         toast.error("No donors found matching your criteria");
