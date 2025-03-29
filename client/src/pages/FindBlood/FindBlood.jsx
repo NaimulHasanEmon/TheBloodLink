@@ -12,6 +12,7 @@ import {
   FaCalendarAlt,
   FaCheckCircle,
   FaUndo,
+  FaPhoneAlt,
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -19,6 +20,7 @@ import { bangladeshData } from "../../data/bangladeshData";
 import { searchDonors } from "../../utils/api";
 import "./findblood.css"; // Import custom CSS for animations
 import axios from "axios";
+import { formatPhoneNumber } from "../../utils/formatters";
 
 // Get the API URL from environment
 const API_URL = import.meta.env.VITE_API_URL;
@@ -546,6 +548,16 @@ const FindBlood = () => {
                                         </span>
                                       </div>
                                     )}
+                                    {donor.phone && (
+                                      <div className='flex items-center mt-0.5'>
+                                        <div className='w-4 h-4 text-xs rounded-full bg-red-50 flex items-center justify-center mr-1.5'>
+                                          <FaPhoneAlt className='text-primary text-[8px]' />
+                                        </div>
+                                        <span className='text-xs text-gray-700'>
+                                          {formatPhoneNumber(donor.phone)}
+                                        </span>
+                                      </div>
+                                    )}
                                   </div>
                                 </div>
 
@@ -628,39 +640,13 @@ const FindBlood = () => {
                                         </span>
                                       </div>
                                     )}
-                                    {donor.lastDonationDate && (
+                                    {donor.phone && (
                                       <div className='flex items-center'>
                                         <div className='w-5 h-5 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300'>
-                                          <FaCheckCircle className='text-primary text-xs' />
+                                          <FaPhoneAlt className='text-primary text-xs' />
                                         </div>
                                         <span className='text-gray-600 group-hover:text-gray-800 transition-colors duration-300'>
-                                          {(() => {
-                                            const lastDonation = new Date(
-                                              donor.lastDonationDate
-                                            );
-                                            const nextEligible = new Date(
-                                              lastDonation
-                                            );
-                                            nextEligible.setMonth(
-                                              lastDonation.getMonth() + 3
-                                            );
-                                            const today = new Date();
-                                            const isEligible = today >= nextEligible;
-
-                                            return (
-                                              <span
-                                                className={`${
-                                                  isEligible
-                                                    ? "text-green-600"
-                                                    : "text-amber-600"
-                                                } font-medium`}
-                                              >
-                                                {isEligible
-                                                  ? "Eligible to donate"
-                                                  : "Not eligible yet"}
-                                              </span>
-                                            );
-                                          })()}
+                                          {formatPhoneNumber(donor.phone)}
                                         </span>
                                       </div>
                                     )}
@@ -780,6 +766,16 @@ const FindBlood = () => {
                                       </span>
                                     </div>
                                   )}
+                                  {donor.phone && (
+                                    <div className='flex items-center mt-0.5'>
+                                      <div className='w-4 h-4 text-xs rounded-full bg-red-50 flex items-center justify-center mr-1.5'>
+                                        <FaPhoneAlt className='text-primary text-[8px]' />
+                                      </div>
+                                      <span className='text-xs text-gray-700'>
+                                        {formatPhoneNumber(donor.phone)}
+                                      </span>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
 
@@ -862,39 +858,13 @@ const FindBlood = () => {
                                       </span>
                                     </div>
                                   )}
-                                  {donor.lastDonationDate && (
+                                  {donor.phone && (
                                     <div className='flex items-center'>
                                       <div className='w-5 h-5 rounded-full bg-red-50 flex items-center justify-center mr-2 group-hover:bg-red-100 transition-colors duration-300'>
-                                        <FaCheckCircle className='text-primary text-xs' />
+                                        <FaPhoneAlt className='text-primary text-xs' />
                                       </div>
                                       <span className='text-gray-600 group-hover:text-gray-800 transition-colors duration-300'>
-                                        {(() => {
-                                          const lastDonation = new Date(
-                                            donor.lastDonationDate
-                                          );
-                                          const nextEligible = new Date(
-                                            lastDonation
-                                          );
-                                          nextEligible.setMonth(
-                                            lastDonation.getMonth() + 3
-                                          );
-                                          const today = new Date();
-                                          const isEligible = today >= nextEligible;
-
-                                          return (
-                                            <span
-                                              className={`${
-                                                isEligible
-                                                  ? "text-green-600"
-                                                  : "text-amber-600"
-                                              } font-medium`}
-                                            >
-                                              {isEligible
-                                                ? "Eligible to donate"
-                                                : "Not eligible yet"}
-                                            </span>
-                                          );
-                                        })()}
+                                        {formatPhoneNumber(donor.phone)}
                                       </span>
                                     </div>
                                   )}

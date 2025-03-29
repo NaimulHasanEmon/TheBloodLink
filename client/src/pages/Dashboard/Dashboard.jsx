@@ -32,6 +32,7 @@ import './calendar.css';
 import React from "react";
 import { bangladeshData } from "../../data/bangladeshData";
 import { getDonorByUid, createDonor, updateDonor } from "../../utils/api";
+import { formatPhoneNumber } from "../../utils/formatters";
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -776,7 +777,7 @@ const Dashboard = () => {
                           <input
                             type="tel"
                             id="phone"
-                            name="phone"
+                            name="phone" 
                             value={formData.phone}
                             onChange={handleChange}
                             className={`w-full px-4 py-3 rounded-md border ${
@@ -786,6 +787,11 @@ const Dashboard = () => {
                           />
                           {!editMode && <div className="absolute inset-0"></div>}
                         </div>
+                        {!editMode && formData.phone && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            Displayed as: {formatPhoneNumber(formData.phone)}
+                          </p>
+                        )}
                       </div>
                       
                       <div className="form-group mb-4">

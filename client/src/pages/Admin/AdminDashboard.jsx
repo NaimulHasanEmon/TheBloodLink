@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { 
   FaUsers, 
   FaUserEdit, 
@@ -11,7 +11,8 @@ import {
   FaTint, 
   FaPhoneAlt, 
   FaEnvelope,
-  FaMapMarkerAlt
+  FaMapMarkerAlt,
+  FaTrash
 } from 'react-icons/fa';
 import { AuthContext } from '../../providers/AuthProvider';
 import { toast } from 'react-hot-toast';
@@ -41,6 +42,12 @@ const AdminDashboard = () => {
   });
   const [updateLoading, setUpdateLoading] = useState(false);
   const [bloodGroupFilter, setBloodGroupFilter] = useState('');
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  
+  // Add refs for scrolling animations
+  const statsRef = useRef(null);
+  const usersTableRef = useRef(null);
+  const searchRef = useRef(null);
 
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -91,6 +98,14 @@ const AdminDashboard = () => {
         </span>
       </div>
     );
+  };
+
+  // Helper function to format phone number for display (add leading zero)
+  const formatPhoneNumber = (phone) => {
+    if (!phone) return "Not available";
+    
+    // If the phone number doesn't start with 0, add it
+    return phone.startsWith('0') ? phone : `0${phone}`;
   };
 
   // Fetch all users from the main /donors endpoint (not using /admin/all-users)
@@ -244,6 +259,48 @@ const AdminDashboard = () => {
     }
   };
 
+  // Add a new function to handle showing the details modal
+  const handleShowDetails = (user) => {
+    setSelectedUser(user);
+    setIsDetailsModalOpen(true);
+  };
+
+  // Add scroll animations
+  useEffect(() => {
+    // Trigger animations immediately on first render
+    setTimeout(() => {
+      document.querySelectorAll('.auto-animate').forEach(el => {
+        el.classList.add('animated');
+      });
+      
+      // Also run the scroll handler for items that might be in view
+      handleScroll();
+    }, 100);
+    
+    function handleScroll() {
+      const sections = [
+        { ref: statsRef, className: 'animate-fade-in' },
+        { ref: searchRef, className: 'animate-slide-in' },
+        { ref: usersTableRef, className: 'animate-slide-up' }
+      ];
+
+      sections.forEach(section => {
+        if (section.ref.current) {
+          const rect = section.ref.current.getBoundingClientRect();
+          const isVisible = rect.top < window.innerHeight * 0.8 && rect.bottom > 0;
+          
+          if (isVisible) {
+            section.ref.current.classList.add(section.className);
+          }
+        }
+      });
+    }
+    
+    // Add scroll event listener
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
@@ -273,11 +330,77 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 pt-5 pb-12">
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translate3d(0, 40px, 0);
+          }
+          to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateX(-30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        .animate-fade-in-up {
+          animation: fadeInUp 0.4s ease-out;
+        }
+        
+        .animate-fade-in {
+          opacity: 0;
+          animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .animate-slide-up {
+          opacity: 0;
+          animation: slideUp 0.6s ease-out forwards;
+        }
+        
+        .animate-slide-in {
+          opacity: 0;
+          animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        .auto-animate {
+          opacity: 0;
+        }
+        
+        .auto-animate.animated {
+          animation: fadeIn 0.8s ease-out forwards;
+        }
+      `}</style>
       <div className="container mx-auto px-4">
         <div className="max-w-7xl mx-auto">
           {/* Admin Dashboard Header */}
-          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6 animate-fade-in-up">
             <div className="bg-gradient-to-r from-primary to-purple-600 p-6 text-white relative">
               <div className="absolute inset-0 bg-pattern opacity-10"></div>
               <div className="relative z-10">
@@ -289,7 +412,7 @@ const AdminDashboard = () => {
             </div>
             
             {/* Stats section */}
-            <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div ref={statsRef} className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4 animate-fade-in">
               <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
                 <h3 className="text-lg font-semibold text-gray-700">Total Users</h3>
                 <p className="text-3xl font-bold text-primary/80">{users.length}</p>
@@ -313,7 +436,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Search and Filter Controls */}
-          <div className="bg-white rounded-xl shadow-md mb-6 p-4">
+          <div ref={searchRef} className="bg-white rounded-xl shadow-md mb-6 p-4 animate-slide-in">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="relative flex-1">
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -344,7 +467,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Users Table */}
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <div ref={usersTableRef} className="bg-white rounded-xl shadow-md overflow-hidden animate-slide-up">
             <div className="p-4 md:p-0">
               <div className="overflow-x-auto">
                 <table className="w-full table-auto">
@@ -366,11 +489,19 @@ const AdminDashboard = () => {
                         >
                           <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
-                              <div className="flex-shrink-0">
+                              <div 
+                                className="flex-shrink-0 cursor-pointer transform transition-transform hover:scale-110 hover:shadow-lg rounded-full"
+                                onClick={() => handleShowDetails(user)}
+                                title="View details"
+                              >
                                 {getProfileImage(user, 'sm', false)}
                               </div>
                               <div>
-                                <div className="text-sm font-medium text-gray-900 flex items-center">
+                                <div 
+                                  className="text-sm font-medium text-gray-900 flex items-center cursor-pointer hover:text-primary transition-colors"
+                                  onClick={() => handleShowDetails(user)}
+                                  title="View details"
+                                >
                                   {user.name || "Anonymous User"}
                                   {user.isAdmin && (
                                     <span className="ml-2 px-2 py-0.5 bg-purple-100 text-purple-600 text-xs font-semibold rounded-full">
@@ -388,7 +519,7 @@ const AdminDashboard = () => {
                           <td className="px-2 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
                             <div className="text-sm text-gray-900 flex items-center">
                               <FaPhoneAlt className="mr-2 text-gray-400" />
-                              {user.phone || "Not available"}
+                              {formatPhoneNumber(user.phone)}
                             </div>
                           </td>
                           <td className="px-2 sm:px-6 py-4 whitespace-nowrap">
@@ -438,6 +569,13 @@ const AdminDashboard = () => {
                                 title="Edit user"
                               >
                                 <FaUserEdit className="text-lg" />
+                              </button>
+                              <button
+                                className="text-red-600 hover:text-red-800 transition-colors duration-200 p-2 sm:p-1.5 rounded-full hover:bg-red-100 bg-red-50 flex items-center justify-center"
+                                title="Delete user (disabled)"
+                                disabled
+                              >
+                                <FaTrash className="text-lg" />
                               </button>
                             </div>
                           </td>
@@ -497,7 +635,7 @@ const AdminDashboard = () => {
 
       {/* Edit User Modal */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
+        <div className="fixed inset-0 z-[9999] overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
@@ -638,6 +776,147 @@ const AdminDashboard = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Donor Details Modal */}
+      {isDetailsModalOpen && (
+        <div className="fixed inset-0 z-[9999] overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div 
+              className="fixed inset-0 transition-opacity" 
+              aria-hidden="true"
+              onClick={() => setIsDetailsModalOpen(false)}
+            >
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div 
+              className="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full animate-fade-in-up"
+            >
+              <div className="bg-gradient-to-r from-primary/90 to-purple-600/90 p-6 text-white relative">
+                <button
+                  onClick={() => setIsDetailsModalOpen(false)}
+                  className="absolute top-4 right-4 bg-white bg-opacity-25 text-white p-1 rounded-full hover:bg-opacity-40 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+                <div className="flex items-center">
+                  <div className="mr-4">
+                    {getProfileImage(selectedUser, 'lg', true)}
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold">{selectedUser?.name || "Anonymous User"}</h2>
+                    <p className="opacity-90 flex items-center">
+                      <FaEnvelope className="mr-2" /> {selectedUser?.email}
+                    </p>
+                    {selectedUser?.isAdmin && (
+                      <span className="mt-2 px-3 py-1 bg-purple-200 text-purple-800 text-xs font-semibold rounded-full inline-block">
+                        Admin
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <h3 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-3">Contact Info</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-start">
+                        <FaPhoneAlt className="mr-2 mt-1 text-primary" />
+                        <div>
+                          <p className="font-medium text-gray-600">Phone</p>
+                          <p className="text-gray-800">{formatPhoneNumber(selectedUser?.phone)}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start">
+                        <FaEnvelope className="mr-2 mt-1 text-primary" />
+                        <div>
+                          <p className="font-medium text-gray-600">Email</p>
+                          <p className="text-gray-800">{selectedUser?.email}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <h3 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-3">Blood Information</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-center">
+                        {selectedUser?.bloodGroup ? (
+                          <div className="text-center">
+                            <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-2 border-2 border-red-200">
+                              <span className="text-3xl font-bold text-red-600">{selectedUser.bloodGroup}</span>
+                            </div>
+                            <p className="text-gray-600">Blood Group</p>
+                          </div>
+                        ) : (
+                          <p className="text-gray-500 italic">No blood group information available</p>
+                        )}
+                      </div>
+                      
+                      {selectedUser?.lastDonationDate && (
+                        <div className="text-center mt-4">
+                          <p className="font-medium text-gray-600">Last Donation</p>
+                          <p className="text-gray-800">{new Date(selectedUser.lastDonationDate).toLocaleDateString()}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow md:col-span-2">
+                    <h3 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-3">Location</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-start">
+                        <FaMapMarkerAlt className="mr-2 mt-1 text-primary" />
+                        <div>
+                          {selectedUser?.division || selectedUser?.district || selectedUser?.upazila ? (
+                            <div className="space-y-1">
+                              <p className="font-medium text-gray-600">Address</p>
+                              <div className="text-gray-800">
+                                {selectedUser?.division && <span className="block">{selectedUser.division}</span>}
+                                {selectedUser?.district && <span className="block">{selectedUser.district}</span>}
+                                {selectedUser?.upazila && <span className="block">{selectedUser.upazila}</span>}
+                                {selectedUser?.address && <span className="block mt-1 text-gray-600">{selectedUser.address}</span>}
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-gray-500 italic">No location information available</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsDetailsModalOpen(false)}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
+                >
+                  Close
+                </button>
+                {!selectedUser?.isAdmin && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsDetailsModalOpen(false);
+                      handleEditClick(selectedUser);
+                    }}
+                    className="ml-3 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    Edit Details
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

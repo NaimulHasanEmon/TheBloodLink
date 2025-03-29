@@ -3,6 +3,7 @@ import { useLoaderData, useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import toast from "react-hot-toast";
 import { FaUser, FaEnvelope, FaPhoneAlt, FaCommentAlt, FaMapMarkerAlt, FaTint, FaPaperPlane, FaArrowLeft, FaUserCircle, FaCalendarAlt } from "react-icons/fa";
+import { formatPhoneNumber } from "../../utils/formatters";
 
 const CheckOut = () => {
   const donor = useLoaderData();
@@ -131,7 +132,7 @@ const CheckOut = () => {
                   <FaPhoneAlt className="text-primary mt-1 flex-shrink-0 text-xl" />
                   <div>
                     <h3 className="font-bold text-neutral">Phone</h3>
-                    <p>{donor.phone}</p>
+                    <p>{formatPhoneNumber(donor.phone)}</p>
                   </div>
                 </div>
                 

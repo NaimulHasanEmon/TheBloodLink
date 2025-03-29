@@ -12,10 +12,11 @@ const searchRoutes = require('./routes/searchRoutes');
 // Middleware
 app.use(cors({
   origin: '*', // Allow all origins
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Explicitly allow DELETE
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'], // Explicitly allow DELETE as an array
   credentials: true,
   optionsSuccessStatus: 204, // Some legacy browsers (IE11) choke on 204
-  preflightContinue: false // Handle OPTIONS requests correctly
+  preflightContinue: false, // Handle OPTIONS requests correctly
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 

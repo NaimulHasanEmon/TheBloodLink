@@ -21,6 +21,7 @@ import {
 } from "react-icons/fa";
 import { GiHeartOrgan, GiHealthNormal } from "react-icons/gi";
 import { getDonors, getDonorByUid } from "../../utils/api";
+import { formatPhoneNumber } from "../../utils/formatters";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -469,7 +470,7 @@ const Home = () => {
                           </p>
                           <p className='flex items-center gap-2'>
                             <FaPhoneAlt className='text-primary flex-shrink-0' />
-                            <span>{donor.phone}</span>
+                            <span>{formatPhoneNumber(donor.phone)}</span>
                           </p>
                         </div>
                         <div className='card-actions justify-end mt-4'>
