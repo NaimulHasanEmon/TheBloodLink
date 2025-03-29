@@ -24,15 +24,15 @@ import {
   FaMapPin,
   FaHome,
   FaInbox,
-  FaReply
+  FaReply,
+  FaInfoCircle
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
-import './calendar.css'; // We'll create this file next
+import './calendar.css';
 import React from "react";
 import { bangladeshData } from "../../data/bangladeshData";
 import { getDonorByUid, createDonor, updateDonor } from "../../utils/api";
 
-// Get API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const Dashboard = () => {
@@ -57,8 +57,9 @@ const Dashboard = () => {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [fetchError, setFetchError] = useState(false);
+  const [showEditPopup, setShowEditPopup] = useState(false);
+  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
 
-  // Custom date picker state
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
@@ -71,11 +72,9 @@ const Dashboard = () => {
   
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
-  // Add these new states for location dropdowns
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   
-  // Update districts when division changes
   useEffect(() => {
     if (formData.division) {
       const selectedDivision = bangladeshData.divisions.find(div => div.name === formData.division);
@@ -93,7 +92,6 @@ const Dashboard = () => {
     }
   }, [formData.division]);
   
-  // Update upazilas when district changes
   useEffect(() => {
     if (formData.district && districts.length > 0) {
       const selectedDistrict = districts.find(dist => dist.name === formData.district);
@@ -120,7 +118,6 @@ const Dashboard = () => {
           
           setDonor(response.data);
           
-          // Format the date for the input field (YYYY-MM-DD)
           let formattedDate = "";
           if (response.data?.lastDonationDate) {
             const date = new Date(response.data.lastDonationDate);
@@ -145,7 +142,6 @@ const Dashboard = () => {
           
           if (error.response && error.response.status === 404) {
             console.log("Donor not found, using user data");
-            // If donor not found, use user data
             setFormData({
               name: user.displayName || "",
               email: user.email || "",
@@ -159,7 +155,6 @@ const Dashboard = () => {
               photoURL: user.photoURL || ""
             });
             
-            // Automatically create a basic donor profile for social login users
             if (user.providerData && user.providerData[0]?.providerId !== 'password') {
               console.log("Social login detected, creating basic donor profile");
               try {
@@ -174,18 +169,15 @@ const Dashboard = () => {
                 console.log("Auto-created donor profile:", response.data);
                 
                 if (response.data && response.data.acknowledged) {
-                  // Fetch the newly created donor
                   const newDonorResponse = await getDonorByUid(user.uid);
                   setDonor(newDonorResponse.data);
                   setFetchError(false);
                 }
               } catch (createError) {
                 console.error("Error auto-creating donor profile:", createError);
-                // Don't show error to user for auto-creation
               }
             }
           } else {
-            // For other errors, show a toast only once
             toast.error("Failed to load your profile data. Please try again later.");
           }
         } finally {
@@ -197,12 +189,10 @@ const Dashboard = () => {
     fetchDonorData();
   }, [user]);
 
-  // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    // Update districts and upazilas based on division and district selection
     if (name === "division") {
       const selectedDivision = bangladeshData.divisions.find(div => div.name === value);
       setDistricts(selectedDivision ? selectedDivision.districts : []);
@@ -230,21 +220,16 @@ const Dashboard = () => {
     setUpdating(true);
 
     try {
-      // Format the date for storage
       const updatedData = {...formData};
       if (updatedData.lastDonationDate) {
-        // Create a new date object and set it to noon to avoid timezone issues
         const date = new Date(updatedData.lastDonationDate);
         date.setHours(12, 0, 0, 0);
-        
-        // Format the date consistently
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         updatedData.lastDonationDate = `${year}-${month}-${day}`;
       }
       
-      // Ensure we have a name and email from user auth data if not provided in form
       if (!updatedData.name && user.displayName) {
         updatedData.name = user.displayName;
       }
@@ -253,23 +238,18 @@ const Dashboard = () => {
         updatedData.email = user.email;
       }
       
-      // Update profile in Firebase if name or photo changed
       let firebaseUpdateSuccess = true;
       if (user.displayName !== formData.name || imageFile) {
         try {
-          // In a real app, you would upload the image to storage and get URL
-          // For this example, we'll just use the existing photoURL
           await updateUserProfile(formData.name, formData.photoURL);
           console.log("Firebase profile updated successfully");
         } catch (error) {
           console.error("Error updating Firebase profile:", error);
           toast.error("Failed to update Firebase profile. Please try again.");
           firebaseUpdateSuccess = false;
-          // Don't throw here, continue with MongoDB update
         }
       }
 
-      // Update donor info in MongoDB
       if (donor) {
         try {
           console.log("Updating donor with ID:", donor._id);
@@ -288,15 +268,12 @@ const Dashboard = () => {
         } catch (error) {
           console.error("Error updating MongoDB donor:", error);
           toast.error("Failed to update donor information. Please try again.");
-          // Don't throw here
         }
       } else {
-        // Create new donor if not exists
         try {
           console.log("Creating new donor for user:", user.uid);
           console.log("Donor data:", {...updatedData, uid: user.uid});
           
-          // Ensure we have the minimum required fields
           if (!updatedData.name) {
             updatedData.name = user.displayName || "Anonymous User";
           }
@@ -322,17 +299,14 @@ const Dashboard = () => {
         } catch (error) {
           console.error("Error creating MongoDB donor:", error);
           toast.error("Failed to create donor profile. Please try again.");
-          // Don't throw here
         }
       }
       
-      // Refresh donor data
       try {
         const response = await getDonorByUid(user.uid);
         setDonor(response.data);
       } catch (error) {
         console.error("Error refreshing donor data:", error);
-        // Don't throw here, as the update might have been successful
       }
       
     } catch (error) {
@@ -343,13 +317,9 @@ const Dashboard = () => {
     }
   };
 
-  // Function to handle date selection
   const handleDateSelect = (date) => {
-    // Create a new date object and set it to noon to avoid timezone issues
     const selectedDate = new Date(date);
     selectedDate.setHours(12, 0, 0, 0);
-    
-    // Format the date as YYYY-MM-DD, ensuring we get the correct day
     const year = selectedDate.getFullYear();
     const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
     const day = String(selectedDate.getDate()).padStart(2, '0');
@@ -363,17 +333,14 @@ const Dashboard = () => {
     setShowDatePicker(false);
   };
   
-  // Function to get days in month
   const getDaysInMonth = (year, month) => {
     return new Date(year, month + 1, 0).getDate();
   };
   
-  // Function to get day of week for first day of month
   const getFirstDayOfMonth = (year, month) => {
     return new Date(year, month, 1).getDay();
   };
   
-  // Function to navigate to previous month
   const prevMonth = () => {
     setCurrentDate(prev => {
       const newDate = new Date(prev);
@@ -382,7 +349,6 @@ const Dashboard = () => {
     });
   };
   
-  // Function to navigate to next month
   const nextMonth = () => {
     setCurrentDate(prev => {
       const newDate = new Date(prev);
@@ -391,14 +357,12 @@ const Dashboard = () => {
     });
   };
   
-  // Function to check if a date is in the future
   const isFutureDate = (date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return date > today;
   };
   
-  // Function to check if a date is today
   const isToday = (date) => {
     const today = new Date();
     return date.getDate() === today.getDate() &&
@@ -406,7 +370,6 @@ const Dashboard = () => {
            date.getFullYear() === today.getFullYear();
   };
   
-  // Function to check if a date is the selected date
   const isSelectedDate = (date) => {
     if (!currentDate) return false;
     return date.getDate() === currentDate.getDate() &&
@@ -414,7 +377,6 @@ const Dashboard = () => {
            date.getFullYear() === currentDate.getFullYear();
   };
   
-  // Function to handle year selection
   const handleYearSelect = (year) => {
     const newDate = new Date(currentDate);
     newDate.setFullYear(year);
@@ -422,7 +384,6 @@ const Dashboard = () => {
     setShowYearSelector(false);
   };
   
-  // Function to handle month selection
   const handleMonthSelect = (month) => {
     const newDate = new Date(currentDate);
     newDate.setMonth(month);
@@ -430,7 +391,6 @@ const Dashboard = () => {
     setShowMonthSelector(false);
   };
   
-  // Function to get array of years (current year - 10 to current year)
   const getYearRange = () => {
     const currentYear = new Date().getFullYear();
     const years = [];
@@ -440,7 +400,6 @@ const Dashboard = () => {
     return years;
   };
   
-  // Function to get array of month names
   const getMonthNames = () => {
     return [
       "January", "February", "March", "April", "May", "June",
@@ -448,7 +407,6 @@ const Dashboard = () => {
     ];
   };
   
-  // Function to render the calendar
   const renderCalendar = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -457,15 +415,12 @@ const Dashboard = () => {
     
     const monthName = currentDate.toLocaleString('default', { month: 'long' });
     
-    // Create calendar days
     const days = [];
     
-    // Add empty cells for days before the first day of the month
     for (let i = 0; i < firstDayOfMonth; i++) {
       days.push(<div key={`empty-${i}`} className="calendar-day empty"></div>);
     }
     
-    // Add this new function to render the blood drop icon for selected date
     const renderBloodDropIcon = () => {
       return (
         <div className="blood-drop-icon">
@@ -474,7 +429,6 @@ const Dashboard = () => {
       );
     };
     
-    // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       const isDisabled = isFutureDate(date);
@@ -587,17 +541,14 @@ const Dashboard = () => {
     );
   };
   
-  // Initialize selected date when form data changes
   useEffect(() => {
     if (formData.lastDonationDate) {
-      // Create a new date object and set it to noon to avoid timezone issues
       const date = new Date(formData.lastDonationDate);
       date.setHours(12, 0, 0, 0);
       setCurrentDate(date);
     }
   }, [formData.lastDonationDate]);
 
-  // Handle click outside to close calendar
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (calendarRef.current && !calendarRef.current.contains(event.target)) {
@@ -614,6 +565,24 @@ const Dashboard = () => {
     };
   }, [showDatePicker]);
 
+  const handleDisabledFieldClick = (e) => {
+    if (!editMode) {
+      e.preventDefault();
+      
+      const rect = e.currentTarget.getBoundingClientRect();
+      setPopupPosition({
+        top: rect.top + window.scrollY - 70,
+        left: rect.left + window.scrollX
+      });
+      
+      setShowEditPopup(true);
+      
+      setTimeout(() => {
+        setShowEditPopup(false);
+      }, 3000);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center">
@@ -624,9 +593,35 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen pb-12 bg-gray-50">
+      {showEditPopup && (
+        <div 
+          className="absolute bg-white rounded-lg shadow-lg p-4 max-w-xs animate-fade-in z-50 border-l-4 border-primary"
+          style={{
+            top: `${popupPosition.top}px`,
+            left: `${popupPosition.left}px`
+          }}
+        >
+          <div className="flex items-start">
+            <div className="flex-shrink-0 text-primary">
+              <FaInfoCircle className="h-5 w-5" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-gray-800">
+                Please enable "Edit Profile" option to update your information.
+              </p>
+            </div>
+            <button 
+              onClick={() => setShowEditPopup(false)}
+              className="ml-auto flex-shrink-0 text-gray-400 hover:text-gray-500"
+            >
+              <FaTimes className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          {/* Dashboard Header */}
           <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
             <div className="bg-gradient-blood p-6 text-white relative">
               <div className="absolute inset-0 opacity-10">
@@ -698,7 +693,6 @@ const Dashboard = () => {
               </div>
             </div>
             
-            {/* Dashboard Tabs */}
             <div className="flex border-b border-gray-200 mb-6">
               <button
                 className={`px-4 py-2 font-medium ${
@@ -723,37 +717,39 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Profile Tab Content */}
           {activeTab === "profile" && (
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="p-6">
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Profile Information */}
                     <div>
                       <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center gap-2">
                         <FaUser className="text-primary" /> Profile Information
                       </h3>
                       
-                      {/* Name */}
                       <div className="form-group mb-4">
                         <label className="form-label flex items-center gap-2" htmlFor="name">
                           <FaIdCard className="text-primary" /> Full Name
                         </label>
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleChange}
-                          className={`w-full px-4 py-3 rounded-md border ${
-                            editMode ? "bg-white" : "bg-gray-50"
-                          } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                          disabled={!editMode}
-                        />
+                        <div 
+                          className={!editMode ? "relative cursor-not-allowed" : "relative"}
+                          onClick={!editMode ? handleDisabledFieldClick : undefined}
+                        >
+                          <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            className={`w-full px-4 py-3 rounded-md border ${
+                              editMode ? "bg-white" : "bg-gray-50 pointer-events-none"
+                            } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                            disabled={!editMode}
+                          />
+                          {!editMode && <div className="absolute inset-0"></div>}
+                        </div>
                       </div>
                       
-                      {/* Email */}
                       <div className="form-group mb-4">
                         <label className="form-label flex items-center gap-2" htmlFor="email">
                           <FaEnvelope className="text-primary" /> Email
@@ -769,59 +765,68 @@ const Dashboard = () => {
                         <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
                       </div>
                       
-                      {/* Phone */}
                       <div className="form-group mb-4">
                         <label className="form-label flex items-center gap-2" htmlFor="phone">
                           <FaPhone className="text-primary" /> Phone
                         </label>
-                        <input
-                          type="tel"
-                          id="phone"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          className={`w-full px-4 py-3 rounded-md border ${
-                            editMode ? "bg-white" : "bg-gray-50"
-                          } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                          disabled={!editMode}
-                        />
+                        <div 
+                          className={!editMode ? "relative cursor-not-allowed" : "relative"}
+                          onClick={!editMode ? handleDisabledFieldClick : undefined}
+                        >
+                          <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            className={`w-full px-4 py-3 rounded-md border ${
+                              editMode ? "bg-white" : "bg-gray-50 pointer-events-none"
+                            } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                            disabled={!editMode}
+                          />
+                          {!editMode && <div className="absolute inset-0"></div>}
+                        </div>
                       </div>
                       
-                      {/* Blood Group */}
                       <div className="form-group mb-4">
                         <label className="form-label flex items-center gap-2" htmlFor="bloodGroup">
                           <FaTint className="text-primary" /> Blood Group
                         </label>
-                        <select
-                          id="bloodGroup"
-                          name="bloodGroup"
-                          value={formData.bloodGroup}
-                          onChange={handleChange}
-                          className={`w-full px-4 py-3 rounded-md border ${
-                            editMode ? "bg-white" : "bg-gray-50"
-                          } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                          disabled={!editMode}
+                        <div 
+                          className={!editMode ? "relative cursor-not-allowed" : "relative"}
+                          onClick={!editMode ? handleDisabledFieldClick : undefined}
                         >
-                          <option value="">Select Blood Group</option>
-                          {bloodGroups.map((group) => (
-                            <option key={group} value={group}>
-                              {group}
-                            </option>
-                          ))}
-                        </select>
+                          <select
+                            id="bloodGroup"
+                            name="bloodGroup"
+                            value={formData.bloodGroup}
+                            onChange={handleChange}
+                            className={`w-full px-4 py-3 rounded-md border ${
+                              editMode ? "bg-white" : "bg-gray-50 pointer-events-none"
+                            } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                            disabled={!editMode}
+                          >
+                            <option value="">Select Blood Group</option>
+                            {bloodGroups.map((group) => (
+                              <option key={group} value={group}>
+                                {group}
+                              </option>
+                            ))}
+                          </select>
+                          {!editMode && <div className="absolute inset-0"></div>}
+                        </div>
                       </div>
                       
-                      {/* Last Donation Date */}
-                      <div className="form-group relative z-50 mb-4">
+                      <div className="form-group relative z-40 mb-4">
                         <label className="form-label flex items-center gap-2" htmlFor="lastDonationDate">
                           <FaCalendarAlt className="text-primary" /> Last Donation Date
                         </label>
                         <div className="relative" ref={calendarRef}>
                           <div 
                             className={`date-input-container flex items-center w-full px-4 py-3 rounded-md border ${
-                              editMode ? "bg-white cursor-pointer" : "bg-gray-50"
+                              editMode ? "bg-white cursor-pointer" : "bg-gray-50 cursor-not-allowed"
                             } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                            onClick={() => editMode && setShowDatePicker(!showDatePicker)}
+                            onClick={(e) => editMode ? setShowDatePicker(!showDatePicker) : handleDisabledFieldClick(e)}
                           >
                             <div className="flex-1">
                               {formData.lastDonationDate ? (
@@ -842,7 +847,6 @@ const Dashboard = () => {
                             </div>
                             <FaCalendarAlt className={`${editMode ? "text-primary" : "text-gray-400"}`} />
                             
-                            {/* Hidden input for form submission */}
                             <input
                               type="hidden"
                               id="lastDonationDate"
@@ -851,7 +855,6 @@ const Dashboard = () => {
                             />
                           </div>
                           
-                          {/* Custom Calendar Dropdown */}
                           {showDatePicker && editMode && (
                             <div className="calendar-dropdown">
                               {renderCalendar()}
@@ -866,100 +869,119 @@ const Dashboard = () => {
                       </div>
                     </div>
                     
-                    {/* Address Information */}
                     <div>
                       <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center gap-2">
                         <FaMapMarkerAlt className="text-primary" /> Address Information
                       </h3>
                       
-                      {/* Division */}
                       <div className="form-group mb-4">
                         <label className="form-label flex items-center gap-2" htmlFor="division">
                           <FaGlobe className="text-primary" /> Division
                         </label>
-                        <select
-                          id="division"
-                          name="division"
-                          value={formData.division}
-                          onChange={handleChange}
-                          className={`w-full px-4 py-3 rounded-md border ${
-                            editMode ? "bg-white" : "bg-gray-50"
-                          } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                          disabled={!editMode}
+                        <div 
+                          className={!editMode ? "relative cursor-not-allowed" : "relative"}
+                          onClick={!editMode ? handleDisabledFieldClick : undefined}
                         >
-                          <option value="">Select Division</option>
-                          {bangladeshData.divisions.map((div) => (
-                            <option key={div.name} value={div.name}>
-                              {div.name}
-                            </option>
-                          ))}
-                        </select>
+                          <select
+                            id="division"
+                            name="division"
+                            value={formData.division}
+                            onChange={handleChange}
+                            className={`w-full px-4 py-3 rounded-md border ${
+                              editMode ? "bg-white" : "bg-gray-50 pointer-events-none"
+                            } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                            disabled={!editMode}
+                          >
+                            <option value="">Select Division</option>
+                            {bangladeshData.divisions.map((div) => (
+                              <option key={div.name} value={div.name}>
+                                {div.name}
+                              </option>
+                            ))}
+                          </select>
+                          {!editMode && <div className="absolute inset-0"></div>}
+                        </div>
                       </div>
                       
-                      {/* District */}
                       <div className="form-group mb-4">
                         <label className="form-label flex items-center gap-2" htmlFor="district">
                           <FaCity className="text-primary" /> District
                         </label>
-                        <select
-                          id="district"
-                          name="district"
-                          value={formData.district}
-                          onChange={handleChange}
-                          className={`w-full px-4 py-3 rounded-md border ${
-                            editMode ? "bg-white" : "bg-gray-50"
-                          } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                          disabled={!editMode || !formData.division}
+                        <div 
+                          className={!editMode ? "relative cursor-not-allowed" : "relative"}
+                          onClick={!editMode ? handleDisabledFieldClick : undefined}
                         >
-                          <option value="">Select District</option>
-                          {districts.map((district) => (
-                            <option key={district.name} value={district.name}>
-                              {district.name}
-                            </option>
-                          ))}
-                        </select>
+                          <select
+                            id="district"
+                            name="district"
+                            value={formData.district}
+                            onChange={handleChange}
+                            className={`w-full px-4 py-3 rounded-md border ${
+                              editMode ? "bg-white" : "bg-gray-50 pointer-events-none"
+                            } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                            disabled={!editMode || !formData.division}
+                          >
+                            <option value="">Select District</option>
+                            {districts.map((district) => (
+                              <option key={district.name} value={district.name}>
+                                {district.name}
+                              </option>
+                            ))}
+                          </select>
+                          {!editMode && <div className="absolute inset-0"></div>}
+                        </div>
                       </div>
                       
-                      {/* Upazila */}
                       <div className="form-group mb-4">
                         <label className="form-label flex items-center gap-2" htmlFor="upazila">
                           <FaMapPin className="text-primary" /> Upazila
                         </label>
-                        <select
-                          id="upazila"
-                          name="upazila"
-                          value={formData.upazila}
-                          onChange={handleChange}
-                          className={`w-full px-4 py-3 rounded-md border ${
-                            editMode ? "bg-white" : "bg-gray-50"
-                          } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                          disabled={!editMode || !formData.district}
+                        <div 
+                          className={!editMode ? "relative cursor-not-allowed" : "relative"}
+                          onClick={!editMode ? handleDisabledFieldClick : undefined}
                         >
-                          <option value="">Select Upazila</option>
-                          {upazilas.map((upazila) => (
-                            <option key={upazila} value={upazila}>
-                              {upazila}
-                            </option>
-                          ))}
-                        </select>
+                          <select
+                            id="upazila"
+                            name="upazila"
+                            value={formData.upazila}
+                            onChange={handleChange}
+                            className={`w-full px-4 py-3 rounded-md border ${
+                              editMode ? "bg-white" : "bg-gray-50 pointer-events-none"
+                            } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                            disabled={!editMode || !formData.district}
+                          >
+                            <option value="">Select Upazila</option>
+                            {upazilas.map((upazila) => (
+                              <option key={upazila} value={upazila}>
+                                {upazila}
+                              </option>
+                            ))}
+                          </select>
+                          {!editMode && <div className="absolute inset-0"></div>}
+                        </div>
                       </div>
                       
-                      {/* Address */}
-                      <div className="form-group mb-4">
+                      <div className="form-group mb віт4">
                         <label className="form-label flex items-center gap-2" htmlFor="address">
                           <FaHome className="text-primary" /> Address
                         </label>
-                        <textarea
-                          id="address"
-                          name="address"
-                          value={formData.address}
-                          onChange={handleChange}
-                          className={`w-full px-4 py-3 rounded-md border ${
-                            editMode ? "bg-white" : "bg-gray-50"
-                          } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                          disabled={!editMode}
-                          rows="3"
-                        ></textarea>
+                        <div 
+                          className={!editMode ? "relative cursor-not-allowed" : "relative"}
+                          onClick={!editMode ? handleDisabledFieldClick : undefined}
+                        >
+                          <textarea
+                            id="address"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            className={`w-full px-4 py-3 rounded-md border ${
+                              editMode ? "bg-white" : "bg-gray-50 pointer-events-none"
+                            } border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                            disabled={!editMode}
+                            rows="3"
+                          ></textarea>
+                          {!editMode && <div className="absolute inset-0"></div>}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -988,7 +1010,6 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* Donation History Tab Content */}
           {activeTab === "donations" && (
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="p-6">
@@ -1003,7 +1024,6 @@ const Dashboard = () => {
                         You last donated blood on{" "}
                         <span className="font-semibold text-primary">
                           {(() => {
-                            // Create a new date object and set it to noon to avoid timezone issues
                             const date = new Date(donor.lastDonationDate);
                             date.setHours(12, 0, 0, 0);
                             return date.toLocaleDateString("en-US", {
@@ -1015,17 +1035,14 @@ const Dashboard = () => {
                         </span>
                       </p>
                       
-                      {/* Eligibility Status */}
                       <div className="mt-6 p-4 bg-gray-50 rounded-lg inline-block">
                         <h4 className="font-bold mb-2">Next Eligible Donation Date</h4>
                         <p className="text-gray-600">
                           You can donate again after{" "}
                           <span className="font-semibold text-primary">
                             {(() => {
-                              // Create a new date object and set it to noon to avoid timezone issues
                               const date = new Date(donor.lastDonationDate);
                               date.setHours(12, 0, 0, 0);
-                              // Add 3 months
                               const nextDate = new Date(date);
                               nextDate.setMonth(date.getMonth() + 3);
                               return nextDate.toLocaleDateString("en-US", {
@@ -1068,4 +1085,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;
