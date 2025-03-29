@@ -6,7 +6,8 @@ const userSchema = {
   name: { type: 'string', required: true },
   email: { type: 'string', required: true, unique: true },
   phone: { type: 'string' },
-  photoURL: { type: 'string' }
+  photoURL: { type: 'string' },
+  role: { type: 'string', default: 'user' }
 };
 
 // Helper function to validate a user object against the schema

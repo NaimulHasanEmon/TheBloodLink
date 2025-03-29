@@ -13,7 +13,9 @@ import {
   FaSignInAlt,
   FaSignOutAlt,
   FaUserPlus,
-  FaInfoCircle
+  FaInfoCircle,
+  FaUsers,
+  FaUserShield
 } from "react-icons/fa";
 import BloodDropIcon from "./ui/BloodDropIcon";
 import "../styles/animations.css";
@@ -35,7 +37,7 @@ const Tooltip = ({ text, position = "bottom" }) => {
 };
 
 const Navbar = () => {
-  const { user, logOut } = useContext(AuthContext);
+  const { user, logOut, isAdmin } = useContext(AuthContext);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMenuExiting, setIsMenuExiting] = useState(false);
@@ -161,6 +163,18 @@ const Navbar = () => {
               <Tooltip text="View your dashboard" />
             </Link>
           </li>
+          {isAdmin && (
+            <li className="animate-fade-in" style={{ animationDelay: '350ms' }}>
+              <Link 
+                to="/admin" 
+                className={`navbar-link group flex items-center gap-2 text-sm md:text-base hover-underline ${isActive("/admin") ? "text-primary after:w-full" : ""} relative`}
+              >
+                <FaUserShield className="text-lg group-hover:animate-pulse-gentle" />
+                <span>Admin</span>
+                <Tooltip text="Access admin controls" />
+              </Link>
+            </li>
+          )}
           <li className="animate-fade-in" style={{ animationDelay: '400ms' }}>
             <button 
               onClick={handleLogOut} 
@@ -240,6 +254,20 @@ const Navbar = () => {
               <span className="text-base">Dashboard</span>
             </Link>
           </li>
+          {isAdmin && (
+            <li>
+              <Link 
+                to="/admin" 
+                className={`flex items-center gap-2 p-3 rounded-lg ${isActive("/admin") ? "bg-primary/10 text-primary font-medium" : "text-gray-700"} group relative`}
+                onClick={toggleMobileMenu}
+              >
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isActive("/admin") ? "bg-primary text-white" : "bg-gray-100"}`}>
+                  <FaUserShield className="text-lg" />
+                </div>
+                <span className="text-base">Admin</span>
+              </Link>
+            </li>
+          )}
           <li>
             <button 
               onClick={() => {

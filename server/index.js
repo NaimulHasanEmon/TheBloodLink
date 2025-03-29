@@ -1,17 +1,22 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Import routes
-const donorRoutes = require('./routes/donorRoutes');
+// Import routes - only keeping search routes
 const searchRoutes = require('./routes/searchRoutes');
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*', // Allow all origins
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Explicitly allow DELETE
+  credentials: true,
+  optionsSuccessStatus: 204, // Some legacy browsers (IE11) choke on 204
+  preflightContinue: false // Handle OPTIONS requests correctly
+}));
 app.use(express.json());
 
 // MongoDB Connection
@@ -44,8 +49,277 @@ async function run() {
         };
 
         // Register routes
-        app.use('/donors', donorRoutes);
+        // Add this right after app.use(express.json());
+        app.use((req, res, next) => {
+            console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+            next();
+        });
+
+        // Mount search routes
         app.use('/search', searchRoutes);
+        
+        // Admin middleware to check if user is an admin
+        const isAdmin = async (req, res, next) => {
+          try {
+            const email = req.query.email;
+            console.log("Admin check for email:", email);
+            
+            if (!email) {
+              console.log("No email provided in request");
+              return res.status(401).send({ error: "Unauthorized access" });
+            }
+
+            // Check if the email is one of the admin emails
+            const adminEmails = ['mustakimemon1272000@gmail.com', 'thebloodlink01@gmail.com'];
+            console.log("Admin emails configured:", adminEmails);
+            console.log("Is admin?", adminEmails.includes(email));
+            
+            if (adminEmails.includes(email)) {
+              next();
+            } else {
+              console.log("Access denied for:", email);
+              return res.status(403).send({ error: "Forbidden access" });
+            }
+          } catch (error) {
+            console.error("Error in admin verification:", error);
+            res.status(500).send({ error: "Internal server error" });
+          }
+        };
+
+        // DONOR ROUTES - Moved from donorRoutes.js to index.js
+
+        // Get all donors
+        app.get('/donors', async (req, res) => {
+          try {
+            const donorsCollection = app.locals.collections.donors;
+            const cursor = donorsCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+          } catch (error) {
+            console.error("Error fetching donors:", error);
+            res.status(500).send({ error: "Failed to fetch donors" });
+          }
+        });
+
+        // Route for the client to check if a user is admin
+        app.get('/donors/is-admin', async (req, res) => {
+          try {
+            const email = req.query.email;
+            if (!email) {
+              return res.status(400).send({ error: "Email parameter is required" });
+            }
+            
+            // Check if email is in admin list
+            const adminEmails = ['mustakimemon1272000@gmail.com', 'thebloodlink01@gmail.com'];
+            const isAdmin = adminEmails.includes(email);
+            
+            res.send({ isAdmin });
+          } catch (error) {
+            console.error("Error checking admin status:", error);
+            res.status(500).send({ error: "Failed to check admin status" });
+          }
+        });
+
+        // Route to check if admin exists in database (for debugging)
+        app.get('/donors/check-admin', async (req, res) => {
+          try {
+            const email = req.query.email;
+            if (!email) {
+              return res.status(400).send({ error: "Email parameter is required" });
+            }
+            
+            console.log("Checking if admin exists in DB:", email);
+            const donorsCollection = app.locals.collections.donors;
+            
+            // Check if user exists
+            const user = await donorsCollection.findOne({ email });
+            console.log("User found:", user ? "Yes" : "No");
+            
+            // Check if email is in admin list
+            const adminEmails = ['mustakimemon1272000@gmail.com', 'thebloodlink01@gmail.com'];
+            const isAdminEmail = adminEmails.includes(email);
+            console.log("Is admin email:", isAdminEmail);
+            
+            res.send({
+              userExists: !!user,
+              userData: user ? {
+                email: user.email,
+                name: user.name,
+                role: user.role || 'user',
+                uid: user.uid
+              } : null,
+              isAdminEmail
+            });
+          } catch (error) {
+            console.error("Error checking admin:", error);
+            res.status(500).send({ error: "Failed to check admin status" });
+          }
+        });
+
+        // Get donor by UID
+        app.get('/donors/user/:uid', async(req, res) => {
+          try {
+            const uid = req.params.uid;
+            
+            if (!uid) {
+              return res.status(400).send({ error: "User ID (uid) is required" });
+            }
+            
+            console.log("Fetching donor for UID:", uid);
+            const query = {uid: uid};
+            const donorsCollection = app.locals.collections.donors;
+            const result = await donorsCollection.findOne(query);
+            
+            if (!result) {
+              console.log("No donor found for UID:", uid);
+              return res.status(404).send({ error: "Donor not found" });
+            }
+            
+            console.log("Donor found:", result._id);
+            res.send(result);
+          } catch (error) {
+            console.error("Error fetching donor by UID:", error);
+            res.status(500).send({ error: "Failed to fetch donor", details: error.message });
+          }
+        });
+
+        // Route to create admin users if they don't exist (for debugging/setup)
+        app.post('/donors/create-admin', async (req, res) => {
+          try {
+            const donorsCollection = app.locals.collections.donors;
+            const adminEmails = ['mustakimemon1272000@gmail.com', 'thebloodlink01@gmail.com'];
+            
+            const results = [];
+            
+            for (const email of adminEmails) {
+              // Check if admin already exists
+              const existingAdmin = await donorsCollection.findOne({ email });
+              
+              if (existingAdmin) {
+                console.log(`Admin ${email} already exists`);
+                results.push({ email, status: 'already exists', id: existingAdmin._id });
+              } else {
+                // Create the admin user
+                const newAdmin = {
+                  name: email.split('@')[0],
+                  email: email,
+                  role: 'admin',
+                  createdAt: new Date(),
+                  updatedAt: new Date()
+                };
+                
+                const result = await donorsCollection.insertOne(newAdmin);
+                console.log(`Admin ${email} created with ID ${result.insertedId}`);
+                results.push({ email, status: 'created', id: result.insertedId });
+              }
+            }
+            
+            res.status(200).send({ results });
+          } catch (error) {
+            console.error("Error creating admin users:", error);
+            res.status(500).send({ error: "Failed to create admin users" });
+          }
+        });
+
+        // Create a new donor
+        app.post('/donors', async(req, res) => {
+          try {
+            const donor = req.body;
+            
+            // Validate required fields
+            if (!donor.uid) {
+              return res.status(400).send({ error: "User ID (uid) is required" });
+            }
+            
+            const donorsCollection = app.locals.collections.donors;
+            
+            // Check if donor with this uid already exists
+            const existingDonor = await donorsCollection.findOne({ uid: donor.uid });
+            if (existingDonor) {
+              return res.status(409).send({ 
+                error: "Donor with this user ID already exists",
+                donorId: existingDonor._id 
+              });
+            }
+            
+            // Ensure minimum required fields
+            if (!donor.name) {
+              donor.name = "Anonymous User";
+            }
+            
+            // Add timestamps
+            donor.createdAt = donor.createdAt || new Date();
+            donor.updatedAt = new Date();
+            
+            const result = await donorsCollection.insertOne(donor);
+            console.log("Donor created:", result);
+            res.status(201).send(result);
+          } catch (error) {
+            console.error("Error creating donor:", error);
+            res.status(500).send({ error: "Failed to create donor", details: error.message });
+          }
+        });
+
+        // Get donor by ID - Make sure this is placed after other specific /donors/... routes
+        app.get('/donors/:id', async(req, res) => {
+          try {
+            const id = req.params.id;
+            console.log('GET REQUEST FOR ID:', id);
+            const query = {_id: new ObjectId(id)};
+            const donorsCollection = app.locals.collections.donors;
+            const result = await donorsCollection.findOne(query);
+            
+            if (!result) {
+              return res.status(404).send({ error: "Donor not found" });
+            }
+            
+            res.send(result);
+          } catch (error) {
+            console.error("Error fetching donor by ID:", error);
+            res.status(500).send({ error: "Failed to fetch donor" });
+          }
+        });
+
+        // Update donor
+        app.put('/donors/:id', async(req, res) => {
+          try {
+            const id = req.params.id;
+            const filter = {_id: new ObjectId(id)};
+            const options = { upsert: false }; // Changed to false to prevent accidental creation
+            const updatedDonor = req.body;
+            
+            const donorsCollection = app.locals.collections.donors;
+            
+            // Validate donor exists
+            const existingDonor = await donorsCollection.findOne(filter);
+            if (!existingDonor) {
+              return res.status(404).send({ error: "Donor not found" });
+            }
+            
+            const donor = {
+              $set: {
+                name: updatedDonor.name || existingDonor.name,
+                email: updatedDonor.email || existingDonor.email,
+                bloodGroup: updatedDonor.bloodGroup || existingDonor.bloodGroup,
+                phone: updatedDonor.phone || existingDonor.phone,
+                address: updatedDonor.address || existingDonor.address,
+                division: updatedDonor.division || existingDonor.division,
+                district: updatedDonor.district || existingDonor.district,
+                upazila: updatedDonor.upazila || existingDonor.upazila,
+                lastDonationDate: updatedDonor.lastDonationDate || existingDonor.lastDonationDate,
+                photoURL: updatedDonor.photoURL || existingDonor.photoURL,
+                updatedAt: new Date()
+              }
+            };
+            
+            const result = await donorsCollection.updateOne(filter, donor, options);
+            console.log("Donor updated:", result);
+            res.send(result);
+          } catch (error) {
+            console.error("Error updating donor:", error);
+            res.status(500).send({ error: "Failed to update donor", details: error.message });
+          }
+        });
         
         // Search counter endpoints
         app.get('/search-count', async (req, res) => {

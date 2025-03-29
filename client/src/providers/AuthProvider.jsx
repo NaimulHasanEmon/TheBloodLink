@@ -13,12 +13,16 @@ import {
 } from "firebase/auth";
 import auth from "../firebase/firebase.config";
 import PropTypes from "prop-types";
+import axios from "axios";
 
 export const AuthContext = createContext(null);
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Providers for social login
   const googleProvider = new GoogleAuthProvider();
@@ -74,6 +78,39 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
+  // Check if the current user is an admin
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (user && user.email) {
+        try {
+          // First check locally with the hardcoded emails
+          const adminEmails = ['mustakimemon1272000@gmail.com', 'thebloodlink01@gmail.com'];
+          const userIsAdmin = adminEmails.includes(user.email);
+          
+          if (userIsAdmin) {
+            setIsAdmin(true);
+            return;
+          }
+          
+          // If not a hardcoded admin, verify with the server
+          console.log("Checking admin status with server for:", user.email);
+          const response = await axios.get(`${API_URL}/donors/is-admin?email=${user.email}`);
+          console.log("Server admin check response:", response.data);
+          setIsAdmin(response.data.isAdmin);
+        } catch (error) {
+          console.error("Error checking admin status:", error);
+          // Fall back to the hardcoded check
+          const adminEmails = ['mustakimemon1272000@gmail.com', 'thebloodlink01@gmail.com'];
+          setIsAdmin(adminEmails.includes(user.email));
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+    
+    checkAdminStatus();
+  }, [user]);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -85,6 +122,7 @@ const AuthProvider = ({ children }) => {
   const authInfo = {
     user,
     loading,
+    isAdmin,
     createUser,
     logIn,
     signInWithGoogle,

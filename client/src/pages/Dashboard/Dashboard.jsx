@@ -961,7 +961,7 @@ const Dashboard = () => {
                         </div>
                       </div>
                       
-                      <div className="form-group mb віт4">
+                      <div className="form-group mb-4">
                         <label className="form-label flex items-center gap-2" htmlFor="address">
                           <FaHome className="text-primary" /> Address
                         </label>
@@ -987,7 +987,14 @@ const Dashboard = () => {
                   </div>
 
                   {editMode && (
-                    <div className="mt-6 flex justify-end">
+                    <div className="mt-6 flex justify-end gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setEditMode(false)}
+                        className="bg-gray-200 text-gray-800 hover:bg-gray-300 px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-300"
+                      >
+                        <FaTimes /> Cancel
+                      </button>
                       <button
                         type="submit"
                         className="btn-primary px-6 py-3 rounded-lg flex items-center gap-2"

@@ -8,6 +8,8 @@ import CheckOut from "../pages/CheckOut/CheckOut";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import FindBlood from "../pages/FindBlood/FindBlood";
 import PrivateRoute from "./PrivateRoute";
+import AdminRoute from "./AdminRoute";
+import AdminDashboard from "../pages/Admin/AdminDashboard";
 import ApiTest from "../pages/ApiTest";
 
 const router = createBrowserRouter([
@@ -42,6 +44,14 @@ const router = createBrowserRouter([
           <PrivateRoute>
             <Dashboard />
           </PrivateRoute>
+        ),
+      },
+      {
+        path: "admin",
+        element: (
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
         ),
       },
       {
