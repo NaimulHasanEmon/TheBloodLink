@@ -17,6 +17,7 @@ import {
 import { AuthContext } from '../../providers/AuthProvider';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
+import { bangladeshData } from '../../data/bangladeshData';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -42,6 +43,7 @@ const AdminDashboard = () => {
   });
   const [updateLoading, setUpdateLoading] = useState(false);
   const [bloodGroupFilter, setBloodGroupFilter] = useState('');
+  const [districtFilter, setDistrictFilter] = useState('');
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   
   // Add refs for scrolling animations
@@ -50,6 +52,20 @@ const AdminDashboard = () => {
   const searchRef = useRef(null);
 
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+  
+  // Extract all districts from bangladeshData
+  const allDistricts = bangladeshData.divisions.reduce((acc, division) => {
+    division.districts.forEach(district => {
+      if (!acc.includes(district.name)) {
+        acc.push(district.name);
+      }
+    });
+    return acc;
+  }, []).sort();
+
+  // New state for available options in edit modal
+  const [editDistricts, setEditDistricts] = useState([]);
+  const [editUpazilas, setEditUpazilas] = useState([]);
 
   // Helper function to get blood group color for styling
   const getBloodGroupColor = (bloodGroup) => {
@@ -164,7 +180,7 @@ const AdminDashboard = () => {
     }
   }, [user]);
 
-  // Filter users based on search term and blood group filter
+  // Filter users based on search term, blood group filter, and district filter
   const filteredUsers = users.filter(user => {
     const matchesSearchTerm = (
       user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -174,8 +190,10 @@ const AdminDashboard = () => {
     );
 
     const matchesBloodGroup = bloodGroupFilter ? user.bloodGroup === bloodGroupFilter : true;
+    
+    const matchesDistrict = districtFilter ? user.district === districtFilter : true;
 
-    return matchesSearchTerm && matchesBloodGroup;
+    return matchesSearchTerm && matchesBloodGroup && matchesDistrict;
   });
 
   // Pagination logic
@@ -188,26 +206,87 @@ const AdminDashboard = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Open edit modal and populate form
-  const handleEditClick = (user) => {
-    // Prevent editing admin users
-    if (user.isAdmin) {
-      toast.error("Admin users cannot be edited");
+  const handleEditClick = (userToEdit) => {
+    // Get the current logged-in user's email
+    const currentUserEmail = user?.email;
+    
+    // Prevent editing admin users EXCEPT if the admin is editing their own profile
+    if (userToEdit.isAdmin && userToEdit.email !== currentUserEmail) {
+      toast.error("Other admin users cannot be edited");
       return;
     }
     
-    setSelectedUser(user);
+    setSelectedUser(userToEdit);
     setUserFormData({
-      name: user.name || '',
-      email: user.email || '',
-      phone: user.phone || '',
-      bloodGroup: user.bloodGroup || '',
-      address: user.address || '',
-      division: user.division || '',
-      district: user.district || '',
-      upazila: user.upazila || ''
+      name: userToEdit.name || '',
+      email: userToEdit.email || '',
+      phone: userToEdit.phone || '',
+      bloodGroup: userToEdit.bloodGroup || '',
+      address: userToEdit.address || '',
+      division: userToEdit.division || '',
+      district: userToEdit.district || '',
+      upazila: userToEdit.upazila || ''
     });
     setIsEditModalOpen(true);
   };
+
+  // Update districts when division changes in edit modal
+  useEffect(() => {
+    if (userFormData.division) {
+      const selectedDivision = bangladeshData.divisions.find(
+        (div) => div.name === userFormData.division
+      );
+      if (selectedDivision) {
+        setEditDistricts(selectedDivision.districts);
+        // Reset district and upazila if division changes
+        if (!selectedDivision.districts.some(d => d.name === userFormData.district)) {
+          setUserFormData(prev => ({
+            ...prev,
+            district: '',
+            upazila: ''
+          }));
+          setEditUpazilas([]);
+        }
+      }
+    } else {
+      setEditDistricts([]);
+      setUserFormData(prev => ({
+        ...prev,
+        district: '',
+        upazila: ''
+      }));
+      setEditUpazilas([]);
+    }
+  }, [userFormData.division]);
+
+  // Update upazilas when district changes in edit modal
+  useEffect(() => {
+    if (userFormData.district && editDistricts.length > 0) {
+      const selectedDistrict = editDistricts.find(dist => dist.name === userFormData.district);
+      if (selectedDistrict) {
+        setEditUpazilas(selectedDistrict.upazilas);
+        // Reset upazila if district changes and current upazila is not in new list
+        if (!selectedDistrict.upazilas.includes(userFormData.upazila)) {
+          setUserFormData(prev => ({
+            ...prev,
+            upazila: ''
+          }));
+        }
+      } else {
+        setEditUpazilas([]);
+        setUserFormData(prev => ({
+          ...prev,
+          upazila: ''
+        }));
+      }
+    } else {
+      setEditUpazilas([]);
+      setUserFormData(prev => ({
+        ...prev,
+        upazila: ''
+      }));
+    }
+  }, [userFormData.district, editDistricts]);
 
   // Handle form field changes
   const handleInputChange = (e) => {
@@ -450,7 +529,7 @@ const AdminDashboard = () => {
               </div>
               <div className="w-full md:w-48">
                 <div className="relative">
-                  <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <FaTint className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <select
                     value={bloodGroupFilter}
                     onChange={(e) => setBloodGroupFilter(e.target.value)}
@@ -463,7 +542,47 @@ const AdminDashboard = () => {
                   </select>
                 </div>
               </div>
+              <div className="w-full md:w-48">
+                <div className="relative">
+                  <FaMapMarkerAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <select
+                    value={districtFilter}
+                    onChange={(e) => setDistrictFilter(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-gray-800 appearance-none"
+                  >
+                    <option value="">All Districts</option>
+                    {allDistricts.map(district => (
+                      <option key={district} value={district}>{district}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
+            
+            {/* Results counter - shows number of results after filtering */}
+            {users.length > 0 && (
+              <div className="mt-3 flex items-center text-sm text-gray-600">
+                <div className="flex items-center">
+                  <span className="font-medium text-primary">{filteredUsers.length}</span>
+                  <span className="mx-1">of</span>
+                  <span className="font-medium text-gray-700">{users.length}</span>
+                  <span className="ml-1">users match current filters</span>
+                  
+                  {(searchTerm || bloodGroupFilter || districtFilter) && (
+                    <button 
+                      onClick={() => {
+                        setSearchTerm('');
+                        setBloodGroupFilter('');
+                        setDistrictFilter('');
+                      }}
+                      className="ml-3 text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors"
+                    >
+                      Clear filters
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Users Table */}
@@ -637,11 +756,18 @@ const AdminDashboard = () => {
       {isEditModalOpen && (
         <div className="fixed inset-0 z-[9999] overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div 
+              className="fixed inset-0 transition-opacity" 
+              aria-hidden="true"
+              onClick={() => setIsEditModalOpen(false)}
+            >
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div 
+              className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
               <form onSubmit={handleUpdateUser}>
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
@@ -705,36 +831,56 @@ const AdminDashboard = () => {
                         </div>
                         <div>
                           <label htmlFor="division" className="block text-sm font-medium text-gray-700">Division</label>
-                          <input
-                            type="text"
+                          <select
                             name="division"
                             id="division"
                             value={userFormData.division}
                             onChange={handleInputChange}
                             className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-white text-gray-800"
-                          />
+                          >
+                            <option value="">Select Division</option>
+                            {bangladeshData.divisions.map((div) => (
+                              <option key={div.id} value={div.name}>
+                                {div.name}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                         <div>
                           <label htmlFor="district" className="block text-sm font-medium text-gray-700">District</label>
-                          <input
-                            type="text"
+                          <select
                             name="district"
                             id="district"
                             value={userFormData.district}
                             onChange={handleInputChange}
                             className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-white text-gray-800"
-                          />
+                            disabled={!userFormData.division}
+                          >
+                            <option value="">Select District</option>
+                            {editDistricts.map((dist) => (
+                              <option key={dist.id} value={dist.name}>
+                                {dist.name}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                         <div>
                           <label htmlFor="upazila" className="block text-sm font-medium text-gray-700">Upazila</label>
-                          <input
-                            type="text"
+                          <select
                             name="upazila"
                             id="upazila"
                             value={userFormData.upazila}
                             onChange={handleInputChange}
                             className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-white text-gray-800"
-                          />
+                            disabled={!userFormData.district}
+                          >
+                            <option value="">Select Upazila</option>
+                            {editUpazilas.map((upz) => (
+                              <option key={upz} value={upz}>
+                                {upz}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                         <div className="sm:col-span-2">
                           <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
@@ -795,6 +941,7 @@ const AdminDashboard = () => {
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
             <div 
               className="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full animate-fade-in-up"
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="bg-gradient-to-r from-primary/90 to-purple-600/90 p-6 text-white relative">
                 <button
